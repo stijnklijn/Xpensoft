@@ -23,10 +23,10 @@ jobs:
 
       # RESTORE + BUILD
       - name: Restore
-        run: dotnet restore backend/Xpensoft.sln
+        run: dotnet restore backend/Xpensoft.Api.slnx
 
       - name: Build
-        run: dotnet build backend/Xpensoft.sln -c Release --no-restore
+        run: dotnet build backend/Xpensoft.Api.slnx -c Release --no-restore
 
       # TESTS
       - name: Run Unit Tests
