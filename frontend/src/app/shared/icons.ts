@@ -1,0 +1,31 @@
+import {
+  faArrowLeft,
+  faArrowRight,
+  faChartPie,
+  faChartSimple,
+  faEdit,
+  faGear,
+  faList,
+  faPlus,
+  faSearch,
+  faSort,
+  faTable,
+  faTrash,
+  faX,
+} from '@fortawesome/free-solid-svg-icons';
+
+export const icons = {
+  faArrowLeft: faArrowLeft,
+  faArrowRight: faArrowRight,
+  faChartPie: faChartPie,
+  faChartSimple: faChartSimple,
+  faEdit: faEdit,
+  faGear: faGear,
+  faList: faList,
+  faPlus: faPlus,
+  faSearch: faSearch,
+  faSort: faSort,
+  faTable: faTable,
+  faTrash: faTrash,
+  faX: faX,
+};

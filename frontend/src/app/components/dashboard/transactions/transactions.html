@@ -1,0 +1,114 @@
+<div class="content">
+  @if (categories().length) {
+    <div class="controls">
+      <button (click)="addTransaction()">
+        <fa-icon [icon]="icons.faPlus"></fa-icon>
+      </button>
+      <button
+        (click)="changePageNumber(currentPageNumber() - 1)"
+        [disabled]="!totalPages() || currentPageNumber() === 1"
+      >
+        <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
+      </button>
+      <button
+        (click)="changePageNumber(currentPageNumber() + 1)"
+        [disabled]="!totalPages() || currentPageNumber() === totalPages()"
+      >
+        <fa-icon [icon]="icons.faArrowRight"></fa-icon>
+      </button>
+      <div class="controls-item">
+        @if (totalPages()) {
+          <span
+            >{{ 'TRANSACTIONS.PAGE' | translate }} {{ currentPageNumber() }}
+            {{ 'TRANSACTIONS.OF' | translate }} {{ totalPages() }} ({{
+              filteredTransactionsAmount()
+            }}
+            {{ 'TRANSACTIONS.TRANSACTIONS' | translate }})</span
+          >
+        } @else {
+          <span>{{ 'TRANSACTIONS.NO_TRANSACTIONS_FOUND' | translate }}</span>
+        }
+      </div>
+      <div class="controls-item">
+        <fa-icon [icon]="icons.faList"></fa-icon>
+        <select [(ngModel)]="resultsPerPage" (ngModelChange)="changeResultsPerPage($event)">
+          @for (option of resultsPerPageOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+      <div class="controls-item">
+        <fa-icon [icon]="icons.faSort"></fa-icon>
+        <select #sortSelect (change)="changeSortByIndex(sortSelect.value)">
+          @for (option of sortOptions(); track option.label) {
+            <option [value]="$index" [selected]="$index === selectedSortIndex()">
+              {{ option.label }}
+            </option>
+          }
+        </select>
+      </div>
+      <div class="controls-item search">
+        <input
+          type="text"
+          [placeholder]="translate.instant('TRANSACTIONS.SEARCH_BY_DESCRIPTION')"
+          [value]="filter()"
+          (input)="setFilter($event)"
+        />
+      </div>
+      <button [disabled]="!filter()" (click)="removeFilter()">
+        <fa-icon [icon]="icons.faX"></fa-icon>
+      </button>
+    </div>
+    @if (filter()) {
+      <p>
+        <em
+          >{{ 'TRANSACTIONS.FILTER' | translate }} '{{ filter() }}'
+          {{ 'TRANSACTIONS.FILTER_APPLIED' | translate }}</em
+        >
+      </p>
+    }
+    @if (totalPages()) {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'SHARED.DATE' | translate }}</th>
+            <th>{{ 'SHARED.DESCRIPTION' | translate }}</th>
+            <th>{{ 'SHARED.CATEGORY' | translate }}</th>
+            <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+            <th class="actions">{{ 'SHARED.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (transaction of currentPageData(); track transaction.id) {
+            <tr>
+              <td>{{ transaction.date | date: 'dd-MM-yyyy' }}</td>
+              <td>{{ transaction.description }}</td>
+              <td>{{ categoryMap()[transaction.categoryId].name }}</td>
+              <td
+                [class]="
+                  categoryMap()[transaction.categoryId].isIncome
+                    ? 'amount amount-positive'
+                    : 'amount'
+                "
+              >
+                {{ categoryMap()[transaction.categoryId].isIncome ? '+' : '-' }}
+                {{ transaction.amount | number: '1.2-2' }}
+              </td>
+              <td class="actions">
+                <fa-icon [icon]="icons.faEdit" (click)="editTransaction(transaction)"></fa-icon
+                ><fa-icon
+                  [icon]="icons.faTrash"
+                  (click)="deleteTransaction(transaction.id!)"
+                ></fa-icon>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  } @else {
+    <div class="message">
+      <em>{{ 'TRANSACTIONS.NO_CATEGORIES' | translate }}</em>
+    </div>
+  }
+</div>

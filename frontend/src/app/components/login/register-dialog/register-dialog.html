@@ -1,0 +1,94 @@
+<div class="dialog">
+  <header>
+    <h3>{{ 'SHARED.REGISTER' | translate }}</h3>
+    <button class="close" mat-icon-button [matDialogClose]="null">✕</button>
+  </header>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.FIRST_NAME' | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="firstName"
+        maxlength="255"
+        autocomplete="given-name"
+      />
+    </mat-form-field>
+    @if (form.controls.firstName.touched && form.controls.firstName.hasError('lengthInvalid')) {
+      <mat-error>{{
+        'LOGIN.REGISTER_DIALOG.VALIDATION.FIRST_NAME.LENGTH_INVALID' | translate
+      }}</mat-error>
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.LAST_NAME' | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="lastName"
+        maxlength="255"
+        autocomplete="family-name"
+      />
+    </mat-form-field>
+    @if (form.controls.lastName.touched && form.controls.lastName.hasError('lengthInvalid')) {
+      <mat-error>{{
+        'LOGIN.REGISTER_DIALOG.VALIDATION.LAST_NAME.LENGTH_INVALID' | translate
+      }}</mat-error>
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.EMAIL' | translate }}</mat-label>
+      <input matInput type="text" formControlName="email" maxlength="255" autocomplete="email" />
+    </mat-form-field>
+    @if (form.controls.email.touched) {
+      @if (form.controls.email.hasError('required')) {
+        <mat-error>{{ 'LOGIN.REGISTER_DIALOG.VALIDATION.EMAIL.REQUIRED' | translate }}</mat-error>
+      }
+      @if (form.controls.email.hasError('email')) {
+        <mat-error>{{ 'LOGIN.REGISTER_DIALOG.VALIDATION.EMAIL.INVALID' | translate }}</mat-error>
+      }
+      @if (form.controls.email.hasError('emailExists')) {
+        <mat-error>{{ 'LOGIN.REGISTER_DIALOG.VALIDATION.EMAIL.EXISTS' | translate }}</mat-error>
+      }
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.PASSWORD' | translate }}</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        maxlength="255"
+        autocomplete="new-password"
+      />
+    </mat-form-field>
+    @if (form.controls.password.touched) {
+      @if (form.controls.password.hasError('required')) {
+        <mat-error>{{
+          'LOGIN.REGISTER_DIALOG.VALIDATION.PASSWORD.REQUIRED' | translate
+        }}</mat-error>
+      }
+      @if (form.controls.password.hasError('pattern')) {
+        <mat-error>{{ 'LOGIN.REGISTER_DIALOG.VALIDATION.PASSWORD.PATTERN' | translate }}</mat-error>
+      }
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'LOGIN.REGISTER_DIALOG.REPEAT_PASSWORD' | translate }}</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="repeatPassword"
+        maxlength="255"
+        autocomplete="new-password"
+      />
+    </mat-form-field>
+    @if (form.controls.repeatPassword.touched && form.hasError('passwordsNotEqual')) {
+      <mat-error>{{
+        'LOGIN.REGISTER_DIALOG.VALIDATION.REPEAT_PASSWORD.PASSWORDS_NOT_EQUAL' | translate
+      }}</mat-error>
+    }
+    <div class="controls">
+      <button mat-button [disabled]="form.invalid" [mat-dialog-close]="form.value">
+        {{ 'SHARED.REGISTER' | translate }}
+      </button>
+      <button mat-button [matDialogClose]="null">{{ 'SHARED.CANCEL' | translate }}</button>
+    </div>
+  </form>
+</div>

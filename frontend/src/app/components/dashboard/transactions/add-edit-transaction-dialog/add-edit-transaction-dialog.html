@@ -1,0 +1,74 @@
+<div class="dialog">
+  <header>
+    <h3>{{ `TRANSACTIONS.DIALOG.HEADER.${data.isNew ? 'ADD' : 'EDIT'}` | translate }}</h3>
+    <button class="close" mat-icon-button [matDialogClose]="null">✕</button>
+  </header>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.DATE' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="date"
+        [matDatepicker]="picker"
+        (dateInput)="onDateInput($event)"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    @if (
+      (form.controls.date.hasError('required') &&
+        form.controls.date.hasError('matDatepickerParse')) ||
+      form.controls.date.hasError('invalidFormat')
+    ) {
+      <mat-error>{{ 'TRANSACTIONS.DIALOG.VALIDATION.DATE.INVALID_FORMAT' | translate }}</mat-error>
+    } @else if (form.controls.date.touched && form.controls.date.hasError('required')) {
+      <mat-error>{{ 'TRANSACTIONS.DIALOG.VALIDATION.DATE.REQUIRED' | translate }}</mat-error>
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.DESCRIPTION' | translate }}</mat-label>
+      <input matInput type="text" formControlName="description" maxlength="255" />
+    </mat-form-field>
+    @if (form.controls.description.touched && form.controls.description.hasError('lengthInvalid')) {
+      <mat-error>{{
+        'TRANSACTIONS.DIALOG.VALIDATION.DESCRIPTION.LENGTH_INVALID' | translate
+      }}</mat-error>
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.CATEGORY' | translate }}</mat-label>
+      <mat-select
+        formControlName="category"
+        [class.income]="form.controls.category.value && isIncome()"
+      >
+        @for (category of data.categories; track category.id) {
+          <mat-option [value]="category">
+            {{ category.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if (form.controls.category.touched && form.controls.category.hasError('required')) {
+      <mat-error>{{ 'TRANSACTIONS.DIALOG.VALIDATION.CATEGORY.REQUIRED' | translate }}</mat-error>
+    }
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'SHARED.AMOUNT' | translate }}</mat-label>
+      <input matInput type="number" formControlName="amount" />
+    </mat-form-field>
+    @if (form.controls.amount.touched) {
+      @if (form.controls.amount.hasError('required')) {
+        <mat-error>{{ 'TRANSACTIONS.DIALOG.VALIDATION.AMOUNT.REQUIRED' | translate }}</mat-error>
+      }
+      @if (form.controls.amount.hasError('min')) {
+        <mat-error>{{ 'TRANSACTIONS.DIALOG.VALIDATION.AMOUNT.MIN' | translate }}</mat-error>
+      }
+      @if (form.controls.amount.hasError('max')) {
+        <mat-error>{{ 'TRANSACTIONS.DIALOG.VALIDATION.AMOUNT.MAX' | translate }}</mat-error>
+      }
+    }
+    <div class="controls">
+      <button mat-button [disabled]="form.invalid" [mat-dialog-close]="form.value">
+        {{ 'SHARED.SAVE' | translate }}
+      </button>
+      <button mat-button [matDialogClose]="null">{{ 'SHARED.CANCEL' | translate }}</button>
+    </div>
+  </form>
+</div>

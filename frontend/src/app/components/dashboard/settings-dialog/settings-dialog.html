@@ -1,0 +1,82 @@
+<div class="dialog">
+  <header>
+    <h3>{{ 'DASHBOARD.SETTINGS_DIALOG.HEADER' | translate }}</h3>
+    <button class="close" mat-icon-button [matDialogClose]="null">✕</button>
+  </header>
+  <nav>
+    <span [class.active]="tab() === 'personal'" (click)="changeTab('personal')">{{
+      'DASHBOARD.SETTINGS_DIALOG.PERSONAL' | translate
+    }}</span>
+    <span [class.active]="tab() === 'preferences'" (click)="changeTab('preferences')">{{
+      'DASHBOARD.SETTINGS_DIALOG.PREFERENCES' | translate
+    }}</span>
+  </nav>
+  <form [formGroup]="form">
+    @if (tab() === 'personal') {
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SHARED.FIRST_NAME' | translate }}</mat-label>
+          <input matInput type="text" formControlName="firstName" maxlength="255" />
+        </mat-form-field>
+        @if (form.controls.firstName.touched) {
+          @if (form.controls.firstName.hasError('lengthInvalid')) {
+            <mat-error>{{
+              'DASHBOARD.SETTINGS_DIALOG.VALIDATION.FIRST_NAME.LENGTH_INVALID' | translate
+            }}</mat-error>
+          }
+        }
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SHARED.LAST_NAME' | translate }}</mat-label>
+          <input matInput type="text" formControlName="lastName" maxlength="255" />
+        </mat-form-field>
+        @if (form.controls.lastName.touched) {
+          @if (form.controls.firstName.hasError('lengthInvalid')) {
+            <mat-error>{{
+              'DASHBOARD.SETTINGS_DIALOG.VALIDATION.LAST_NAME.LENGTH_INVALID' | translate
+            }}</mat-error>
+          }
+        }
+      </div>
+    }
+    @if (tab() === 'preferences') {
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'DASHBOARD.SETTINGS_DIALOG.LANGUAGE' | translate }}</mat-label>
+          <mat-select formControlName="language">
+            <mat-select-trigger>
+              @let selected = supportedLanguages.find(l => l.code === form.value.language);
+              <span class="fi fi-{{ selected?.flag }}"></span>
+              {{ selected?.label }}
+            </mat-select-trigger>
+
+            @for (language of supportedLanguages; track language.code) {
+              <mat-option [value]="language.code">
+                <span class="fi fi-{{ language.flag }}"></span>
+                {{ language.label }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            'DASHBOARD.SETTINGS_DIALOG.DEFAULT_RESULTS_PER_PAGE' | translate
+          }}</mat-label>
+          <mat-select formControlName="defaultResultsPerPage">
+            @for (option of data.resultsPerPageOptions; track $index) {
+              <mat-option [value]="option">
+                {{ option }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    }
+    <div class="controls">
+      <button mat-button [disabled]="form.invalid" [mat-dialog-close]="form.value">
+        {{ 'SHARED.SAVE' | translate }}
+      </button>
+      <button mat-button [matDialogClose]="null">{{ 'SHARED.CANCEL' | translate }}</button>
+    </div>
+  </form>
+</div>

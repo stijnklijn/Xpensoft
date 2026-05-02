@@ -1,0 +1,397 @@
+<div class="content">
+  <div class="placeholder"></div>
+  <div class="controls">
+    @if (sections()[activeSectionGroupIndex()]?.perMonth) {
+      <button (click)="changeMonth(month() - 1)">
+        <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
+      </button>
+      <span>
+        {{ monthLabels()[month()] }}
+      </span>
+      <button (click)="changeMonth(month() + 1)">
+        <fa-icon [icon]="icons.faArrowRight"></fa-icon>
+      </button>
+    }
+    <button (click)="changeYear(year() - 1)">
+      <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
+    </button>
+    <span>
+      {{ year() }}
+    </span>
+    <button (click)="changeYear(year() + 1)">
+      <fa-icon [icon]="icons.faArrowRight"></fa-icon>
+    </button>
+  </div>
+  <div class="sidenav">
+    @for (group of sections(); track $index; let groupIndex = $index) {
+      <div class="group">
+        <div
+          class="group-title"
+          [class.active]="activeSectionGroupIndex() === groupIndex"
+          (click)="goTo(group.children[0].id, groupIndex)"
+        >
+          {{ group.title }}
+        </div>
+        <div class="group-items" [class.open]="activeSectionGroupIndex() === groupIndex">
+          @for (child of group.children; track $index) {
+            <div
+              class="item"
+              [class.active]="activeSection() === child.id"
+              (click)="goTo(child.id, groupIndex)"
+            >
+              <fa-icon [icon]="child.icon"></fa-icon>
+              {{ child.label }}
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+  <div class="main">
+    @switch (activeSection()) {
+      @case ('totals-table') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.TOTALS' | translate }}</h1>
+          @if (totalsThisYear().income || totalsThisYear().expenses) {
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ 'ANALYSIS.MONTH' | translate }}</th>
+                  <th class="amount">{{ 'SHARED.INCOME' | translate }}</th>
+                  <th class="amount">{{ 'SHARED.EXPENSES' | translate }}</th>
+                  <th class="amount">{{ 'ANALYSIS.DIFFERENCE' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (month of totalsPerMonth(); track $index) {
+                  <tr>
+                    <td>{{ monthLabels()[$index] }}</td>
+                    <td class="amount">{{ month.income | number: '1.2-2' }}</td>
+                    <td class="amount">{{ month.expenses | number: '1.2-2' }}</td>
+                    <td
+                      [class]="
+                        month.diff > 0
+                          ? 'amount amount-positive'
+                          : month.diff < 0
+                            ? 'amount amount-negative'
+                            : 'amount'
+                      "
+                    >
+                      {{ month.diff | number: '1.2-2' }}
+                    </td>
+                  </tr>
+                }
+                <tr>
+                  <td>
+                    <b>{{ 'ANALYSIS.TOTAL' | translate }}</b>
+                  </td>
+                  <td class="amount">
+                    <b>{{ totalsThisYear().income | number: '1.2-2' }}</b>
+                  </td>
+                  <td class="amount">
+                    <b>{{ totalsThisYear().expenses | number: '1.2-2' }}</b>
+                  </td>
+                  <td
+                    [class]="
+                      totalsThisYear().diff > 0
+                        ? 'amount amount-positive'
+                        : totalsThisYear().diff < 0
+                          ? 'amount amount-negative'
+                          : 'amount'
+                    "
+                  >
+                    <b>{{ totalsThisYear().diff | number: '1.2-2' }}</b>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('totals-bar') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.TOTALS' | translate }}</h1>
+          @if (totalsThisYear().income || totalsThisYear().expenses) {
+            <app-bar-chart
+              [labels]="monthLabels()"
+              [datasets]="[
+                {
+                  data: incomePerMonth(),
+                  label: 'SHARED.INCOME' | translate,
+                  backgroundColor: incomeColor,
+                },
+                {
+                  data: expensesPerMonth(),
+                  label: 'SHARED.EXPENSES' | translate,
+                  backgroundColor: expensesColor,
+                },
+              ]"
+              ,
+              [displayLegend]="true"
+            ></app-bar-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('totals-per-category-table') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY' | translate }}</h1>
+          @if (totalsThisYear().income || totalsThisYear().expenses) {
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ 'SHARED.INCOME' | translate }}</th>
+                  <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (category of totalsPerCategory(); track $index) {
+                  @if (category.isIncome) {
+                    <tr>
+                      <td>{{ category.name }}</td>
+                      <td class="amount amount-positive">
+                        {{ category.amount | number: '1.2-2' }}
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+            <br />
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ 'SHARED.EXPENSES' | translate }}</th>
+                  <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (category of totalsPerCategory(); track $index) {
+                  @if (!category.isIncome) {
+                    <tr>
+                      <td>{{ category.name }}</td>
+                      <td class="amount amount-negative">
+                        {{ category.amount | number: '1.2-2' }}
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('income-distribution-per-category-bar') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY' | translate }}</h1>
+          @if (totalsThisYear().income) {
+            <app-bar-chart
+              [labels]="incomeCategoryLabels()"
+              [datasets]="[
+                {
+                  data: incomePerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-bar-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('income-distribution-per-category-doughnut') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY' | translate }}</h1>
+          @if (totalsThisYear().income) {
+            <app-doughnut-chart
+              [labels]="incomeCategoryLabels()"
+              [datasets]="[
+                {
+                  data: incomePerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-doughnut-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('expenses-distribution-per-category-bar') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY' | translate }}</h1>
+          @if (totalsThisYear().expenses) {
+            <app-bar-chart
+              [labels]="expensesCategoryLabels()"
+              [datasets]="[
+                {
+                  data: expensesPerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-bar-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('expenses-distribution-per-category-doughnut') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY' | translate }}</h1>
+          @if (totalsThisYear().expenses) {
+            <app-doughnut-chart
+              [labels]="expensesCategoryLabels()"
+              [datasets]="[
+                {
+                  data: expensesPerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-doughnut-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('totals-per-category-per-month-table') {
+        <section>
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH' | translate }}</h1>
+          @if (totalsPerMonth()[month()].income || totalsPerMonth()[month()].expenses) {
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ 'SHARED.INCOME' | translate }}</th>
+                  <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (category of totalsPerMonthPerCategory(); track $index) {
+                  @if (category.isIncome) {
+                    <tr>
+                      <td>{{ category.name }}</td>
+                      <td class="amount amount-positive">
+                        {{ category.amount | number: '1.2-2' }}
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+            <br />
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ 'SHARED.INCOME' | translate }}</th>
+                  <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (category of totalsPerMonthPerCategory(); track $index) {
+                  @if (!category.isIncome) {
+                    <tr>
+                      <td>{{ category.name }}</td>
+                      <td class="amount amount-negative">
+                        {{ category.amount | number: '1.2-2' }}
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('income-distribution-per-category-per-month-bar') {
+        <section>
+          <h1>
+            {{ 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH' | translate }}
+          </h1>
+          @if (totalsPerMonth()[month()].income) {
+            <app-bar-chart
+              [labels]="incomePerMonthCategoryLabels()"
+              [datasets]="[
+                {
+                  data: incomePerMonthPerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-bar-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('income-distribution-per-category-per-month-doughnut') {
+        <section>
+          <h1>
+            {{ 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH' | translate }}
+          </h1>
+          @if (totalsPerMonth()[month()].income) {
+            <app-doughnut-chart
+              [labels]="incomePerMonthCategoryLabels()"
+              [datasets]="[
+                {
+                  data: incomePerMonthPerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-doughnut-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('expenses-distribution-per-category-per-month-bar') {
+        <section>
+          <h1>
+            {{
+              'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH' | translate
+            }}
+          </h1>
+          @if (totalsPerMonth()[month()].expenses) {
+            <app-bar-chart
+              [labels]="expensesPerMonthCategoryLabels()"
+              [datasets]="[
+                {
+                  data: expensesPerMonthPerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-bar-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+      @case ('expenses-distribution-per-category-per-month-doughnut') {
+        <section>
+          <h1>
+            {{
+              'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH' | translate
+            }}
+          </h1>
+          @if (totalsPerMonth()[month()].expenses) {
+            <app-doughnut-chart
+              [labels]="expensesPerMonthCategoryLabels()"
+              [datasets]="[
+                {
+                  data: expensesPerMonthPerCategory(),
+                  backgroundColor: colorScheme,
+                },
+              ]"
+            ></app-doughnut-chart>
+          } @else {
+            <h3>{{ 'ANALYSIS.NO_DATA' | translate }}</h3>
+          }
+        </section>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,120 @@
+.placeholder {
+  position: fixed;
+  height: var(--navbar-height);
+  width: var(--sidenav-width);
+  border-right: 1px solid var(--color-disabled);
+  border-bottom: 1px solid var(--color-disabled);
+  background-color: var(--color-light-background);
+}
+
+.controls {
+  position: fixed;
+  left: var(--sidenav-width);
+  height: var(--navbar-height);
+  width: calc(100% - var(--sidenav-width));
+  background-color: var(--color-light-background);
+  font-size: 1.5rem;
+  z-index: 1;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--color-disabled);
+}
+
+.sidenav {
+  position: fixed;
+  top: calc(2 * var(--navbar-height));
+  height: 100vh;
+  width: var(--sidenav-width);
+  background-color: var(--color-light-background);
+  border-right: 1px solid var(--color-disabled);
+}
+
+.main {
+  text-align: center;
+  position: absolute;
+  top: var(--navbar-height);
+  left: var(--sidenav-width);
+  right: 0;
+}
+
+button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: var(--color-light);
+}
+
+.group {
+  overflow: hidden;
+}
+
+.group-title {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.group-title.active {
+  text-decoration: underline;
+}
+
+.group-items {
+  max-height: 0;
+}
+
+.group-items.open {
+  max-height: 500px;
+}
+
+.item {
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+}
+
+.item.active {
+  color: white;
+  background-color: var(--color-primary);
+}
+
+section {
+  padding-bottom: 1rem;
+  width: 75%;
+  margin: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-disabled);
+}
+
+thead {
+  color: white;
+  background-color: var(--color-primary);
+}
+
+th,
+td {
+  text-align: left;
+  border-top: 1px solid var(--color-disabled);
+  padding: 1rem;
+}
+
+.amount {
+  text-align: right;
+}
+
+.amount-positive {
+  background-color: var(--color-positive);
+}
+
+.amount-negative {
+  background-color: var(--color-negative);
+}

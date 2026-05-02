@@ -1,0 +1,111 @@
+:root {
+  --navbar-height: 4rem;
+  --sidenav-width: 300px;
+
+  --color-primary: #1907a5;
+  --color-dark: #09023d;
+  --color-light: #427ed3;
+  --color-light-background: #f5f5f5;
+  --color-disabled: #808080;
+  --color-positive: #a7eca7;
+  --color-negative: #f75555;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.message {
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.dialog {
+  width: 25vw;
+}
+
+.dialog header {
+  background-color: var(--color-primary);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+.dialog header h3 {
+  margin: 0;
+}
+
+.dialog .close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: white;
+  border: none;
+}
+
+.dialog form {
+  padding: 1rem;
+}
+
+.dialog mat-form-field {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.dialog mat-error {
+  padding-left: 1rem;
+}
+
+.dialog .income {
+  background-color: var(--color-positive);
+}
+
+.dialog .controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.dialog .controls button {
+  background-color: var(--color-primary);
+  color: white;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+}
+
+.dialog .controls button:disabled {
+  background-color: var(--color-disabled);
+}
+
+.dialog .controls button:hover {
+  cursor: pointer;
+  background-color: var(--color-light);
+}
+
+.toast-success .mat-mdc-snackbar-surface,
+.toast-success .mdc-button__label {
+  background-color: var(--color-positive) !important;
+  color: black !important;
+}
+
+.toast-error .mat-mdc-snackbar-surface,
+.toast-error .mdc-button__label {
+  background-color: var(--color-negative) !important;
+  color: black !important;
+}
+
+.toast-info .mat-mdc-snackbar-surface,
+.toast-info .mdc-button__label {
+  background-color: var(--color-light) !important;
+  color: white !important;
+}

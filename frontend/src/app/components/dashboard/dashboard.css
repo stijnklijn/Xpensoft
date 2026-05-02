@@ -1,0 +1,55 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  height: var(--navbar-height);
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--color-primary);
+  padding: 1rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.brand {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a.active {
+  border-bottom: 2px solid white;
+}
+
+.controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+}
+
+.controls button {
+  background-color: white;
+  font-weight: bold;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+}
+
+.controls button:hover {
+  cursor: pointer;
+  background-color: var(--color-light);
+}
+
+.content {
+  position: relative;
+  top: var(--navbar-height);
+}

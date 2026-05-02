@@ -1,0 +1,177 @@
+{
+  "LOGIN": {
+    "LOGIN": "Inloggen",
+    "NEW_USER": "Nieuwe gebruiker?",
+    "REGISTER_DIALOG": {
+      "REPEAT_PASSWORD": "Herhaal wachtwoord",
+      "VALIDATION": {
+        "FIRST_NAME": { "LENGTH_INVALID": "Voornaam moet tenminste 2 karakters bevatten" },
+        "LAST_NAME": { "LENGTH_INVALID": "Achternaam moet tenminste 2 karakters bevatten" },
+        "EMAIL": {
+          "REQUIRED": "Email is verplicht",
+          "INVALID": "Voer een geldige email in",
+          "EXISTS": "Er bestaat al een gebruiker met deze email"
+        },
+        "PASSWORD": {
+          "REQUIRED": "Wachtwoord is verplicht",
+          "PATTERN": "Wachtwoord bevat tenminste 8 karakters, één hoofdletter, één kleine letter, één cijfer en één speciaal teken uit de volgende set: @#$%^&+=!"
+        },
+        "REPEAT_PASSWORD": {
+          "PASSWORDS_NOT_EQUAL": "Wachtwoorden komen niet overeen"
+        }
+      }
+    },
+    "REGISTRATION_SUCCESSFUL_DIALOG": {
+      "HEADER": "Registratie succesvol",
+      "MESSAGE": "U kunt nu inloggen met "
+    },
+    "BULLET_POINTS": {
+      "ONE": {
+        "HEADER": "Eenvoud",
+        "TEXT": "Maak rubrieken aan en voeg eenvoudig nieuwe transacties toe onder de juiste rubriek"
+      },
+      "TWO": {
+        "HEADER": "Overzicht",
+        "TEXT": "Op elk moment een actueel overzicht van uw inkomsten en uitgaven"
+      },
+      "THREE": {
+        "HEADER": "Analyse",
+        "TEXT": "Bekijk gedetailleerde analyses van uw transacties"
+      }
+    }
+  },
+  "DASHBOARD": {
+    "TRANSACTIONS": "Transacties",
+    "CATEGORIES": "Rubrieken",
+    "ANALYSIS": "Analyse",
+    "LOGOUT": "Uitloggen",
+    "SETTINGS_SAVED": "Instellingen opgeslagen",
+    "SETTINGS_DIALOG": {
+      "HEADER": "Instellingen",
+      "PERSONAL": "Persoonlijk",
+      "PREFERENCES": "Voorkeuren",
+      "LANGUAGE": "Taal",
+      "DEFAULT_RESULTS_PER_PAGE": "Standaard aantal resultaten per pagina",
+      "VALIDATION": {
+        "FIRST_NAME": { "LENGTH_INVALID": "Voornaam moet tenminste 2 karakters bevatten" },
+        "LAST_NAME": { "LENGTH_INVALID": "Achternaam moet tenminste 2 karakters bevatten" }
+      }
+    }
+  },
+  "TRANSACTIONS": {
+    "NO_CATEGORIES": "Voeg eerst een rubriek toe en kom dan terug naar deze pagina om transacties toe te voegen",
+    "PAGE": "Pagina",
+    "OF": "van",
+    "TRANSACTIONS": "transacties",
+    "NO_TRANSACTIONS_FOUND": "Geen transacties gevonden",
+    "SORT_OPTIONS": {
+      "DATE_ASC": "Datum (oud - nieuw)",
+      "DATE_DESC": "Datum (nieuw - oud)",
+      "DESCRIPTION_ASC": "Omschrijving (A - Z)",
+      "DESCRIPTION_DESC": "Omschrijving (Z - A)",
+      "AMOUNT_ASC": "Bedrag (laag - hoog)",
+      "AMOUNT_DESC": "Bedrag (hoog - laag)"
+    },
+    "SEARCH_BY_DESCRIPTION": "Zoek op omschrijving",
+    "FILTER": "Filter",
+    "FILTER_APPLIED": "is toegepast. Klik op het kruisje rechts van de zoekbalk om filter te verwijderen.",
+    "TRANSACTION_SAVED": "Transactie opgeslagen",
+    "TRANSACTION_DELETED": "Transactie verwijderd",
+    "DIALOG": {
+      "HEADER": { "ADD": "Transactie toevoegen", "EDIT": "Transactie bewerken" },
+      "VALIDATION": {
+        "DATE": {
+          "INVALID_FORMAT": "Datum heeft formaat dd-mm-jjjj",
+          "REQUIRED": "Datum is verplicht"
+        },
+        "DESCRIPTION": { "LENGTH_INVALID": "Omschrijving moet tenminste 2 karakters bevatten" },
+        "CATEGORY": { "REQUIRED": "Rubriek is verplicht" },
+        "AMOUNT": {
+          "REQUIRED": "Bedrag is verplicht",
+          "MIN": "Bedrag is minimaal 0,01",
+          "MAX": "Bedrag is maximaal 999.999,99"
+        }
+      }
+    }
+  },
+  "CATEGORIES": {
+    "NO_CATEGORIES": "Klik op de knop hierboven om een rubriek toe te voegen",
+    "CATEGORY_SAVED": "Rubriek opgeslagen",
+    "CATEGORY_DELETED": "Rubriek verwijderd",
+    "DIALOG": {
+      "HEADER": { "ADD": "Rubriek toevoegen", "EDIT": "Rubriek bewerken" },
+      "VALIDATION": {
+        "NAME": {
+          "LENGTH_INVALID": "Naam moet tenminste 2 karakters bevatten",
+          "NAME_NOT_UNIQUE": "Er bestaat al een rubriek met deze naam"
+        },
+        "TYPE": {
+          "REQUIRED": "Soort is verplicht"
+        }
+      }
+    }
+  },
+  "ANALYSIS": {
+    "MONTH": "Maand",
+    "DIFFERENCE": "Verschil",
+    "TOTAL": "Totaal",
+    "TABLE": "Tabel",
+    "BAR": "Staaf",
+    "DOUGHNUT": "Donut",
+    "NO_DATA": "Geen gegevens in deze periode",
+    "SECTION_HEADERS": {
+      "TOTALS": "Totalen",
+      "TOTALS_PER_CATEGORY": "Totalen per rubriek",
+      "INCOME_DISTRIBUTION_PER_CATEGORY": "Inkomstenverdeling per rubriek",
+      "EXPENSES_DISTRIBUTION_PER_CATEGORY": "Uitgavenverdeling per rubriek",
+      "TOTALS_PER_CATEGORY_PER_MONTH": "Totalen per rubriek per maand",
+      "INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH": "Inkomstenverdeling per rubriek per maand",
+      "EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH": "Uitgavenverdeling per rubriek per maand"
+    },
+    "MONTHS": {
+      "JANUARY": "Januari",
+      "FEBRUARY": "Februari",
+      "MARCH": "Maart",
+      "APRIL": "April",
+      "MAY": "Mei",
+      "JUNE": "Juni",
+      "JULY": "Juli",
+      "AUGUST": "Augustus",
+      "SEPTEMBER": "September",
+      "OCTOBER": "Oktober",
+      "NOVEMBER": "November",
+      "DECEMBER": "December"
+    }
+  },
+  "ERRORS": {
+    "CATEGORY__HOLDS_TRANSACTIONS": "Rubriek kan niet verwijderd worden omdat deze nog transacties bevat.",
+    "CATEGORY__NAME_ALREADY_EXISTS": "Er bestaat al een rubriek met deze naam.",
+    "CATEGORY__NOT_FOUND": "Rubriek niet gevonden.",
+    "INTERNAL_SERVER_ERROR": "Er is een onbekende fout opgetreden.",
+    "JWT_EXPIRED": "Sessie is verlopen. U moet opnieuw inloggen.",
+    "LOGIN__INVALID_CREDENTIALS": "Ongeldige combinatie van email en wachtwoord.",
+    "TRANSACTION__CATEGORY_NOT_FOUND": "Rubriek niet gevonden.",
+    "TRANSACTION__NOT_FOUND": "Transactie niet gevonden.",
+    "USER__EMAIL_ALREADY_EXISTS": "Er bestaat al een gebruiker met deze email.",
+    "USER__NOT_FOUND": "Gebruiker niet gevonden."
+  },
+  "SHARED": {
+    "ACTIONS": "Acties",
+    "AMOUNT": "Bedrag",
+    "CANCEL": "Annuleren",
+    "CATEGORY": "Rubriek",
+    "CLOSE": "Sluiten",
+    "DATE": "Datum",
+    "DESCRIPTION": "Omschrijving",
+    "EMAIL": "Email",
+    "EXPENSES": "Uitgaven",
+    "FIRST_NAME": "Voornaam",
+    "INCOME": "Inkomsten",
+    "LAST_NAME": "Achternaam",
+    "NAME": "Naam",
+    "PASSWORD": "Wachtwoord",
+    "REGISTER": "Registreren",
+    "SAVE": "Opslaan",
+    "TYPE": "Soort"
+  }
+}

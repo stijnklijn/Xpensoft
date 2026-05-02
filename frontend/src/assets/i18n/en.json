@@ -1,0 +1,177 @@
+{
+  "LOGIN": {
+    "LOGIN": "Login",
+    "NEW_USER": "New user?",
+    "REGISTER_DIALOG": {
+      "REPEAT_PASSWORD": "Repeat password",
+      "VALIDATION": {
+        "FIRST_NAME": { "LENGTH_INVALID": "First name must contain at least 2 characters" },
+        "LAST_NAME": { "LENGTH_INVALID": "Last name must contain at least 2 characters" },
+        "EMAIL": {
+          "REQUIRED": "Email is required",
+          "INVALID": "Please enter a valid email",
+          "EXISTS": "A user with this email already exists"
+        },
+        "PASSWORD": {
+          "REQUIRED": "Password is required",
+          "PATTERN": "Password requires at least 8 characters, one uppercase character, one lowercase character, one digit, and one special character out of the following set: @#$%^&+=!"
+        },
+        "REPEAT_PASSWORD": {
+          "PASSWORDS_NOT_EQUAL": "Passwords do not match"
+        }
+      }
+    },
+    "REGISTRATION_SUCCESSFUL_DIALOG": {
+      "HEADER": "Registration successful",
+      "MESSAGE": "You can now login with "
+    },
+    "BULLET_POINTS": {
+      "ONE": {
+        "HEADER": "Simplicity",
+        "TEXT": "Create categories and easily add new transactions under the appropriate category"
+      },
+      "TWO": {
+        "HEADER": "Overview",
+        "TEXT": "Up-to-date overview of your income and expenses at any time"
+      },
+      "THREE": {
+        "HEADER": "Analysis",
+        "TEXT": "View detailed analyses of your transactions"
+      }
+    }
+  },
+  "DASHBOARD": {
+    "TRANSACTIONS": "Transactions",
+    "CATEGORIES": "Categories",
+    "ANALYSIS": "Analysis",
+    "LOGOUT": "Logout",
+    "SETTINGS_SAVED": "Settings saved",
+    "SETTINGS_DIALOG": {
+      "HEADER": "Settings",
+      "PERSONAL": "Personal",
+      "PREFERENCES": "Preferences",
+      "LANGUAGE": "Language",
+      "DEFAULT_RESULTS_PER_PAGE": "Default number of results per page",
+      "VALIDATION": {
+        "FIRST_NAME": { "LENGTH_INVALID": "First name must contain at least 2 characters" },
+        "LAST_NAME": { "LENGTH_INVALID": "Last name must contain at least 2 characters" }
+      }
+    }
+  },
+  "TRANSACTIONS": {
+    "NO_CATEGORIES": "Add a category first and then come back to this page to add transactions",
+    "PAGE": "Page",
+    "OF": "of",
+    "TRANSACTIONS": "transactions",
+    "NO_TRANSACTIONS_FOUND": "No transactions found",
+    "SORT_OPTIONS": {
+      "DATE_ASC": "Date (old - new)",
+      "DATE_DESC": "Date (new - old)",
+      "DESCRIPTION_ASC": "Description (A - Z)",
+      "DESCRIPTION_DESC": "Description (Z - A)",
+      "AMOUNT_ASC": "Amount (low - high)",
+      "AMOUNT_DESC": "Amount (high - low)"
+    },
+    "SEARCH_BY_DESCRIPTION": "Search by description",
+    "FILTER": "Filter",
+    "FILTER_APPLIED": "is applied. Click the cross on the right side of the search bar to remove the filter.",
+    "TRANSACTION_SAVED": "Transaction saved",
+    "TRANSACTION_DELETED": "Transaction deleted",
+    "DIALOG": {
+      "HEADER": { "ADD": "Add transaction", "EDIT": "Edit transaction" },
+      "VALIDATION": {
+        "DATE": {
+          "INVALID_FORMAT": "Date must be in format dd-mm-yyyy",
+          "REQUIRED": "Date is required"
+        },
+        "DESCRIPTION": { "LENGTH_INVALID": "Description must contain at least 2 characters" },
+        "CATEGORY": { "REQUIRED": "Category is required" },
+        "AMOUNT": {
+          "REQUIRED": "Amount is required",
+          "MIN": "Amount must be at least 0.01",
+          "MAX": "Amount must be at most 999,999.99"
+        }
+      }
+    }
+  },
+  "CATEGORIES": {
+    "NO_CATEGORIES": "Click on the button above to add a category",
+    "CATEGORY_SAVED": "Category saved",
+    "CATEGORY_DELETED": "Category deleted",
+    "DIALOG": {
+      "HEADER": { "ADD": "Add category", "EDIT": "Edit category" },
+      "VALIDATION": {
+        "NAME": {
+          "LENGTH_INVALID": "Name must contain at least 2 characters",
+          "NAME_NOT_UNIQUE": "A category with this name already exists"
+        },
+        "TYPE": {
+          "REQUIRED": "Type is required"
+        }
+      }
+    }
+  },
+  "ANALYSIS": {
+    "MONTH": "Month",
+    "DIFFERENCE": "Difference",
+    "TOTAL": "Total",
+    "TABLE": "Table",
+    "BAR": "Bar",
+    "DOUGHNUT": "Doughnut",
+    "NO_DATA": "No data in this period",
+    "SECTION_HEADERS": {
+      "TOTALS": "Totals",
+      "TOTALS_PER_CATEGORY": "Totals per category",
+      "INCOME_DISTRIBUTION_PER_CATEGORY": "Income distribution per category",
+      "EXPENSES_DISTRIBUTION_PER_CATEGORY": "Expenses distribution per category",
+      "TOTALS_PER_CATEGORY_PER_MONTH": "Totals per category per month",
+      "INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH": "Income distribution per category per month",
+      "EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH": "Expenses distribution per category per month"
+    },
+    "MONTHS": {
+      "JANUARY": "January",
+      "FEBRUARY": "February",
+      "MARCH": "March",
+      "APRIL": "April",
+      "MAY": "May",
+      "JUNE": "June",
+      "JULY": "July",
+      "AUGUST": "August",
+      "SEPTEMBER": "September",
+      "OCTOBER": "October",
+      "NOVEMBER": "November",
+      "DECEMBER": "December"
+    }
+  },
+  "ERRORS": {
+    "CATEGORY__HOLDS_TRANSACTIONS": "Cannot delete category because it still holds transactions.",
+    "CATEGORY__NAME_ALREADY_EXISTS": "A category with this name already exists.",
+    "CATEGORY__NOT_FOUND": "Category not found.",
+    "INTERNAL_SERVER_ERROR": "An unknown error occurred.",
+    "JWT_EXPIRED": "Session has expired. Please login again.",
+    "LOGIN__INVALID_CREDENTIALS": "Invalid combination of email and password.",
+    "TRANSACTION__CATEGORY_NOT_FOUND": "Category not found.",
+    "TRANSACTION__NOT_FOUND": "Transaction not found.",
+    "USER__EMAIL_ALREADY_EXISTS": "A user with this email already exists.",
+    "USER__NOT_FOUND": "User not found."
+  },
+  "SHARED": {
+    "ACTIONS": "Actions",
+    "AMOUNT": "Amount",
+    "CANCEL": "Cancel",
+    "CATEGORY": "Category",
+    "CLOSE": "Close",
+    "DATE": "Date",
+    "DESCRIPTION": "Description",
+    "EMAIL": "Email",
+    "EXPENSES": "Expenses",
+    "FIRST_NAME": "First name",
+    "INCOME": "Income",
+    "LAST_NAME": "Last name",
+    "NAME": "Name",
+    "PASSWORD": "Password",
+    "REGISTER": "Register",
+    "SAVE": "Save",
+    "TYPE": "Type"
+  }
+}

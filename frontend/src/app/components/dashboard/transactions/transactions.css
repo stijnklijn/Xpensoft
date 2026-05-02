@@ -1,0 +1,93 @@
+.message {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.content {
+  padding: 2rem;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-disabled);
+  gap: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: var(--color-light);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-disabled);
+}
+
+.controls-item {
+  padding: 5px;
+}
+
+.controls-item.search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+select,
+input {
+  font-size: 1rem;
+  margin-left: 5px;
+  padding: 2px;
+}
+
+input {
+  flex: 1;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-disabled);
+}
+
+thead {
+  color: white;
+  background-color: var(--color-primary);
+}
+
+th,
+td {
+  text-align: left;
+  border-top: 1px solid var(--color-disabled);
+  padding: 1rem;
+}
+
+.amount {
+  text-align: right;
+}
+
+.amount-positive {
+  background-color: var(--color-positive);
+}
+
+.actions {
+  text-align: center;
+}
+
+.actions fa-icon:hover {
+  cursor: pointer;
+  color: var(--color-light);
+}

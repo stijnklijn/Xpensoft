@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Xpensoft.Api/Xpensoft.Api.csproj" />
+  <Project Path="Xpensoft.IntegrationTests/Xpensoft.IntegrationTests.csproj" Id="4327a5db-a961-422a-9407-0c57ff86a203" />
+  <Project Path="Xpensoft.Migration/Xpensoft.Migration.csproj" Id="92fae13c-9b3b-49dc-9905-5fd0f1faa29b" />
+  <Project Path="Xpensoft.Tests/Xpensoft.Tests.csproj" Id="bcc781cd-b51c-45b2-a505-8f5d5517aadd" />
+</Solution>

@@ -1,0 +1,20 @@
+<nav class="navbar">
+  <span class="brand">XPENSOFT</span>
+  <a routerLink="/dashboard/transactions" routerLinkActive="active">{{
+    'DASHBOARD.TRANSACTIONS' | translate
+  }}</a>
+  <a routerLink="/dashboard/categories" routerLinkActive="active">{{
+    'DASHBOARD.CATEGORIES' | translate
+  }}</a>
+  <a routerLink="/dashboard/analysis" routerLinkActive="active">{{
+    'DASHBOARD.ANALYSIS' | translate
+  }}</a>
+  <div class="controls">
+    <span>{{ user()?.firstName }} {{ user()?.lastName }}</span>
+    <button (click)="settings()"><fa-icon [icon]="icons.faGear"></fa-icon></button>
+    <button (click)="logout()">{{ 'DASHBOARD.LOGOUT' | translate }}</button>
+  </div>
+</nav>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

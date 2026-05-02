@@ -1,0 +1,32 @@
+<div class="content">
+  <div class="controls">
+    <button (click)="addCategory()"><fa-icon [icon]="icons.faPlus"></fa-icon></button>
+  </div>
+  @if (categories().length) {
+    <table>
+      <thead>
+        <tr>
+          <th>{{ 'SHARED.NAME' | translate }}</th>
+          <th class="actions">{{ 'SHARED.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (category of sortedCategories(); track category.id) {
+          <tr>
+            <td [class.income]="category.isIncome">
+              {{ category.name }}
+            </td>
+            <td class="actions">
+              <fa-icon [icon]="icons.faEdit" (click)="editCategory(category)"></fa-icon
+              ><fa-icon [icon]="icons.faTrash" (click)="deleteCategory(category.id!)"></fa-icon>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <div class="message">
+      <em>{{ 'CATEGORIES.NO_CATEGORIES' | translate }}</em>
+    </div>
+  }
+</div>
