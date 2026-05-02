@@ -19,7 +19,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.x"
+          dotnet-version: "10.x"
 
       # RESTORE + BUILD
       - name: Restore
@@ -29,11 +29,8 @@ jobs:
         run: dotnet build backend/Xpensoft.Api.slnx -c Release --no-restore
 
       # TESTS
-      - name: Run Unit Tests
-        run: dotnet test backend/Xpensoft.Tests/Xpensoft.Tests.csproj --no-build
-
-      - name: Run Integration Tests
-        run: dotnet test backend/Xpensoft.IntegrationTests/Xpensoft.IntegrationTests.csproj --no-build
+      - name: Run Tests
+        run: dotnet test backend/Xpensoft.Api.slnx
 
       # PUBLISH API PROJECT
       - name: Publish API Project
