@@ -20,7 +20,6 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ClientUrl: "http://localhost:4200"
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=xpensoft;User=sa;Password=Docker1433-;TrustServerCertificate=True;"
       Jwt__Issuer: "Xpensoft"
       Jwt__Key: "4a2c7f29-f10b-4087-bad3-649e4cec8055"

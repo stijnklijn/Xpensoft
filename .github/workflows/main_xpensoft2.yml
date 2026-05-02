@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - xpensoft2
 
 on:
@@ -18,36 +15,70 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      # .NET SETUP
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: "10.x"
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      # RESTORE + BUILD
+      - name: Restore
+        run: dotnet restore backend/Xpensoft.sln
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Build
+        run: dotnet build backend/Xpensoft.sln -c Release --no-restore
 
-      - name: Upload artifact for deployment job
+      # TESTS
+      - name: Run Unit Tests
+        run: dotnet test backend/Xpensoft.Tests/Xpensoft.Tests.csproj --no-build
+
+      - name: Run Integration Tests
+        run: dotnet test backend/Xpensoft.IntegrationTests/Xpensoft.IntegrationTests.csproj --no-build
+
+      # PUBLISH API PROJECT
+      - name: Publish API Project
+        run: dotnet publish backend/Xpensoft.Api/Xpensoft.Api.csproj -c Release -o publish
+
+      # NODE SETUP
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      # BUILD ANGULAR
+      - name: Build Angular
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      # COPY ANGULAR → API
+      - name: Copy Angular to wwwroot
+        run: |
+          mkdir -p publish/wwwroot
+          cp -r frontend/dist/frontend/browser/* publish/wwwroot
+
+      # ARTIFACT
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: app
+          path: publish
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-      
+          name: app
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -56,10 +87,8 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2BAF3209B6234AFC93AD1CFC8AAB8325 }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'xpensoft2'
-          slot-name: 'Production'
+          app-name: "xpensoft2"
+          slot-name: "Production"
           package: .
-          

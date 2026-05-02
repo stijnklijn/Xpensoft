@@ -69,17 +69,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // CORS
-builder.Services.AddCors(options =>
+if (builder.Environment.IsDevelopment())
 {
-    options.AddPolicy("Client", policy =>
+    builder.Services.AddCors(options =>
     {
-        policy
-            .WithOrigins(builder.Configuration["ClientUrl"]!)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+        options.AddPolicy("Client", policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
     });
-});
+}
 
 var app = builder.Build();
 
@@ -93,10 +95,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UsePathBase("/api");
 app.UseRouting();
-app.UseCors("Client");
+
+if (app.Environment.IsDevelopment()) {
+    app.UseCors("Client");
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
