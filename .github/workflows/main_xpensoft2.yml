@@ -30,10 +30,10 @@ jobs:
 
       # TESTS
       - name: Run Unit Tests
-        run: dotnet test backend/Xpensoft.Tests/Xpensoft.Tests.csproj --no-build
+        run: dotnet test backend/Xpensoft.Tests --no-build
 
       - name: Run Integration Tests
-        run: dotnet test backend/Xpensoft.IntegrationTests/Xpensoft.IntegrationTests.csproj --no-build
+        run: dotnet test backend/Xpensoft.IntegrationTests --no-build
 
       # PUBLISH API PROJECT
       - name: Publish API Project
