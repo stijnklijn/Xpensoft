@@ -33,6 +33,12 @@ jobs:
         run: dotnet test backend/Xpensoft.Api.slnx
 
       # EF MIGRATIONS
+      - name: Install EF Tool
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Add tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Run EF Migrations
         run: dotnet ef database update --project backend/Xpensoft.Api/Xpensoft.Api.csproj
         env:
