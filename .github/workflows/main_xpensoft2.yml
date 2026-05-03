@@ -32,6 +32,12 @@ jobs:
       - name: Run Tests
         run: dotnet test backend/Xpensoft.Api.slnx
 
+      # EF MIGRATIONS
+      - name: Run EF Migrations
+        run: dotnet ef database update --project backend/Xpensoft.Api/Xpensoft.Api.csproj
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.SQL_CONNECTION_STRING }}
+
       # PUBLISH API PROJECT
       - name: Publish API Project
         run: dotnet publish backend/Xpensoft.Api/Xpensoft.Api.csproj -c Release -o publish
