@@ -44,6 +44,7 @@
     "TRANSACTIONS": "Transacties",
     "CATEGORIES": "Rubrieken",
     "ANALYSIS": "Analyse",
+    "LAST_LOGIN_ON": "laatst ingelogd op",
     "LOGOUT": "Uitloggen",
     "SETTINGS_SAVED": "Instellingen opgeslagen",
     "SETTINGS_DIALOG": {
@@ -150,6 +151,7 @@
     "INTERNAL_SERVER_ERROR": "Er is een onbekende fout opgetreden.",
     "JWT_EXPIRED": "Sessie is verlopen. U moet opnieuw inloggen.",
     "LOGIN__INVALID_CREDENTIALS": "Ongeldige combinatie van email en wachtwoord.",
+    "LOGIN__USER_IS_LOCKED": "Dit account is vergrendeld.",
     "TRANSACTION__CATEGORY_NOT_FOUND": "Rubriek niet gevonden.",
     "TRANSACTION__NOT_FOUND": "Transactie niet gevonden.",
     "USER__EMAIL_ALREADY_EXISTS": "Er bestaat al een gebruiker met deze email.",

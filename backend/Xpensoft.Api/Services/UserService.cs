@@ -43,12 +43,26 @@ public class UserService(XpensoftDbContext database, IMapper mapper, IPasswordHa
 
     public async Task<UserResponseDto> ReadById(Guid userId)
     {
-        User? entity = await _database.Users.AsNoTracking().FirstOrDefaultAsync(e => e.Id == userId);
+        User? entity = await _database.Users
+            .Include(u => u.AuthEvents)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == userId);
+
         if (entity == null)
         {
             throw new CustomResourceNotFoundException("USER__NOT_FOUND");
         }
-        return _mapper.Map<UserResponseDto>(entity);
+
+        AuthEvent? lastLogin = entity.AuthEvents
+            .Where(a => a.IsSuccessful)
+            .OrderByDescending(a => a.CreatedAt)
+            .Skip(1)
+            .FirstOrDefault();
+
+        UserResponseDto dto = _mapper.Map<UserResponseDto>(entity);
+        dto.LastLoginDateTime = lastLogin?.CreatedAt;
+
+        return dto;
     }
 
     public async Task<UserResponseDto> Update(Guid userId, UserUpdateRequestDto dto)

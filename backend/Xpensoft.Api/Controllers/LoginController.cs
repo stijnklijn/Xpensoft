@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+
+using Microsoft.AspNetCore.Mvc;
 
 using Xpensoft.Api.Dtos;
 using Xpensoft.Api.Services;
@@ -14,7 +16,8 @@ public class LoginController(LoginService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<LoginResponseDto>> Login(LoginRequestDto dto)
     {
-        return new LoginResponseDto { Jwt = await _service.Login(dto) };
+        IPAddress? ipAddress = HttpContext.Connection.RemoteIpAddress;
+        return new LoginResponseDto { Jwt = await _service.Login(dto, ipAddress) };
     }
 
 }

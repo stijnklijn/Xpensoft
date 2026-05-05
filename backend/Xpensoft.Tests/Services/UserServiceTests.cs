@@ -61,7 +61,7 @@ public class UserServiceTests
     public async Task Create_WhenUserEmailAlreadyExists_ShouldThrowException()
     {
         //Arrange
-        User existingUser = new() { Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn" };
+        User existingUser = new() { Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn", IsLocked = false };
         _database.Add(existingUser);
         _database.SaveChanges();
         UserCreateRequestDto dto = new() { Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn" };

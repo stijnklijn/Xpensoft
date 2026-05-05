@@ -35,11 +35,13 @@ export class Login {
         this.router.navigate(['/dashboard']);
       },
       error: (e) => {
-        this.error.set(
-          e.status === 401
-            ? this.translate.instant('ERRORS.LOGIN__INVALID_CREDENTIALS')
-            : this.translate.instant('ERRORS.INTERNAL_SERVER_ERROR'),
-        );
+        if (e.status === 401) {
+          this.error.set(this.translate.instant('ERRORS.LOGIN__INVALID_CREDENTIALS'));
+        } else if (e.status === 423) {
+          this.error.set(this.translate.instant('ERRORS.LOGIN__USER_IS_LOCKED'));
+        } else {
+          this.error.set(this.translate.instant('ERRORS.INTERNAL_SERVER_ERROR'));
+        }
       },
     });
   }

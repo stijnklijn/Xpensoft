@@ -1,10 +1,12 @@
-﻿using System.Security.Authentication;
+﻿using System.Net;
+using System.Security.Authentication;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
 using Xpensoft.Api.Data;
 using Xpensoft.Api.Dtos;
+using Xpensoft.Api.Exceptions;
 using Xpensoft.Api.Models;
 using Xpensoft.Api.Services;
 using Xpensoft.Tests.TestFactories;
@@ -34,11 +36,11 @@ public class LoginServiceTests
     public async Task Login_ShouldReturnJwt()
     {
         //Arrange
-        CreateUserInDatabase();
+        CreateUserInDatabase(false);
         LoginRequestDto dto = new() { Email = "stijnklijn@gmail.com", Password = "Test1234!" };
 
         //Act
-        string jwt = await _service.Login(dto);
+        string jwt = await _service.Login(dto, IPAddress.Parse("127.0.0.1"));
 
         //Assert
         Assert.NotNull(jwt);
@@ -51,26 +53,37 @@ public class LoginServiceTests
         LoginRequestDto dto = new() { Email = "stijnklijn@gmail.com", Password = "Test1234!" };
 
         //Assert
-        await Assert.ThrowsAsync<InvalidCredentialException>(() => _service.Login(dto));
+        await Assert.ThrowsAsync<InvalidCredentialException>(() => _service.Login(dto, IPAddress.Parse("127.0.0.1")));
     }
 
     [Fact]
     public async Task Login_WhenInvalidPassword_ShouldThrowException()
     {
         //Arrange
-        CreateUserInDatabase();
+        CreateUserInDatabase(false);
         LoginRequestDto dto = new() { Email = "stijnklijn@gmail.com", Password = "Test1234?" };
 
         //Assert
-        await Assert.ThrowsAsync<InvalidCredentialException>(() => _service.Login(dto));
+        await Assert.ThrowsAsync<InvalidCredentialException>(() => _service.Login(dto, IPAddress.Parse("127.0.0.1")));
     }
 
-    private void CreateUserInDatabase()
+    [Fact]
+    public async Task Login_WhenUserIsLocked_ShouldThrowException()
+    {
+        //Arrange
+        CreateUserInDatabase(true);
+        LoginRequestDto dto = new() { Email = "stijnklijn@gmail.com", Password = "Test1234!" };
+
+        //Assert
+        await Assert.ThrowsAsync<CustomUserIsLockedException>(() => _service.Login(dto, IPAddress.Parse("127.0.0.1")));
+    }
+
+    private void CreateUserInDatabase(bool isLocked)
     {
         Guid userId = Guid.NewGuid();
-        User user = new() { Id = userId, Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn" };
+        User user = new() { Id = userId, Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn", IsLocked = isLocked };
         user.Password = _passwordHasher.HashPassword(user, user.Password);
-        _database.Add<User>(user);
+        _database.Add(user);
         _database.SaveChanges();
     }
 

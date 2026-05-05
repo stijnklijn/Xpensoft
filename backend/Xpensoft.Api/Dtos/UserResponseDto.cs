@@ -8,6 +8,8 @@ public class UserResponseDto : BaseEntityDto
 
     public required string LastName { get; set; }
 
+    public DateTime? LastLoginDateTime { get; set; }
+
     public string? Language { get; set; }
 
     public int? DefaultResultsPerPage { get; set; }

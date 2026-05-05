@@ -10,7 +10,15 @@
     'DASHBOARD.ANALYSIS' | translate
   }}</a>
   <div class="controls">
-    <span>{{ user()?.firstName }} {{ user()?.lastName }}</span>
+    <span
+      >{{ user()?.firstName }} {{ user()?.lastName }}
+      @if (user()?.lastLoginDateTime) {
+        <em>
+          ({{ 'DASHBOARD.LAST_LOGIN_ON' | translate }}
+          {{ user()?.lastLoginDateTime + 'z' | date: 'medium' }})</em
+        >
+      }
+    </span>
     <button (click)="settings()"><fa-icon [icon]="icons.faGear"></fa-icon></button>
     <button (click)="logout()">{{ 'DASHBOARD.LOGOUT' | translate }}</button>
   </div>
