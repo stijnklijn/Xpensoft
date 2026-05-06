@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -12,7 +13,14 @@ import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [TranslateModule, RouterOutlet, RouterLink, RouterLinkActive, FontAwesomeModule],
+  imports: [
+    DatePipe,
+    TranslateModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    FontAwesomeModule,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

@@ -6,6 +6,8 @@ public class User : BaseEntity
 
     public required string Password { get; set; }
 
+    public required bool IsLocked { get; set; }
+
     public required string FirstName { get; set; }
 
     public required string LastName { get; set; }
@@ -14,8 +16,10 @@ public class User : BaseEntity
 
     public int? DefaultResultsPerPage { get; set; }
 
-    public IList<Category> Categories { get; set; } = new List<Category>();
+    public IList<AuthEvent> AuthEvents { get; set; } = [];
 
-    public IList<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public IList<Category> Categories { get; set; } = [];
+
+    public IList<Transaction> Transactions { get; set; } = [];
 
 }

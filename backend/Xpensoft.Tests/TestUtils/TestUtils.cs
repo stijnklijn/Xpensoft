@@ -48,7 +48,7 @@ public static class TestUtils
     public static (Guid, User) CreateUserInDatabase(XpensoftDbContext database)
     {
         Guid userId = Guid.NewGuid();
-        User user = new() { Id = userId, Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn" };
+        User user = new() { Id = userId, Email = "stijnklijn@gmail.com", Password = "Test1234!", FirstName = "Stijn", LastName = "Klijn", IsLocked = false };
         database.Add(user);
         database.SaveChanges();
         return (userId, user);

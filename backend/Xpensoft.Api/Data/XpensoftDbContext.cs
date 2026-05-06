@@ -7,6 +7,7 @@ namespace Xpensoft.Api.Data;
 public class XpensoftDbContext(DbContextOptions<XpensoftDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<AuthEvent> AuthEvents { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
 
@@ -17,6 +18,11 @@ public class XpensoftDbContext(DbContextOptions<XpensoftDbContext> options) : Db
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+
+        modelBuilder.Entity<AuthEvent>()
+            .HasOne(a => a.User)
+            .WithMany(u => u.AuthEvents)
+            .HasForeignKey(a => a.UserId);
 
         modelBuilder.Entity<Category>()
             .HasOne(c => c.User)

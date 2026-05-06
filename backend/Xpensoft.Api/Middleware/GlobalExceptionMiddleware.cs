@@ -48,6 +48,11 @@ public class GlobalExceptionMiddleware
             _logger.LogWarning(ex, ex.Code);
             await WriteError(context, ex.Code, StatusCodes.Status409Conflict);
         }
+        catch (CustomUserIsLockedException ex)
+        {
+            _logger.LogWarning(ex, ex.Code);
+            await WriteError(context, ex.Code, StatusCodes.Status423Locked);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "INTERNAL_SERVER_ERROR");
