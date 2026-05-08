@@ -1,5 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { throwError } from 'rxjs';
@@ -11,6 +12,7 @@ import { DashboardStore } from '../store/dashboard.store';
 import { ToastService } from '../services/toast.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const dialog = inject(MatDialog);
   const toast = inject(ToastService);
   const translate = inject(TranslateService);
   const router = inject(Router);
@@ -32,6 +34,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
         if (e.status === 401) {
           store.clear();
+          dialog.closeAll();
           localStorage.removeItem('jwt');
           router.navigate(['/login']);
         }
