@@ -72,6 +72,11 @@
   cursor: pointer;
 }
 
+.left .register-button.disabled {
+  cursor: not-allowed;
+  color: var(--color-disabled);
+}
+
 .right {
   display: flex;
   flex-direction: column;

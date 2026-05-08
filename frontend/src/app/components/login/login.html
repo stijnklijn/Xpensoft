@@ -33,7 +33,12 @@
     <p class="error">{{ error() }}</p>
     <div class="register">
       <span>{{ 'LOGIN.NEW_USER' | translate }}</span>
-      <span class="register-button" (click)="register()">{{ 'SHARED.REGISTER' | translate }}</span>
+      <span
+        class="register-button"
+        [class.disabled]="loading()"
+        (click)="!loading() && register()"
+        >{{ 'SHARED.REGISTER' | translate }}</span
+      >
     </div>
   </div>
   <div class="right">
