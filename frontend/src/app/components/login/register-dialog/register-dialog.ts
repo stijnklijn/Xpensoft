@@ -1,4 +1,4 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, signal } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -10,8 +10,9 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, finalize, map, of, switchMap, tap } from 'rxjs';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -19,11 +20,21 @@ import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-register-dialog',
-  imports: [TranslateModule, ReactiveFormsModule, MatDialogModule, MatInputModule, MatButtonModule],
+  imports: [
+    TranslateModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './register-dialog.html',
 })
 export class RegisterDialog {
   api = inject(ApiService);
+
+  loading = signal(false);
+  registeredEmail = signal('');
 
   formBuilder = new FormBuilder();
   form = this.formBuilder.group(
@@ -74,5 +85,22 @@ export class RegisterDialog {
     const repeatPassword = group.get('repeatPassword')?.value;
     if (!password || !repeatPassword) return null;
     return password === repeatPassword ? null : { passwordsNotEqual: true };
+  }
+
+  register() {
+    this.form.disable();
+    this.loading.set(true);
+
+    const values = this.form.getRawValue();
+
+    this.api
+      .createUser(values.firstName!, values.lastName!, values.email!, values.password!)
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+          this.form.enable();
+        }),
+      )
+      .subscribe(() => this.registeredEmail.set(values.email!));
   }
 }

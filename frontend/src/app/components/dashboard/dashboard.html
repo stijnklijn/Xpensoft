@@ -24,5 +24,11 @@
   </div>
 </nav>
 <div class="content">
-  <router-outlet></router-outlet>
+  @if (loading()) {
+    <div class="backdrop">
+      <mat-spinner diameter="250"></mat-spinner>
+    </div>
+  } @else {
+    <router-outlet></router-outlet>
+  }
 </div>

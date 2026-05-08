@@ -1,7 +1,7 @@
 <div class="dialog">
   <header>
     <h3>{{ `CATEGORIES.DIALOG.HEADER.${data.isNew ? 'ADD' : 'EDIT'}` | translate }}</h3>
-    <button class="close" mat-icon-button [matDialogClose]="null">✕</button>
+    <button class="close" mat-icon-button [disabled]="loading()" [matDialogClose]="null">✕</button>
   </header>
   <form [formGroup]="form">
     <mat-form-field appearance="outline">
@@ -27,10 +27,16 @@
       <mat-error>{{ 'CATEGORIES.DIALOG.VALIDATION.TYPE.REQUIRED' | translate }}</mat-error>
     }
     <div class="controls">
-      <button mat-button [disabled]="form.invalid" [mat-dialog-close]="form.value">
-        {{ 'SHARED.SAVE' | translate }}
+      <button mat-button [disabled]="form.invalid || loading()" (click)="save()">
+        @if (loading()) {
+          <mat-spinner diameter="25"></mat-spinner>
+        } @else {
+          {{ 'SHARED.SAVE' | translate }}
+        }
       </button>
-      <button mat-button [matDialogClose]="null">{{ 'SHARED.CANCEL' | translate }}</button>
+      <button mat-button [disabled]="loading()" [matDialogClose]="null">
+        {{ 'SHARED.CANCEL' | translate }}
+      </button>
     </div>
   </form>
 </div>

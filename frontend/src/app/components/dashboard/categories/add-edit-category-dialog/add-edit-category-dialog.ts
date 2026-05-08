@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   Validators,
@@ -7,11 +7,16 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
+
+import { DashboardStore } from '../../../../store/dashboard.store';
+import { ToastService } from '../../../../services/toast.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-edit-category-dialog',
@@ -22,10 +27,18 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './add-edit-category-dialog.html',
 })
 export class AddEditCategoryDialog implements OnInit {
+  dialogRef = inject(MatDialogRef<AddEditCategoryDialog>);
+  store = inject(DashboardStore);
+  toast = inject(ToastService);
+  translate = inject(TranslateService);
+
+  loading = signal(false);
+
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
     name: [null, [Validators.required, this.lengthValid, this.nameUnique.bind(this)]],
@@ -57,5 +70,28 @@ export class AddEditCategoryDialog implements OnInit {
     return this.data.categories.some((c: any) => c.id !== id && c.name.toUpperCase() === value)
       ? { nameNotUnique: true }
       : null;
+  }
+
+  save() {
+    this.form.disable();
+    this.loading.set(true);
+
+    const values = this.form.getRawValue();
+
+    const request = this.data.isNew
+      ? this.store.createCategory(values.name!, values.isIncome!)
+      : this.store.updateCategory(this.data.category.id, values.name!, values.isIncome!);
+
+    request
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+          this.form.enable();
+        }),
+      )
+      .subscribe(() => {
+        this.toast.success(this.translate.instant('CATEGORIES.CATEGORY_SAVED'));
+        this.dialogRef.close();
+      });
   }
 }

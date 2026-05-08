@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 
-import { forkJoin, switchMap, tap } from 'rxjs';
+import { finalize, forkJoin, switchMap, tap } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -23,31 +23,39 @@ export class DashboardStore {
   sort = signal<SortOption>({ field: 'date', asc: false });
   filter = signal<string>('');
 
+  loading = signal(false);
   loaded = false;
 
   loadDashboard() {
     if (this.loaded) return;
 
+    this.loading.set(true);
+
     forkJoin({
       user: this.api.getUser(),
       transactions: this.api.getTransactions(),
       categories: this.api.getCategories(),
-    }).subscribe(({ user, transactions, categories }) => {
-      this.user.set(user);
+    })
+      .pipe(
+        tap(({ user, transactions, categories }) => {
+          this.user.set(user);
 
-      if (user.language) {
-        localStorage.setItem('language', user.language);
-        this.translate.use(user.language);
-      }
+          if (user.language) {
+            localStorage.setItem('language', user.language);
+            this.translate.use(user.language);
+          }
 
-      if (user.defaultResultsPerPage) {
-        this.resultsPerPage.set(user.defaultResultsPerPage);
-      }
+          if (user.defaultResultsPerPage) {
+            this.resultsPerPage.set(user.defaultResultsPerPage);
+          }
 
-      this.transactions.set(transactions.data);
-      this.categories.set(categories.data);
-      this.loaded = true;
-    });
+          this.transactions.set(transactions.data);
+          this.categories.set(categories.data);
+          this.loaded = true;
+        }),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe();
   }
 
   updateUser(firstName: string, lastName: string, language: string, defaultResultsPerPage: number) {

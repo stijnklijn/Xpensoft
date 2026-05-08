@@ -53,3 +53,10 @@ a.active {
   position: relative;
   top: var(--navbar-height);
 }
+
+mat-spinner {
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+}

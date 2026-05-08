@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AddEditCategoryDialog } from './add-edit-category-dialog/add-edit-category-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
+import { DeleteCategoryDialog } from './delete-category-dialog/delete-category-dialog';
 import { icons } from '../../../shared/icons';
 import { ToastService } from '../../../services/toast.service';
 
@@ -20,6 +21,7 @@ export class Categories {
   translate = inject(TranslateService);
   toast = inject(ToastService);
   addEditCategoryDialog = inject(MatDialog);
+  deleteCategoryDialog = inject(MatDialog);
 
   icons = icons;
 
@@ -35,25 +37,17 @@ export class Categories {
   );
 
   addCategory() {
-    const dialogRef = this.addEditCategoryDialog.open(AddEditCategoryDialog, {
+    this.addEditCategoryDialog.open(AddEditCategoryDialog, {
       disableClose: true,
       data: {
         isNew: true,
         categories: this.categories(),
       },
     });
-
-    dialogRef.afterClosed().subscribe((data) => {
-      if (data) {
-        this.store.createCategory(data.name, data.isIncome).subscribe(() => {
-          this.toast.success(this.translate.instant('CATEGORIES.CATEGORY_SAVED'));
-        });
-      }
-    });
   }
 
   editCategory(category: Category) {
-    const dialogRef = this.addEditCategoryDialog.open(AddEditCategoryDialog, {
+    this.addEditCategoryDialog.open(AddEditCategoryDialog, {
       disableClose: true,
       data: {
         isNew: false,
@@ -61,19 +55,16 @@ export class Categories {
         category,
       },
     });
+  }
 
-    dialogRef.afterClosed().subscribe((data) => {
-      if (data) {
-        this.store.updateCategory(category.id, data.name, data.isIncome).subscribe(() => {
-          this.toast.success(this.translate.instant('CATEGORIES.CATEGORY_SAVED'));
-        });
-      }
+  deleteCategory(category: Category) {
+    this.deleteCategoryDialog.open(DeleteCategoryDialog, {
+      disableClose: true,
+      data: category,
     });
   }
 
-  deleteCategory(id: string) {
-    this.store.deleteCategory(id).subscribe(() => {
-      this.toast.success(this.translate.instant('CATEGORIES.CATEGORY_DELETED'));
-    });
+  calcNumTransactions(id: string) {
+    return this.transactions().filter((t) => t.categoryId === id).length;
   }
 }

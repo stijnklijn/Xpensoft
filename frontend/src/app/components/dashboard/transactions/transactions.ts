@@ -8,6 +8,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AddEditTransactionDialog } from './add-edit-transaction-dialog/add-edit-transaction-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
+import { DeleteTransactionDialog } from './delete-transaction-dialog/delete-transaction-dialog';
 import { icons } from '../../../shared/icons';
 import { ToastService } from '../../../services/toast.service';
 
@@ -22,6 +23,7 @@ export class Transactions {
   translate = inject(TranslateService);
   toast = inject(ToastService);
   addEditTransactionDialog = inject(MatDialog);
+  deleteTransactionDialog = inject(MatDialog);
 
   icons = icons;
 
@@ -139,7 +141,7 @@ export class Transactions {
   }
 
   addTransaction() {
-    const dialogRef = this.addEditTransactionDialog.open(AddEditTransactionDialog, {
+    this.addEditTransactionDialog.open(AddEditTransactionDialog, {
       disableClose: true,
       data: {
         isNew: true,
@@ -148,21 +150,10 @@ export class Transactions {
         ),
       },
     });
-
-    dialogRef.afterClosed().subscribe((data) => {
-      if (data) {
-        const date = this.toISOString(new Date(data.date));
-        this.store
-          .createTransaction(date, data.description, data.category.id, data.amount)
-          .subscribe(() => {
-            this.toast.success(this.translate.instant('TRANSACTIONS.TRANSACTION_SAVED'));
-          });
-      }
-    });
   }
 
   editTransaction(transaction: Transaction) {
-    const dialogRef = this.addEditTransactionDialog.open(AddEditTransactionDialog, {
+    this.addEditTransactionDialog.open(AddEditTransactionDialog, {
       disableClose: true,
       data: {
         isNew: false,
@@ -172,26 +163,12 @@ export class Transactions {
         transaction,
       },
     });
-
-    dialogRef.afterClosed().subscribe((data) => {
-      if (data) {
-        const date = this.toISOString(new Date(data.date));
-        this.store
-          .updateTransaction(transaction.id, date, data.description, data.category.id, data.amount)
-          .subscribe(() => {
-            this.toast.success(this.translate.instant('TRANSACTIONS.TRANSACTION_SAVED'));
-          });
-      }
-    });
   }
 
-  deleteTransaction(id: string) {
-    this.store.deleteTransaction(id).subscribe(() => {
-      this.toast.success(this.translate.instant('TRANSACTIONS.TRANSACTION_DELETED'));
+  deleteTransaction(transaction: Transaction) {
+    this.deleteTransactionDialog.open(DeleteTransactionDialog, {
+      disableClose: true,
+      data: transaction,
     });
-  }
-
-  toISOString(date: Date) {
-    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
   }
 }

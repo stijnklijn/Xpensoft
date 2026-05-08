@@ -7,12 +7,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
 
+import { DashboardStore } from '../../../store/dashboard.store';
+import { ToastService } from '../../../services/toast.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-settings-dialog',
   imports: [
@@ -22,11 +26,15 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './settings-dialog.html',
   styleUrl: './settings-dialog.css',
 })
 export class SettingsDialog implements OnInit {
+  dialogRef = inject(MatDialogRef<SettingsDialog>);
+  store = inject(DashboardStore);
+  toast = inject(ToastService);
   translate = inject(TranslateService);
 
   browserLang = this.translate.getBrowserLang();
@@ -38,9 +46,9 @@ export class SettingsDialog implements OnInit {
   ];
 
   tab = signal<'personal' | 'preferences'>('personal');
+  loading = signal(false);
 
   formBuilder = new FormBuilder();
-
   form = this.formBuilder.group({
     firstName: [null, [Validators.required, this.lengthValid]],
     lastName: [null, [Validators.required, this.lengthValid]],
@@ -69,5 +77,32 @@ export class SettingsDialog implements OnInit {
     }
 
     return null;
+  }
+
+  save() {
+    this.form.disable();
+    this.loading.set(true);
+
+    const values = this.form.getRawValue();
+
+    this.store
+      .updateUser(
+        values.firstName!,
+        values.lastName!,
+        values.language!,
+        values.defaultResultsPerPage!,
+      )
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+          this.form.enable();
+        }),
+      )
+      .subscribe(() => {
+        localStorage.setItem('language', values.language!);
+        this.translate.use(values.language!);
+        this.toast.success(this.translate.instant('DASHBOARD.SETTINGS_SAVED'));
+        this.dialogRef.close();
+      });
   }
 }

@@ -19,11 +19,8 @@
         "REPEAT_PASSWORD": {
           "PASSWORDS_NOT_EQUAL": "Wachtwoorden komen niet overeen"
         }
-      }
-    },
-    "REGISTRATION_SUCCESSFUL_DIALOG": {
-      "HEADER": "Registratie succesvol",
-      "MESSAGE": "U kunt nu inloggen met "
+      },
+      "SUCCESS_MESSAGE": "Registratie succesvol. U kunt nu inloggen met "
     },
     "BULLET_POINTS": {
       "ONE": {
@@ -79,7 +76,11 @@
     "TRANSACTION_SAVED": "Transactie opgeslagen",
     "TRANSACTION_DELETED": "Transactie verwijderd",
     "DIALOG": {
-      "HEADER": { "ADD": "Transactie toevoegen", "EDIT": "Transactie bewerken" },
+      "HEADER": {
+        "ADD": "Transactie toevoegen",
+        "EDIT": "Transactie bewerken",
+        "DELETE": "Transactie verwijderen"
+      },
       "VALIDATION": {
         "DATE": {
           "INVALID_FORMAT": "Datum heeft formaat dd-mm-jjjj",
@@ -92,15 +93,21 @@
           "MIN": "Bedrag is minimaal 0,01",
           "MAX": "Bedrag is maximaal 999.999,99"
         }
-      }
+      },
+      "CONFIRM_DELETE": "Verwijder transactie met omschrijving "
     }
   },
   "CATEGORIES": {
     "NO_CATEGORIES": "Klik op de knop hierboven om een rubriek toe te voegen",
+    "NUMBER_OF_TRANSACTIONS": "Aantal transacties",
     "CATEGORY_SAVED": "Rubriek opgeslagen",
     "CATEGORY_DELETED": "Rubriek verwijderd",
     "DIALOG": {
-      "HEADER": { "ADD": "Rubriek toevoegen", "EDIT": "Rubriek bewerken" },
+      "HEADER": {
+        "ADD": "Rubriek toevoegen",
+        "EDIT": "Rubriek bewerken",
+        "DELETE": "Rubriek verwijderen"
+      },
       "VALIDATION": {
         "NAME": {
           "LENGTH_INVALID": "Naam moet tenminste 2 karakters bevatten",
@@ -109,7 +116,8 @@
         "TYPE": {
           "REQUIRED": "Soort is verplicht"
         }
-      }
+      },
+      "CONFIRM_DELETE": "Verwijder rubriek met naam "
     }
   },
   "ANALYSIS": {
@@ -163,6 +171,7 @@
     "CANCEL": "Annuleren",
     "CATEGORY": "Rubriek",
     "CLOSE": "Sluiten",
+    "CONFIRM": "Bevestigen",
     "DATE": "Datum",
     "DESCRIPTION": "Omschrijving",
     "EMAIL": "Email",
