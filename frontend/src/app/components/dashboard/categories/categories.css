@@ -44,6 +44,10 @@ td {
   background-color: var(--color-positive);
 }
 
+.number {
+  text-align: right;
+}
+
 .actions {
   text-align: center;
 }
@@ -51,4 +55,9 @@ td {
 .actions fa-icon:hover {
   cursor: pointer;
   color: var(--color-light);
+}
+
+.actions fa-icon.disabled {
+  cursor: not-allowed;
+  color: var(--color-disabled);
 }

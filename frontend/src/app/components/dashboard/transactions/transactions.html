@@ -96,10 +96,7 @@
               </td>
               <td class="actions">
                 <fa-icon [icon]="icons.faEdit" (click)="editTransaction(transaction)"></fa-icon
-                ><fa-icon
-                  [icon]="icons.faTrash"
-                  (click)="deleteTransaction(transaction.id!)"
-                ></fa-icon>
+                ><fa-icon [icon]="icons.faTrash" (click)="deleteTransaction(transaction)"></fa-icon>
               </td>
             </tr>
           }

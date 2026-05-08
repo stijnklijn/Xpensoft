@@ -19,11 +19,8 @@
         "REPEAT_PASSWORD": {
           "PASSWORDS_NOT_EQUAL": "Passwords do not match"
         }
-      }
-    },
-    "REGISTRATION_SUCCESSFUL_DIALOG": {
-      "HEADER": "Registration successful",
-      "MESSAGE": "You can now login with "
+      },
+      "SUCCESS_MESSAGE": "Registration successful. You can now login with "
     },
     "BULLET_POINTS": {
       "ONE": {
@@ -79,7 +76,11 @@
     "TRANSACTION_SAVED": "Transaction saved",
     "TRANSACTION_DELETED": "Transaction deleted",
     "DIALOG": {
-      "HEADER": { "ADD": "Add transaction", "EDIT": "Edit transaction" },
+      "HEADER": {
+        "ADD": "Add transaction",
+        "EDIT": "Edit transaction",
+        "DELETE": "Delete transaction"
+      },
       "VALIDATION": {
         "DATE": {
           "INVALID_FORMAT": "Date must be in format dd-mm-yyyy",
@@ -92,15 +93,17 @@
           "MIN": "Amount must be at least 0.01",
           "MAX": "Amount must be at most 999,999.99"
         }
-      }
+      },
+      "CONFIRM_DELETE": "Delete transaction with description "
     }
   },
   "CATEGORIES": {
     "NO_CATEGORIES": "Click on the button above to add a category",
+    "NUMBER_OF_TRANSACTIONS": "Number of transactions",
     "CATEGORY_SAVED": "Category saved",
     "CATEGORY_DELETED": "Category deleted",
     "DIALOG": {
-      "HEADER": { "ADD": "Add category", "EDIT": "Edit category" },
+      "HEADER": { "ADD": "Add category", "EDIT": "Edit category", "DELETE": "Delete category" },
       "VALIDATION": {
         "NAME": {
           "LENGTH_INVALID": "Name must contain at least 2 characters",
@@ -109,7 +112,8 @@
         "TYPE": {
           "REQUIRED": "Type is required"
         }
-      }
+      },
+      "CONFIRM_DELETE": "Delete category with name "
     }
   },
   "ANALYSIS": {
@@ -163,6 +167,7 @@
     "CANCEL": "Cancel",
     "CATEGORY": "Category",
     "CLOSE": "Close",
+    "CONFIRM": "Confirm",
     "DATE": "Date",
     "DESCRIPTION": "Description",
     "EMAIL": "Email",
