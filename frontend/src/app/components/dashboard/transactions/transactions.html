@@ -21,7 +21,7 @@
           <span
             >{{ 'TRANSACTIONS.PAGE' | translate }} {{ currentPageNumber() }}
             {{ 'TRANSACTIONS.OF' | translate }} {{ totalPages() }} ({{
-              filteredTransactionsAmount()
+              filteredTransactions().length
             }}
             {{ 'TRANSACTIONS.TRANSACTIONS' | translate }})</span
           >

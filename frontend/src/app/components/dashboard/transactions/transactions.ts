@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -37,38 +37,7 @@ export class Transactions {
   sort = this.store.sort;
   filter = this.store.filter;
 
-  currentPageData = signal<Array<Transaction>>([]);
-  filteredTransactionsAmount = signal<number>(0);
-
   constructor() {
-    effect(() => {
-      const transactions = this.transactions();
-      const currentPageNumber = this.currentPageNumber();
-      const resultsPerPage = this.resultsPerPage();
-      const sort = this.sort();
-
-      const start = (currentPageNumber - 1) * resultsPerPage;
-      const end = start + resultsPerPage;
-
-      const filteredTransactions = transactions.filter((t) =>
-        t.description.toUpperCase().includes(this.filter().toUpperCase()),
-      );
-
-      this.filteredTransactionsAmount.set(filteredTransactions.length);
-
-      this.currentPageData.set(
-        filteredTransactions
-          .sort((a: Transaction, b: Transaction) => {
-            if (sort.asc) {
-              return a[sort.field] < b[sort.field] ? -1 : 1;
-            } else {
-              return a[sort.field] < b[sort.field] ? 1 : -1;
-            }
-          })
-          .slice(start, end),
-      );
-    });
-
     this.translate
       .stream([
         'TRANSACTIONS.SORT_OPTIONS.DATE_ASC',
@@ -96,12 +65,31 @@ export class Transactions {
           { label: t['TRANSACTIONS.SORT_OPTIONS.AMOUNT_DESC'], field: 'amount', asc: false },
         ]);
       });
-
-    this.store.loadDashboard();
   }
 
+  filteredTransactions = computed(() =>
+    this.transactions().filter((t) =>
+      t.description.toUpperCase().includes(this.filter().toUpperCase()),
+    ),
+  );
+
+  currentPageData = computed(() => {
+    const start = (this.currentPageNumber() - 1) * this.resultsPerPage();
+    const end = start + this.resultsPerPage();
+
+    return this.filteredTransactions()
+      .sort((a: Transaction, b: Transaction) => {
+        if (this.sort().asc) {
+          return a[this.sort().field] < b[this.sort().field] ? -1 : 1;
+        } else {
+          return a[this.sort().field] < b[this.sort().field] ? 1 : -1;
+        }
+      })
+      .slice(start, end);
+  });
+
   totalPages = computed(() => {
-    return Math.ceil(this.filteredTransactionsAmount() / this.resultsPerPage());
+    return Math.ceil(this.filteredTransactions().length / this.resultsPerPage());
   });
 
   selectedSortIndex = computed(() =>

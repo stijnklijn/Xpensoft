@@ -38,7 +38,7 @@ export class Login {
     this.loading.set(true);
 
     this.loginService
-      .postLogin({ email, password })
+      .postLogin({ email, password }, { headers: { 'x-skip-error-interceptor': 'true' } })
       .pipe(
         tap((response) => {
           localStorage.setItem('jwt', response.jwt);

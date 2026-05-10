@@ -13,7 +13,6 @@ namespace Xpensoft.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("transactions")]
-[Consumes("application/json")]
 [Produces("application/json")]
 public class TransactionController(TransactionService service) : ControllerBase
 {

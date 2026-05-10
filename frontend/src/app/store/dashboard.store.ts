@@ -5,13 +5,13 @@ import { finalize, forkJoin, switchMap, tap } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { CategoryDto, TransactionDto, UserUpdateRequestDto } from '../api/generated/models';
-import { UserService } from '../api/generated/user';
 import { CategoryService } from '../api/generated/category';
 import { TransactionService } from '../api/generated/transaction';
+import { UserService } from '../api/generated/user';
 
-import { toUserEntity } from '../mappers/user.mapper';
-import { toTransactionEntities } from '../mappers/transaction.mapper';
 import { toCategoryEntities } from '../mappers/category.mapper';
+import { toTransactionEntities } from '../mappers/transaction.mapper';
+import { toUserEntity } from '../mappers/user.mapper';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardStore {

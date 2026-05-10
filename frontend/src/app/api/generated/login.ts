@@ -85,7 +85,7 @@ export class LoginService {
     loginRequestDto: LoginRequestDto, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.post<TData>(
-      `/login`,
+      `/api/login`,
       loginRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
@@ -95,7 +95,7 @@ export class LoginService {
 
     if (options?.observe === 'response') {
       return this.http.post<TData>(
-      `/login`,
+      `/api/login`,
       loginRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
@@ -104,7 +104,7 @@ export class LoginService {
     }
 
     return this.http.post<TData>(
-      `/login`,
+      `/api/login`,
       loginRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',

@@ -72,7 +72,7 @@ export class RegisterDialog {
       if (!control.value) return of(null);
 
       return of(control.value).pipe(
-        switchMap((email) => userService.postUsersExists(email)),
+        switchMap((email) => userService.postUsersExists({ email })),
         map((reponse) => (reponse.exists ? { emailExists: true } : null)),
         catchError(() => of(null)),
       );

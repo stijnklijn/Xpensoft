@@ -88,7 +88,7 @@ export class UserService {
     userExistsRequestDto: UserExistsRequestDto, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.post<TData>(
-      `/users/exists`,
+      `/api/users/exists`,
       userExistsRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
@@ -98,7 +98,7 @@ export class UserService {
 
     if (options?.observe === 'response') {
       return this.http.post<TData>(
-      `/users/exists`,
+      `/api/users/exists`,
       userExistsRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
@@ -107,7 +107,7 @@ export class UserService {
     }
 
     return this.http.post<TData>(
-      `/users/exists`,
+      `/api/users/exists`,
       userExistsRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
@@ -121,7 +121,7 @@ export class UserService {
     userCreateRequestDto: UserCreateRequestDto, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.post<TData>(
-      `/users`,
+      `/api/users`,
       userCreateRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
@@ -131,7 +131,7 @@ export class UserService {
 
     if (options?.observe === 'response') {
       return this.http.post<TData>(
-      `/users`,
+      `/api/users`,
       userCreateRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
@@ -140,7 +140,7 @@ export class UserService {
     }
 
     return this.http.post<TData>(
-      `/users`,
+      `/api/users`,
       userCreateRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
@@ -154,7 +154,7 @@ export class UserService {
      options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.get<TData>(
-      `/users`,{
+      `/api/users`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
       }
@@ -163,7 +163,7 @@ export class UserService {
 
     if (options?.observe === 'response') {
       return this.http.get<TData>(
-      `/users`,{
+      `/api/users`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
       }
@@ -171,7 +171,7 @@ export class UserService {
     }
 
     return this.http.get<TData>(
-      `/users`,{
+      `/api/users`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
       }
@@ -184,7 +184,7 @@ export class UserService {
     userUpdateRequestDto: UserUpdateRequestDto, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.put<TData>(
-      `/users`,
+      `/api/users`,
       userUpdateRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
@@ -194,7 +194,7 @@ export class UserService {
 
     if (options?.observe === 'response') {
       return this.http.put<TData>(
-      `/users`,
+      `/api/users`,
       userUpdateRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
@@ -203,7 +203,7 @@ export class UserService {
     }
 
     return this.http.put<TData>(
-      `/users`,
+      `/api/users`,
       userUpdateRequestDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',

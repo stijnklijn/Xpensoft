@@ -28,10 +28,6 @@ export class Categories {
   transactions = this.store.transactions;
   categories = this.store.categories;
 
-  constructor() {
-    this.store.loadDashboard();
-  }
-
   sortedCategories = computed(() =>
     [...this.categories()].sort((a, b) => (a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1)),
   );

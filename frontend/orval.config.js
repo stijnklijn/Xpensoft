@@ -6,6 +6,7 @@ module.exports = {
       schemas: 'src/app/api/generated/models',
       client: 'angular',
       mode: 'tags',
+      baseUrl: '/api',
     },
   },
 };

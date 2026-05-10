@@ -133,7 +133,7 @@ export class CategoryService {
     categoryDto: CategoryDto, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.post<TData>(
-      `/categories`,
+      `/api/categories`,
       categoryDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
@@ -143,7 +143,7 @@ export class CategoryService {
 
     if (options?.observe === 'response') {
       return this.http.post<TData>(
-      `/categories`,
+      `/api/categories`,
       categoryDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
@@ -152,7 +152,7 @@ export class CategoryService {
     }
 
     return this.http.post<TData>(
-      `/categories`,
+      `/api/categories`,
       categoryDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
@@ -168,7 +168,7 @@ export class CategoryService {
 
     if (options?.observe === 'events') {
       return this.http.get<TData>(
-      `/categories`,{
+      `/api/categories`,{
     ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
         params: filteredParams,}
@@ -177,7 +177,7 @@ export class CategoryService {
 
     if (options?.observe === 'response') {
       return this.http.get<TData>(
-      `/categories`,{
+      `/api/categories`,{
     ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
         params: filteredParams,}
@@ -185,7 +185,7 @@ export class CategoryService {
     }
 
     return this.http.get<TData>(
-      `/categories`,{
+      `/api/categories`,{
     ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
         params: filteredParams,}
@@ -198,7 +198,7 @@ export class CategoryService {
     entityId: string, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.get<TData>(
-      `/categories/${entityId}`,{
+      `/api/categories/${entityId}`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
       }
@@ -207,7 +207,7 @@ export class CategoryService {
 
     if (options?.observe === 'response') {
       return this.http.get<TData>(
-      `/categories/${entityId}`,{
+      `/api/categories/${entityId}`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
       }
@@ -215,7 +215,7 @@ export class CategoryService {
     }
 
     return this.http.get<TData>(
-      `/categories/${entityId}`,{
+      `/api/categories/${entityId}`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
       }
@@ -232,7 +232,7 @@ export class CategoryService {
     categoryDto: CategoryDto, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.put<TData>(
-      `/categories/${entityId}`,
+      `/api/categories/${entityId}`,
       categoryDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
@@ -242,7 +242,7 @@ export class CategoryService {
 
     if (options?.observe === 'response') {
       return this.http.put<TData>(
-      `/categories/${entityId}`,
+      `/api/categories/${entityId}`,
       categoryDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
@@ -251,7 +251,7 @@ export class CategoryService {
     }
 
     return this.http.put<TData>(
-      `/categories/${entityId}`,
+      `/api/categories/${entityId}`,
       categoryDto,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
@@ -265,7 +265,7 @@ export class CategoryService {
     entityId: string, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
     if (options?.observe === 'events') {
       return this.http.delete<TData>(
-      `/categories/${entityId}`,{
+      `/api/categories/${entityId}`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
       }
@@ -274,7 +274,7 @@ export class CategoryService {
 
     if (options?.observe === 'response') {
       return this.http.delete<TData>(
-      `/categories/${entityId}`,{
+      `/api/categories/${entityId}`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
       }
@@ -282,7 +282,7 @@ export class CategoryService {
     }
 
     return this.http.delete<TData>(
-      `/categories/${entityId}`,{
+      `/api/categories/${entityId}`,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
       }

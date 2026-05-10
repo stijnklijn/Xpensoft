@@ -198,8 +198,6 @@ export class Analysis {
           t['ANALYSIS.MONTHS.DECEMBER'],
         ]);
       });
-
-    this.store.loadDashboard();
   }
 
   goTo(id: string, groupIndex: number) {
