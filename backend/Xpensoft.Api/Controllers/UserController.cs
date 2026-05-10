@@ -9,6 +9,8 @@ namespace Xpensoft.Api.Controllers;
 
 [ApiController]
 [Route("users")]
+[Consumes("application/json")]
+[Produces("application/json")]
 public class UserController(UserService service) : ControllerBase
 {
     private readonly UserService _service = service;

@@ -86,12 +86,12 @@ export class SettingsDialog implements OnInit {
     const values = this.form.getRawValue();
 
     this.store
-      .updateUser(
-        values.firstName!,
-        values.lastName!,
-        values.language!,
-        values.defaultResultsPerPage!,
-      )
+      .updateUser({
+        firstName: values.firstName!,
+        lastName: values.lastName!,
+        language: values.language!,
+        defaultResultsPerPage: values.defaultResultsPerPage!,
+      })
       .pipe(
         finalize(() => {
           this.loading.set(false);

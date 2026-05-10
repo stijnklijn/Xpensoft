@@ -98,14 +98,18 @@ export class AddEditTransactionDialog implements OnInit {
     const date = this.toISOString(new Date(values.date!));
 
     const request = this.data.isNew
-      ? this.store.createTransaction(date, values.description!, values.category!.id, values.amount!)
-      : this.store.updateTransaction(
-          this.data.transaction.id,
-          date,
-          values.description!,
-          values.category.id,
-          values.amount!,
-        );
+      ? this.store.createTransaction({
+          date: date,
+          description: values.description!,
+          categoryId: values.category!.id,
+          amount: values.amount!,
+        })
+      : this.store.updateTransaction(this.data.transaction.id, {
+          date: date,
+          description: values.description!,
+          categoryId: values.category.id,
+          amount: values.amount!,
+        });
 
     request
       .pipe(

@@ -9,6 +9,8 @@ namespace Xpensoft.Api.Controllers;
 
 [ApiController]
 [Route("login")]
+[Consumes("application/json")]
+[Produces("application/json")]
 public class LoginController(LoginService service) : ControllerBase
 {
     private readonly LoginService _service = service;

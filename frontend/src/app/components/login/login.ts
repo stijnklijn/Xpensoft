@@ -8,7 +8,8 @@ import { catchError, EMPTY, finalize, tap } from 'rxjs';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { ApiService } from '../../services/api.service';
+import { LoginService } from '../../api/generated/login';
+
 import { RegisterDialog } from './register-dialog/register-dialog';
 import { versionInfo } from '../../../environments/version';
 
@@ -19,10 +20,10 @@ import { versionInfo } from '../../../environments/version';
   styleUrl: './login.css',
 })
 export class Login {
-  translate = inject(TranslateService);
-  api = inject(ApiService);
-  router = inject(Router);
+  loginService = inject(LoginService);
   registerDialog = inject(MatDialog);
+  router = inject(Router);
+  translate = inject(TranslateService);
 
   email: string = '';
   password: string = '';
@@ -36,8 +37,8 @@ export class Login {
   login(email: string, password: string) {
     this.loading.set(true);
 
-    this.api
-      .login(email, password)
+    this.loginService
+      .postLogin({ email, password })
       .pipe(
         tap((response) => {
           localStorage.setItem('jwt', response.jwt);

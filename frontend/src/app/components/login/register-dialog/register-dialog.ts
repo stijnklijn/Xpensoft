@@ -15,8 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { catchError, finalize, map, of, switchMap, tap } from 'rxjs';
 
 import { TranslateModule } from '@ngx-translate/core';
-
-import { ApiService } from '../../../services/api.service';
+import { UserService } from '../../../api/generated/user';
 
 @Component({
   selector: 'app-register-dialog',
@@ -31,7 +30,7 @@ import { ApiService } from '../../../services/api.service';
   templateUrl: './register-dialog.html',
 })
 export class RegisterDialog {
-  api = inject(ApiService);
+  userService = inject(UserService);
 
   loading = signal(false);
   registeredEmail = signal('');
@@ -43,7 +42,7 @@ export class RegisterDialog {
       lastName: [null, [Validators.required, this.lengthValid]],
       email: this.formBuilder.control(null, {
         validators: [Validators.required, Validators.email],
-        asyncValidators: [this.emailAvailable(this.api)],
+        asyncValidators: [this.emailAvailable(this.userService)],
         updateOn: 'blur',
       }),
       password: [
@@ -68,12 +67,12 @@ export class RegisterDialog {
     return null;
   }
 
-  emailAvailable(api: ApiService): AsyncValidatorFn {
+  emailAvailable(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl) => {
       if (!control.value) return of(null);
 
       return of(control.value).pipe(
-        switchMap((email) => api.userExists(email)),
+        switchMap((email) => userService.postUsersExists(email)),
         map((reponse) => (reponse.exists ? { emailExists: true } : null)),
         catchError(() => of(null)),
       );
@@ -93,8 +92,13 @@ export class RegisterDialog {
 
     const values = this.form.getRawValue();
 
-    this.api
-      .createUser(values.firstName!, values.lastName!, values.email!, values.password!)
+    this.userService
+      .postUsers({
+        firstName: values.firstName!,
+        lastName: values.lastName!,
+        email: values.email!,
+        password: values.password!,
+      })
       .pipe(
         finalize(() => {
           this.loading.set(false);

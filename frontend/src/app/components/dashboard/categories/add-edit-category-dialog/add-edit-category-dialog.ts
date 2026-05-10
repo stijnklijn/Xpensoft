@@ -79,8 +79,11 @@ export class AddEditCategoryDialog implements OnInit {
     const values = this.form.getRawValue();
 
     const request = this.data.isNew
-      ? this.store.createCategory(values.name!, values.isIncome!)
-      : this.store.updateCategory(this.data.category.id, values.name!, values.isIncome!);
+      ? this.store.createCategory({ name: values.name!, isIncome: values.isIncome! })
+      : this.store.updateCategory(this.data.category.id, {
+          name: values.name!,
+          isIncome: values.isIncome!,
+        });
 
     request
       .pipe(
