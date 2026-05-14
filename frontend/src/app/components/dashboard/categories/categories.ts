@@ -8,7 +8,6 @@ import { AddEditCategoryDialog } from './add-edit-category-dialog/add-edit-categ
 import { DashboardStore } from '../../../store/dashboard.store';
 import { DeleteCategoryDialog } from './delete-category-dialog/delete-category-dialog';
 import { icons } from '../../../shared/icons';
-import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-categories',
@@ -19,7 +18,6 @@ import { ToastService } from '../../../services/toast.service';
 export class Categories {
   store = inject(DashboardStore);
   translate = inject(TranslateService);
-  toast = inject(ToastService);
   addEditCategoryDialog = inject(MatDialog);
   deleteCategoryDialog = inject(MatDialog);
 

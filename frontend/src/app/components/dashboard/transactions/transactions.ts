@@ -10,7 +10,6 @@ import { AddEditTransactionDialog } from './add-edit-transaction-dialog/add-edit
 import { DashboardStore } from '../../../store/dashboard.store';
 import { DeleteTransactionDialog } from './delete-transaction-dialog/delete-transaction-dialog';
 import { icons } from '../../../shared/icons';
-import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-transactions',
@@ -21,7 +20,6 @@ import { ToastService } from '../../../services/toast.service';
 export class Transactions {
   store = inject(DashboardStore);
   translate = inject(TranslateService);
-  toast = inject(ToastService);
   addEditTransactionDialog = inject(MatDialog);
   deleteTransactionDialog = inject(MatDialog);
 
