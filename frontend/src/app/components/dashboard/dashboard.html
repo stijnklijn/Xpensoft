@@ -19,8 +19,12 @@
         >
       }
     </span>
-    <button (click)="settings()"><fa-icon [icon]="icons.faGear"></fa-icon></button>
-    <button (click)="logout()">{{ 'DASHBOARD.LOGOUT' | translate }}</button>
+    <button (click)="settings()" data-testid="settings-button">
+      <fa-icon [icon]="icons.faGear"></fa-icon>
+    </button>
+    <button (click)="logout()" data-testid="logout-button">
+      {{ 'DASHBOARD.LOGOUT' | translate }}
+    </button>
   </div>
 </nav>
 <div class="content">

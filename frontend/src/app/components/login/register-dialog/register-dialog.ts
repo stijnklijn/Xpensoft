@@ -12,7 +12,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { catchError, finalize, map, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, map, of, switchMap } from 'rxjs';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../../../api/generated/user';
@@ -38,21 +38,24 @@ export class RegisterDialog {
   formBuilder = new FormBuilder();
   form = this.formBuilder.group(
     {
-      firstName: [null, [Validators.required, this.lengthValid]],
-      lastName: [null, [Validators.required, this.lengthValid]],
-      email: this.formBuilder.control(null, {
+      firstName: this.formBuilder.control<string | null>(null, [
+        Validators.required,
+        this.lengthValid,
+      ]),
+      lastName: this.formBuilder.control<string | null>(null, [
+        Validators.required,
+        this.lengthValid,
+      ]),
+      email: this.formBuilder.control<string | null>(null, {
         validators: [Validators.required, Validators.email],
         asyncValidators: [this.emailAvailable(this.userService)],
         updateOn: 'blur',
       }),
-      password: [
-        null,
-        [
-          Validators.required,
-          Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$'),
-        ],
-      ],
-      repeatPassword: [null, Validators.required],
+      password: this.formBuilder.control<string | null>(null, [
+        Validators.required,
+        Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$'),
+      ]),
+      repeatPassword: this.formBuilder.control<string | null>(null, Validators.required),
     },
     { validators: this.passwordsEqual },
   );

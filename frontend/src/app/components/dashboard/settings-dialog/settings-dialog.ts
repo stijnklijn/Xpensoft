@@ -50,10 +50,18 @@ export class SettingsDialog implements OnInit {
 
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
-    firstName: [null, [Validators.required, this.lengthValid]],
-    lastName: [null, [Validators.required, this.lengthValid]],
-    language: [this.localStorageLang ?? this.browserLang ?? 'en'],
-    defaultResultsPerPage: [null],
+    firstName: this.formBuilder.control<string | null>(null, [
+      Validators.required,
+      this.lengthValid,
+    ]),
+    lastName: this.formBuilder.control<string | null>(null, [
+      Validators.required,
+      this.lengthValid,
+    ]),
+    language: this.formBuilder.control<string | null>(
+      this.localStorageLang ?? this.browserLang ?? 'en',
+    ),
+    defaultResultsPerPage: this.formBuilder.control<number | null>(null),
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}

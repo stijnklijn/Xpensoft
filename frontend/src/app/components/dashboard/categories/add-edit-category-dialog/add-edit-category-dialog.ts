@@ -41,8 +41,12 @@ export class AddEditCategoryDialog implements OnInit {
 
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
-    name: [null, [Validators.required, this.lengthValid, this.nameUnique.bind(this)]],
-    isIncome: [null, Validators.required],
+    name: this.formBuilder.control<string | null>(null, [
+      Validators.required,
+      this.lengthValid,
+      this.nameUnique.bind(this),
+    ]),
+    isIncome: this.formBuilder.control<boolean | null>(null, Validators.required),
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}

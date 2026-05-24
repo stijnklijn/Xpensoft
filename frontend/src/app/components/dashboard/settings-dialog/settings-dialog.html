@@ -30,7 +30,7 @@
           <input matInput type="text" formControlName="lastName" maxlength="255" />
         </mat-form-field>
         @if (form.controls.lastName.touched) {
-          @if (form.controls.firstName.hasError('lengthInvalid')) {
+          @if (form.controls.lastName.hasError('lengthInvalid')) {
             <mat-error>{{
               'DASHBOARD.SETTINGS_DIALOG.VALIDATION.LAST_NAME.LENGTH_INVALID' | translate
             }}</mat-error>
@@ -44,7 +44,7 @@
           <mat-label>{{ 'DASHBOARD.SETTINGS_DIALOG.LANGUAGE' | translate }}</mat-label>
           <mat-select formControlName="language">
             <mat-select-trigger>
-              @let selected = supportedLanguages.find(l => l.code === form.value.language);
+              @let selected = supportedLanguages.find((l) => l.code === form.value.language);
               <span class="fi fi-{{ selected?.flag }}"></span>
               {{ selected?.label }}
             </mat-select-trigger>
@@ -73,7 +73,12 @@
       </div>
     }
     <div class="controls">
-      <button mat-button [disabled]="form.invalid || loading()" (click)="save()">
+      <button
+        mat-button
+        [disabled]="form.invalid || loading()"
+        (click)="save()"
+        data-testid="save-button"
+      >
         @if (loading()) {
           <mat-spinner diameter="25"></mat-spinner>
         } @else {

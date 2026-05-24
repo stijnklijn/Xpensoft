@@ -1,18 +1,20 @@
 <div class="content">
   @if (categories().length) {
     <div class="controls">
-      <button (click)="addTransaction()">
+      <button (click)="addTransaction()" data-testid="add-button">
         <fa-icon [icon]="icons.faPlus"></fa-icon>
       </button>
       <button
         (click)="changePageNumber(currentPageNumber() - 1)"
         [disabled]="!totalPages() || currentPageNumber() === 1"
+        data-testid="prev-button"
       >
         <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
       </button>
       <button
         (click)="changePageNumber(currentPageNumber() + 1)"
         [disabled]="!totalPages() || currentPageNumber() === totalPages()"
+        data-testid="next-button"
       >
         <fa-icon [icon]="icons.faArrowRight"></fa-icon>
       </button>
@@ -31,7 +33,11 @@
       </div>
       <div class="controls-item">
         <fa-icon [icon]="icons.faList"></fa-icon>
-        <select [(ngModel)]="resultsPerPage" (ngModelChange)="changeResultsPerPage($event)">
+        <select
+          [(ngModel)]="resultsPerPage"
+          (ngModelChange)="changeResultsPerPage($event)"
+          data-testid="results-per-page-select"
+        >
           @for (option of resultsPerPageOptions; track option) {
             <option [value]="option">{{ option }}</option>
           }
@@ -39,7 +45,11 @@
       </div>
       <div class="controls-item">
         <fa-icon [icon]="icons.faSort"></fa-icon>
-        <select #sortSelect (change)="changeSortByIndex(sortSelect.value)">
+        <select
+          #sortSelect
+          (change)="changeSortByIndex(sortSelect.value)"
+          data-testid="sort-select"
+        >
           @for (option of sortOptions(); track option.label) {
             <option [value]="$index" [selected]="$index === selectedSortIndex()">
               {{ option.label }}
@@ -53,9 +63,10 @@
           [placeholder]="translate.instant('TRANSACTIONS.SEARCH_BY_DESCRIPTION')"
           [value]="filter()"
           (input)="setFilter($event)"
+          data-testid="filter-input"
         />
       </div>
-      <button [disabled]="!filter()" (click)="removeFilter()">
+      <button [disabled]="!filter()" (click)="removeFilter()" data-testid="remove-filter-button">
         <fa-icon [icon]="icons.faX"></fa-icon>
       </button>
     </div>
@@ -95,8 +106,16 @@
                 {{ transaction.amount | number: '1.2-2' }}
               </td>
               <td class="actions">
-                <fa-icon [icon]="icons.faEdit" (click)="editTransaction(transaction)"></fa-icon
-                ><fa-icon [icon]="icons.faTrash" (click)="deleteTransaction(transaction)"></fa-icon>
+                <fa-icon
+                  [icon]="icons.faEdit"
+                  (click)="editTransaction(transaction)"
+                  data-testid="edit-button"
+                ></fa-icon
+                ><fa-icon
+                  [icon]="icons.faTrash"
+                  (click)="deleteTransaction(transaction)"
+                  data-testid="delete-button"
+                ></fa-icon>
               </td>
             </tr>
           }

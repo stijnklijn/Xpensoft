@@ -45,10 +45,17 @@ export class AddEditTransactionDialog implements OnInit {
 
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
-    date: [null, Validators.required],
-    description: [null, [Validators.required, this.lengthValid]],
-    category: [null as any, Validators.required],
-    amount: [null, [Validators.required, Validators.min(0.01), Validators.max(999_999.99)]],
+    date: this.formBuilder.control<Date | null>(null, Validators.required),
+    description: this.formBuilder.control<string | null>(null, [
+      Validators.required,
+      this.lengthValid,
+    ]),
+    category: this.formBuilder.control<any | null>(null, Validators.required),
+    amount: this.formBuilder.control<number | null>(null, [
+      Validators.required,
+      Validators.min(0.01),
+      Validators.max(999_999.99),
+    ]),
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
@@ -67,7 +74,7 @@ export class AddEditTransactionDialog implements OnInit {
     }
 
     this.form.get('category')?.valueChanges.subscribe((c: any) => {
-      this.isIncome.set(c.isIncome);
+      this.isIncome.set(c?.isIncome);
     });
   }
 

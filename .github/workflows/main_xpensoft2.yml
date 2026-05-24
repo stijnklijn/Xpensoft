@@ -14,7 +14,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -32,25 +32,9 @@ jobs:
       - name: Build
         run: dotnet build backend/Xpensoft.Api.slnx -c Release --no-restore
 
-      # TESTS
-      - name: Run Tests
+      # BACKEND TESTS
+      - name: Run Backend Tests
         run: dotnet test backend/Xpensoft.Api.slnx
-
-      # EF MIGRATIONS
-      - name: Install EF Tool
-        run: dotnet tool install --global dotnet-ef
-
-      - name: Add tools to PATH
-        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
-      - name: Run EF Migrations
-        run: dotnet ef database update --project backend/Xpensoft.Api/Xpensoft.Api.csproj
-        env:
-          ConnectionStrings__DefaultConnection: ${{ secrets.SQL_CONNECTION_STRING }}
-
-      # PUBLISH API PROJECT
-      - name: Publish API Project
-        run: dotnet publish backend/Xpensoft.Api/Xpensoft.Api.csproj -c Release -o publish
 
       # NODE SETUP
       - name: Setup Node
@@ -58,12 +42,26 @@ jobs:
         with:
           node-version: "24"
 
+      # FRONTEND INSTALL + TESTS
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend
+          npm run test -- --watch=false --browsers=ChromeHeadless
+
       # BUILD ANGULAR
       - name: Build Angular
         run: |
           cd frontend
-          npm install
           npm run build -- --configuration production
+
+      # PUBLISH API PROJECT
+      - name: Publish API Project
+        run: dotnet publish backend/Xpensoft.Api/Xpensoft.Api.csproj -c Release -o publish
 
       # COPY ANGULAR → API
       - name: Copy Angular to wwwroot
@@ -85,8 +83,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT
+      contents: read
 
     steps:
       - name: Download artifact
@@ -94,6 +92,7 @@ jobs:
         with:
           name: app
 
+      # LOGIN TO AZURE
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -101,6 +100,19 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_331179E36CCA4A0A82DE05D6EDF36A2A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2BAF3209B6234AFC93AD1CFC8AAB8325 }}
 
+      # EF MIGRATIONS
+      - name: Install EF Tool
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Add tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Run EF Migrations
+        run: dotnet ef database update --project backend/Xpensoft.Api/Xpensoft.Api.csproj
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.SQL_CONNECTION_STRING }}
+
+      # DEPLOY TO AZURE
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:

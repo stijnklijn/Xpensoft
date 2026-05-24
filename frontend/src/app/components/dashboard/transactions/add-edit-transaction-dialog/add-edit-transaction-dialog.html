@@ -65,7 +65,12 @@
       }
     }
     <div class="controls">
-      <button mat-button [disabled]="form.invalid || loading()" (click)="save()">
+      <button
+        mat-button
+        [disabled]="form.invalid || loading()"
+        (click)="save()"
+        data-testid="save-button"
+      >
         @if (loading()) {
           <mat-spinner diameter="25"></mat-spinner>
         } @else {
