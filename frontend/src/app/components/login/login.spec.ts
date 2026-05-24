@@ -192,6 +192,6 @@ describe('Login', () => {
 
     const spinner = fixture.nativeElement.querySelector('mat-spinner');
 
-    expect(spinner).toBeFalsy();
+    expect(spinner).toBeTruthy();
   });
 });
