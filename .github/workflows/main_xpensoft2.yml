@@ -108,7 +108,8 @@ jobs:
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Run EF Migrations
-        run: dotnet ef database update --project backend/Xpensoft.Api/Xpensoft.Api.csproj
+        working-directory: backend/Xpensoft.Api
+        run: dotnet ef database update
         env:
           ConnectionStrings__DefaultConnection: ${{ secrets.SQL_CONNECTION_STRING }}
 
