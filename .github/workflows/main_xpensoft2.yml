@@ -76,31 +76,20 @@ jobs:
           name: app
           path: publish
 
-  deploy:
-    name: Deploy
+  migrate:
+    name: Migrate database
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
 
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read
-
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app
+      - uses: actions/checkout@v4
 
-      # LOGIN TO AZURE
-      - name: Login to Azure
-        uses: azure/login@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2E453F6CFD5D4B33A6A7950FD23CE56B }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_331179E36CCA4A0A82DE05D6EDF36A2A }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2BAF3209B6234AFC93AD1CFC8AAB8325 }}
+          dotnet-version: "10.x"
 
-      # EF MIGRATIONS
       - name: Install EF Tool
         run: dotnet tool install --global dotnet-ef
 
@@ -113,7 +102,29 @@ jobs:
         env:
           ConnectionStrings__DefaultConnection: ${{ secrets.SQL_CONNECTION_STRING }}
 
-      # DEPLOY TO AZURE
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: migrate
+    if: github.ref == 'refs/heads/main'
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2E453F6CFD5D4B33A6A7950FD23CE56B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_331179E36CCA4A0A82DE05D6EDF36A2A }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2BAF3209B6234AFC93AD1CFC8AAB8325 }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
