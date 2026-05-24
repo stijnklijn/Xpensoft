@@ -1,6 +1,8 @@
 <div class="content">
   <div class="controls">
-    <button (click)="addCategory()"><fa-icon [icon]="icons.faPlus"></fa-icon></button>
+    <button (click)="addCategory()" data-testid="add-button">
+      <fa-icon [icon]="icons.faPlus"></fa-icon>
+    </button>
   </div>
   @if (categories().length) {
     <table>
@@ -21,11 +23,16 @@
             <td class="number">{{ numTransactions }}</td>
 
             <td class="actions">
-              <fa-icon [icon]="icons.faEdit" (click)="editCategory(category)"></fa-icon
+              <fa-icon
+                [icon]="icons.faEdit"
+                (click)="editCategory(category)"
+                data-testid="edit-button"
+              ></fa-icon
               ><fa-icon
                 [icon]="icons.faTrash"
                 (click)="!numTransactions && deleteCategory(category)"
                 [class.disabled]="numTransactions"
+                data-testid="delete-button"
               ></fa-icon>
             </td>
           </tr>

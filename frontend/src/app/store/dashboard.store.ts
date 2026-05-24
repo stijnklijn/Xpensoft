@@ -4,11 +4,20 @@ import { finalize, forkJoin, switchMap, tap } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ApiService } from '../services/api.service';
+import { CategoryDto, TransactionDto, UserUpdateRequestDto } from '../api/generated/models';
+import { CategoryService } from '../api/generated/category';
+import { TransactionService } from '../api/generated/transaction';
+import { UserService } from '../api/generated/user';
+
+import { toCategoryEntities } from '../mappers/category.mapper';
+import { toTransactionEntities } from '../mappers/transaction.mapper';
+import { toUserEntity } from '../mappers/user.mapper';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardStore {
-  api = inject(ApiService);
+  userService = inject(UserService);
+  categoryService = inject(CategoryService);
+  transactionService = inject(TransactionService);
   translate = inject(TranslateService);
 
   resultsPerPageOptions = [
@@ -32,25 +41,25 @@ export class DashboardStore {
     this.loading.set(true);
 
     forkJoin({
-      user: this.api.getUser(),
-      transactions: this.api.getTransactions(),
-      categories: this.api.getCategories(),
+      userResponseDto: this.userService.getUsers(),
+      pageResultOfTransactionDto: this.transactionService.getTransactions(),
+      pageResultOfCategoryDto: this.categoryService.getCategories(),
     })
       .pipe(
-        tap(({ user, transactions, categories }) => {
-          this.user.set(user);
+        tap(({ userResponseDto, pageResultOfTransactionDto, pageResultOfCategoryDto }) => {
+          this.user.set(toUserEntity(userResponseDto));
 
-          if (user.language) {
-            localStorage.setItem('language', user.language);
-            this.translate.use(user.language);
+          if (userResponseDto.language) {
+            localStorage.setItem('language', userResponseDto.language);
+            this.translate.use(userResponseDto.language);
           }
 
-          if (user.defaultResultsPerPage) {
-            this.resultsPerPage.set(user.defaultResultsPerPage);
+          if (userResponseDto.defaultResultsPerPage) {
+            this.resultsPerPage.set(Number(userResponseDto.defaultResultsPerPage));
           }
 
-          this.transactions.set(transactions.data);
-          this.categories.set(categories.data);
+          this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
+          this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
           this.loaded = true;
         }),
         finalize(() => this.loading.set(false)),
@@ -58,71 +67,65 @@ export class DashboardStore {
       .subscribe();
   }
 
-  updateUser(firstName: string, lastName: string, language: string, defaultResultsPerPage: number) {
-    return this.api.updateUser(firstName, lastName, language, defaultResultsPerPage).pipe(
-      switchMap(() => this.api.getUser()),
-      tap((user) => {
-        this.user.set(user);
+  updateUser(dto: UserUpdateRequestDto) {
+    return this.userService.putUsers(dto).pipe(
+      switchMap(() => this.userService.getUsers()),
+      tap((userDto) => {
+        this.user.set(toUserEntity(userDto));
       }),
     );
   }
 
-  createTransaction(date: string, description: string, categoryId: string, amount: number) {
-    return this.api.createTransaction(date, description, categoryId, amount).pipe(
-      switchMap(() => this.api.getTransactions()),
-      tap(({ data }) => {
-        this.transactions.set(data);
+  createTransaction(dto: TransactionDto) {
+    return this.transactionService.postTransactions(dto).pipe(
+      switchMap(() => this.transactionService.getTransactions()),
+      tap((pageResultOfTransactionDto) => {
+        this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
       }),
     );
   }
 
-  updateTransaction(
-    id: string,
-    date: string,
-    description: string,
-    categoryId: string,
-    amount: number,
-  ) {
-    return this.api.updateTransaction(id, date, description, categoryId, amount).pipe(
-      switchMap(() => this.api.getTransactions()),
-      tap(({ data }) => {
-        this.transactions.set(data);
+  updateTransaction(id: string, dto: TransactionDto) {
+    return this.transactionService.putTransactionsEntityId(id, dto).pipe(
+      switchMap(() => this.transactionService.getTransactions()),
+      tap((pageResultOfTransactionDto) => {
+        this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
       }),
     );
   }
 
   deleteTransaction(id: string) {
-    return this.api.deleteTransaction(id).pipe(
-      switchMap(() => this.api.getTransactions()),
-      tap(({ data }) => {
-        this.transactions.set(data);
+    return this.transactionService.deleteTransactionsEntityId(id).pipe(
+      switchMap(() => this.transactionService.getTransactions()),
+      tap((pageResultOfTransactionDto) => {
+        this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
       }),
     );
   }
 
-  createCategory(name: string, isIncome: boolean) {
-    return this.api.createCategory(name, isIncome).pipe(
-      switchMap(() => this.api.getCategories()),
-      tap(({ data }) => {
-        this.categories.set(data);
+  createCategory(dto: CategoryDto) {
+    return this.categoryService.postCategories(dto).pipe(
+      switchMap(() => this.categoryService.getCategories()),
+      tap((pageResultOfCategoryDto) => {
+        this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
       }),
     );
   }
 
-  updateCategory(id: string, name: string, isIncome: boolean) {
-    return this.api.updateCategory(id, name, isIncome).pipe(
-      switchMap(() => this.api.getCategories()),
-      tap(({ data }) => {
-        this.categories.set(data);
+  updateCategory(id: string, dto: CategoryDto) {
+    return this.categoryService.putCategoriesEntityId(id, dto).pipe(
+      switchMap(() => this.categoryService.getCategories()),
+      tap((pageResultOfCategoryDto) => {
+        this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
       }),
     );
   }
 
   deleteCategory(id: string) {
-    return this.api.deleteCategory(id).pipe(
-      switchMap(() => this.api.getCategories()),
-      tap(({ data }) => {
-        this.categories.set(data);
+    return this.categoryService.deleteCategoriesEntityId(id).pipe(
+      switchMap(() => this.categoryService.getCategories()),
+      tap((pageResultOfCategoryDto) => {
+        this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
       }),
     );
   }

@@ -95,7 +95,12 @@
         }}</mat-error>
       }
       <div class="controls">
-        <button mat-button [disabled]="form.invalid || loading()" (click)="register()">
+        <button
+          mat-button
+          [disabled]="form.invalid || loading()"
+          (click)="register()"
+          data-testid="register-button"
+        >
           @if (loading()) {
             <mat-spinner diameter="25"></mat-spinner>
           } @else {

@@ -17,6 +17,7 @@ import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
+import { apiInterceptor } from './interceptors/api.interceptor';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { routes } from './app.routes';
@@ -54,7 +55,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideCharts(withDefaultRegisterables()),
     provideDateFnsAdapter(),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([apiInterceptor, authInterceptor, errorInterceptor])),
     provideRouter(routes),
     { provide: LOCALE_ID, useValue: 'nl-NL' },
     { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },

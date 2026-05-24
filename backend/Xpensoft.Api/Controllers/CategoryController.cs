@@ -13,6 +13,7 @@ namespace Xpensoft.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("categories")]
+[Produces("application/json")]
 public class CategoryController(CategoryService service) : ControllerBase
 {
     private readonly CategoryService _service = service;
