@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build, migrate and deploy
 
 on:
   push:
