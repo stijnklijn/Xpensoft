@@ -15,7 +15,7 @@
       @if (user()?.lastLoginDateTime) {
         <em>
           ({{ 'DASHBOARD.LAST_LOGIN_ON' | translate }}
-          {{ user()?.lastLoginDateTime + 'z' | date: 'medium' }})</em
+          {{ user()?.lastLoginDateTime | date: 'medium' }})</em
         >
       }
     </span>

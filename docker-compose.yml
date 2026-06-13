@@ -1,30 +1,14 @@
 services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: db
-    restart: always
+  postgres:
+    image: postgres:16
+    container_name: xpensoft-postgres
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Docker1433-"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: xpensoft
     ports:
-      - "1433:1433"
+      - "5432:5432"
     volumes:
-      - db:/var/opt/mssql
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Xpensoft.Api/Dockerfile
-    container_name: backend
-    depends_on:
-      - db
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=xpensoft;User=sa;Password=Docker1433-;TrustServerCertificate=True;"
-      Jwt__Issuer: "Xpensoft"
-      Jwt__Key: "4a2c7f29-f10b-4087-bad3-649e4cec8055"
-    ports:
-      - "5100:8080"
-
+      - pgdata:/var/lib/postgresql/data
 volumes:
-  db:
+  pgdata:
