@@ -3,12 +3,43 @@ services:
     image: postgres:16
     container_name: xpensoft-postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: xpensoft
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - xpensoft-net
+
+  backend:
+    build:
+      context: ./backend/Xpensoft.Api
+      dockerfile: Dockerfile
+    container_name: xpensoft-backend
+    environment:
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Key: ${JWT_KEY}
+    expose:
+      - "8080"
+    networks:
+      - xpensoft-net
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: xpensoft-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - xpensoft-net
+
 volumes:
   pgdata:
+
+networks:
+  xpensoft-net:

@@ -1,3 +1,3 @@
 export const environment = {
-  API_URL: 'https://www.xpensoft.com',
+  API_URL: '/api',
 };
