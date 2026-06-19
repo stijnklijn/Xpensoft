@@ -85,7 +85,18 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-//Register middelware
+// Apply pending EF migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<XpensoftDbContext>();
+
+    if (db.Database.IsRelational())
+    {
+        await db.Database.MigrateAsync();
+    }
+}
+
+// Register middleware
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
