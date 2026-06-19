@@ -90,7 +90,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<XpensoftDbContext>();
 
-    await db.Database.MigrateAsync();
+    if (db.Database.IsRelational())
+    {
+        await db.Database.MigrateAsync();
+    }
 }
 
 // Register middleware
