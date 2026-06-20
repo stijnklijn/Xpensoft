@@ -25,18 +25,22 @@ services:
       - xpensoft-net
     depends_on:
       - postgres
+    ports:
+      - "127.0.0.1:8080:8080"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: xpensoft-frontend
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
       - xpensoft-net
+    ports:
+      - "127.0.0.1:4200:8080"
 
 volumes:
   pgdata:
