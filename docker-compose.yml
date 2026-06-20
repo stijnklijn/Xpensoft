@@ -40,7 +40,7 @@ services:
     networks:
       - xpensoft-net
     ports:
-      - "127.0.0.1:4200:8080"
+      - "127.0.0.1:4200:80"
 
 volumes:
   pgdata:
