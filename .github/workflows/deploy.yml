@@ -1,0 +1,37 @@
+name: Deploy
+on:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # permissions:
+    #   contents: read # This is required for actions/checkout
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.x"
+      - name: Build backend
+        run: dotnet build backend/Xpensoft.Api.slnx -c Release
+      - name: Run backend unit tests
+        run: dotnet test backend/Xpensoft.Api.slnx
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Run frontend unit tests
+        run: |
+          cd frontend
+          npm run test
