@@ -109,13 +109,8 @@ jobs:
             "VPS_APP_DIR='$VPS_APP_DIR' IMAGE_TAG='$IMAGE_TAG' bash -s" <<'REMOTE'
               set -Eeuo pipefail
               cd "$VPS_APP_DIR"
-              if grep -q '^IMAGE_TAG=' .env; then
-                sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/" .env
-              else
-                printf '\nIMAGE_TAG=%s\n' "$IMAGE_TAG" >> .env
-              fi
               docker compose config --quiet
-              docker compose pull
-              docker compose up -d --remove-orphans --wait
+              IMAGE_TAG="$IMAGE_TAG" docker compose pull
+              IMAGE_TAG="$IMAGE_TAG" docker compose up -d --remove-orphans --wait
               docker compose ps
           REMOTE
