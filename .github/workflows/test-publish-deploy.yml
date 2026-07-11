@@ -65,6 +65,15 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/xpensoft-backend:latest
             ghcr.io/${{ github.repository_owner }}/xpensoft-backend:${{ github.sha }}
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v7
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/xpensoft-frontend:latest
+            ghcr.io/${{ github.repository_owner }}/xpensoft-frontend:${{ github.sha }}
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
