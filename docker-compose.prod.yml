@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: xpensoft-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - xpensoft-net
+
+  backend:
+    image: ghcr.io/stijnklijn/xpensoft-backend:${IMAGE_TAG}
+    container_name: xpensoft-backend
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Jwt__Key: ${JWT_KEY}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - xpensoft-net
+
+  frontend:
+    image: ghcr.io/stijnklijn/xpensoft-frontend:${IMAGE_TAG}
+    container_name: xpensoft-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4200:80"
+    depends_on:
+      - backend
+    networks:
+      - xpensoft-net
+
+volumes:
+  pgdata:
+
+networks:
+  xpensoft-net:
