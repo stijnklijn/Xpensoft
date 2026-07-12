@@ -6,9 +6,9 @@ import { Observable, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { AddEditTransactionDialog } from './add-edit-transaction-dialog/add-edit-transaction-dialog';
+import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 import { Transactions } from './transactions';
 import { DashboardStore } from '../../../store/dashboard.store';
-import { DeleteTransactionDialog } from './delete-transaction-dialog/delete-transaction-dialog';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -67,7 +67,9 @@ describe('Transactions', () => {
     };
 
     dialogMock = {
-      open: vi.fn(),
+      open: vi.fn().mockReturnValue({
+        afterClosed: () => of(false),
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -156,11 +158,12 @@ describe('Transactions', () => {
     button.click();
 
     expect(dialogMock.open).toHaveBeenCalledWith(
-      DeleteTransactionDialog,
+      ConfirmationDialog,
       expect.objectContaining({
         disableClose: true,
         data: expect.objectContaining({
-          id: '4',
+          title: 'TRANSACTIONS.DIALOG.HEADER.DELETE',
+          message: 'TRANSACTIONS.DIALOG.CONFIRM_DELETE Bananas?',
         }),
       }),
     );

@@ -7,8 +7,8 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { AddEditCategoryDialog } from './add-edit-category-dialog/add-edit-category-dialog';
 import { Categories } from './categories';
+import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
-import { DeleteCategoryDialog } from './delete-category-dialog/delete-category-dialog';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -38,7 +38,9 @@ describe('Categories', () => {
     };
 
     dialogMock = {
-      open: vi.fn(),
+      open: vi.fn().mockReturnValue({
+        afterClosed: () => of(false),
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -132,10 +134,13 @@ describe('Categories', () => {
     button.click();
 
     expect(dialogMock.open).toHaveBeenCalledWith(
-      DeleteCategoryDialog,
+      ConfirmationDialog,
       expect.objectContaining({
         disableClose: true,
-        data: expect.objectContaining({ id: '3' }),
+        data: expect.objectContaining({
+          title: 'CATEGORIES.DIALOG.HEADER.DELETE',
+          message: 'CATEGORIES.DIALOG.CONFIRM_DELETE ZEmpty?',
+        }),
       }),
     );
   });
