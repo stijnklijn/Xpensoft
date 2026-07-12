@@ -1,4 +1,4 @@
-import { Component, inject, Inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -30,6 +30,7 @@ import { UserService } from '../../../api/generated/user';
   templateUrl: './register-dialog.html',
 })
 export class RegisterDialog {
+  data = inject(MAT_DIALOG_DATA);
   userService = inject(UserService);
 
   loading = signal(false);
@@ -59,8 +60,6 @@ export class RegisterDialog {
     },
     { validators: this.passwordsEqual },
   );
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
   lengthValid(control: AbstractControl): ValidationErrors | null {
     if (control.value == null || control.value.trim().length < 2) {

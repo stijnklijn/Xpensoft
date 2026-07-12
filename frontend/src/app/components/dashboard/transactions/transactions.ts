@@ -3,13 +3,16 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
+import { filter } from 'rxjs';
+
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AddEditTransactionDialog } from './add-edit-transaction-dialog/add-edit-transaction-dialog';
+import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
-import { DeleteTransactionDialog } from './delete-transaction-dialog/delete-transaction-dialog';
 import { icons } from '../../../shared/icons';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-transactions',
@@ -19,9 +22,9 @@ import { icons } from '../../../shared/icons';
 })
 export class Transactions {
   store = inject(DashboardStore);
+  toast = inject(ToastService);
   translate = inject(TranslateService);
-  addEditTransactionDialog = inject(MatDialog);
-  deleteTransactionDialog = inject(MatDialog);
+  dialog = inject(MatDialog);
 
   icons = icons;
 
@@ -127,7 +130,7 @@ export class Transactions {
   }
 
   addTransaction() {
-    this.addEditTransactionDialog.open(AddEditTransactionDialog, {
+    this.dialog.open(AddEditTransactionDialog, {
       disableClose: true,
       data: {
         isNew: true,
@@ -139,7 +142,7 @@ export class Transactions {
   }
 
   editTransaction(transaction: Transaction) {
-    this.addEditTransactionDialog.open(AddEditTransactionDialog, {
+    this.dialog.open(AddEditTransactionDialog, {
       disableClose: true,
       data: {
         isNew: false,
@@ -152,9 +155,20 @@ export class Transactions {
   }
 
   deleteTransaction(transaction: Transaction) {
-    this.deleteTransactionDialog.open(DeleteTransactionDialog, {
-      disableClose: true,
-      data: transaction,
-    });
+    this.dialog
+      .open(ConfirmationDialog, {
+        disableClose: true,
+        data: {
+          title: this.translate.instant('TRANSACTIONS.DIALOG.HEADER.DELETE'),
+          message: `${this.translate.instant('TRANSACTIONS.DIALOG.CONFIRM_DELETE')} ${transaction.description}?`,
+        },
+      })
+      .afterClosed()
+      .pipe(filter((confirmed) => confirmed))
+      .subscribe(() => {
+        this.store.deleteTransaction(transaction.id).subscribe(() => {
+          this.toast.success(this.translate.instant('TRANSACTIONS.TRANSACTION_DELETED'));
+        });
+      });
   }
 }

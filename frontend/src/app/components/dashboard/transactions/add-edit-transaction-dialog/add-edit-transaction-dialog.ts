@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   Validators,
@@ -35,6 +35,7 @@ import { ToastService } from '../../../../services/toast.service';
   ],
 })
 export class AddEditTransactionDialog implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<AddEditTransactionDialog>);
   store = inject(DashboardStore);
   toast = inject(ToastService);
@@ -57,8 +58,6 @@ export class AddEditTransactionDialog implements OnInit {
       Validators.max(999_999.99),
     ]),
   });
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
     if (this.data?.transaction) {

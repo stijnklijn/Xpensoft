@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   Validators,
@@ -32,6 +32,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './add-edit-category-dialog.html',
 })
 export class AddEditCategoryDialog implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<AddEditCategoryDialog>);
   store = inject(DashboardStore);
   toast = inject(ToastService);
@@ -48,8 +49,6 @@ export class AddEditCategoryDialog implements OnInit {
     ]),
     isIncome: this.formBuilder.control<boolean | null>(null, Validators.required),
   });
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
     if (this.data?.category) {

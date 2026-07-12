@@ -94,7 +94,7 @@
           "MAX": "Amount must be at most 999,999.99"
         }
       },
-      "CONFIRM_DELETE": "Delete transaction with description "
+      "CONFIRM_DELETE": "Delete transaction with description"
     }
   },
   "CATEGORIES": {
@@ -113,7 +113,7 @@
           "REQUIRED": "Type is required"
         }
       },
-      "CONFIRM_DELETE": "Delete category with name "
+      "CONFIRM_DELETE": "Delete category with name"
     }
   },
   "ANALYSIS": {

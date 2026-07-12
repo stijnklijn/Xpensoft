@@ -4,10 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+import { filter } from 'rxjs';
+
 import { AddEditCategoryDialog } from './add-edit-category-dialog/add-edit-category-dialog';
+import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
-import { DeleteCategoryDialog } from './delete-category-dialog/delete-category-dialog';
 import { icons } from '../../../shared/icons';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-categories',
@@ -16,10 +19,10 @@ import { icons } from '../../../shared/icons';
   styleUrl: './categories.css',
 })
 export class Categories {
+  dialog = inject(MatDialog);
   store = inject(DashboardStore);
+  toast = inject(ToastService);
   translate = inject(TranslateService);
-  addEditCategoryDialog = inject(MatDialog);
-  deleteCategoryDialog = inject(MatDialog);
 
   icons = icons;
 
@@ -31,7 +34,7 @@ export class Categories {
   );
 
   addCategory() {
-    this.addEditCategoryDialog.open(AddEditCategoryDialog, {
+    this.dialog.open(AddEditCategoryDialog, {
       disableClose: true,
       data: {
         isNew: true,
@@ -41,7 +44,7 @@ export class Categories {
   }
 
   editCategory(category: Category) {
-    this.addEditCategoryDialog.open(AddEditCategoryDialog, {
+    this.dialog.open(AddEditCategoryDialog, {
       disableClose: true,
       data: {
         isNew: false,
@@ -52,10 +55,21 @@ export class Categories {
   }
 
   deleteCategory(category: Category) {
-    this.deleteCategoryDialog.open(DeleteCategoryDialog, {
-      disableClose: true,
-      data: category,
-    });
+    this.dialog
+      .open(ConfirmationDialog, {
+        disableClose: true,
+        data: {
+          title: this.translate.instant('CATEGORIES.DIALOG.HEADER.DELETE'),
+          message: `${this.translate.instant('CATEGORIES.DIALOG.CONFIRM_DELETE')} ${category.name}?`,
+        },
+      })
+      .afterClosed()
+      .pipe(filter((confirmed) => confirmed))
+      .subscribe(() => {
+        this.store.deleteCategory(category.id).subscribe(() => {
+          this.toast.success(this.translate.instant('CATEGORIES.CATEGORY_DELETED'));
+        });
+      });
   }
 
   calcNumTransactions(id: string) {

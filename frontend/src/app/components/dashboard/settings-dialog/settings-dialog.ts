@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -32,6 +32,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './settings-dialog.css',
 })
 export class SettingsDialog implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<SettingsDialog>);
   store = inject(DashboardStore);
   toast = inject(ToastService);
@@ -63,8 +64,6 @@ export class SettingsDialog implements OnInit {
     ),
     defaultResultsPerPage: this.formBuilder.control<number | null>(null),
   });
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
     this.form.setValue({
