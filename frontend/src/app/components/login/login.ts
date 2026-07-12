@@ -20,8 +20,8 @@ import { versionInfo } from '../../../environments/version';
   styleUrl: './login.css',
 })
 export class Login {
+  dialog = inject(MatDialog);
   loginService = inject(LoginService);
-  registerDialog = inject(MatDialog);
   router = inject(Router);
   translate = inject(TranslateService);
 
@@ -61,7 +61,7 @@ export class Login {
   }
 
   register() {
-    this.registerDialog.open(RegisterDialog, {
+    this.dialog.open(RegisterDialog, {
       disableClose: true,
     });
   }

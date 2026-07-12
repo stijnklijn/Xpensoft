@@ -27,11 +27,11 @@ import { ToastService } from '../../services/toast.service';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  dialog = inject(MatDialog);
   router = inject(Router);
   store = inject(DashboardStore);
   toast = inject(ToastService);
   translate = inject(TranslateService);
-  settingsDialog = inject(MatDialog);
 
   icons = icons;
 
@@ -45,7 +45,7 @@ export class Dashboard {
   }
 
   settings() {
-    this.settingsDialog.open(SettingsDialog, {
+    this.dialog.open(SettingsDialog, {
       disableClose: true,
       data: { user: this.user(), resultsPerPageOptions: this.resultsPerPageOptions },
     });

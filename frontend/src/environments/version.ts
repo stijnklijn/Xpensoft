@@ -1,4 +1,4 @@
 export const versionInfo = {
-  version: '1.3.3',
-  buildDate: '2026-07-11',
+  version: '1.3.4',
+  buildDate: '2026-07-12',
 };
