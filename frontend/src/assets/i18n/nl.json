@@ -121,6 +121,8 @@
     }
   },
   "ANALYSIS": {
+    "DISPLAY": "Weergave",
+    "YEAR": "Jaar",
     "MONTH": "Maand",
     "DIFFERENCE": "Verschil",
     "TOTAL": "Totaal",

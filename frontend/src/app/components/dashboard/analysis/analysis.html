@@ -1,26 +1,24 @@
 <div class="content">
   <div class="placeholder"></div>
   <div class="controls">
+    <label for="display-select">{{ 'ANALYSIS.DISPLAY' | translate }}:</label>
+    <select id="display-select">
+      <option>OPTIONS</option>
+    </select>
+    <label for="year-select">{{ 'ANALYSIS.YEAR' | translate }}:</label>
+    <select #yearSelect id="year-select" (change)="changeYear(+yearSelect.value)">
+      @for (yearLabel of yearLabels(); track $index) {
+        <option [value]="yearLabel" [selected]="year() === yearLabel">{{ yearLabel }}</option>
+      }
+    </select>
     @if (sections()[activeSectionGroupIndex()]?.perMonth) {
-      <button (click)="changeMonth(month() - 1)">
-        <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
-      </button>
-      <span>
-        {{ monthLabels()[month()] }}
-      </span>
-      <button (click)="changeMonth(month() + 1)">
-        <fa-icon [icon]="icons.faArrowRight"></fa-icon>
-      </button>
+      <label for="month-select">{{ 'ANALYSIS.MONTH' | translate }}:</label>
+      <select #monthSelect id="month-select" (change)="changeMonth(+monthSelect.value)">
+        @for (monthLabel of monthLabels(); track $index) {
+          <option [value]="$index" [selected]="month() === $index">{{ monthLabel }}</option>
+        }
+      </select>
     }
-    <button (click)="changeYear(year() - 1)">
-      <fa-icon [icon]="icons.faArrowLeft"></fa-icon>
-    </button>
-    <span>
-      {{ year() }}
-    </span>
-    <button (click)="changeYear(year() + 1)">
-      <fa-icon [icon]="icons.faArrowRight"></fa-icon>
-    </button>
   </div>
   <div class="sidenav">
     @for (group of sections(); track $index; let groupIndex = $index) {

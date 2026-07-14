@@ -117,6 +117,8 @@
     }
   },
   "ANALYSIS": {
+    "DISPLAY": "Display",
+    "YEAR": "Year",
     "MONTH": "Month",
     "DIFFERENCE": "Difference",
     "TOTAL": "Total",

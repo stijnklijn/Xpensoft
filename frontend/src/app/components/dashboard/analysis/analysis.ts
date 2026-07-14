@@ -31,6 +31,7 @@ export class Analysis {
   activeSectionGroupIndex = signal<number>(0);
 
   sections = signal<Array<any>>([]);
+  yearLabels = signal<Array<number>>([]);
   monthLabels = signal<Array<string>>([]);
 
   colorScheme = [
@@ -182,6 +183,19 @@ export class Analysis {
             ],
           },
         ]);
+
+        let firstYear = this.year();
+        let lastYear = this.year();
+
+        if (this.transactions().length > 0) {
+          const years = this.transactions().map((t) => new Date(t.date).getFullYear());
+          firstYear = Math.min(...years, firstYear);
+          lastYear = Math.max(...years, lastYear);
+        }
+
+        this.yearLabels.set(
+          Array.from({ length: lastYear - firstYear + 1 }, (_, i) => firstYear + i),
+        );
 
         this.monthLabels.set([
           t['ANALYSIS.MONTHS.JANUARY'],
@@ -379,14 +393,6 @@ export class Analysis {
   }
 
   changeMonth(month: number) {
-    if (month === -1) {
-      this.year.update((y) => y - 1);
-      this.month.set(11);
-    } else if (month === 12) {
-      this.year.update((y) => y + 1);
-      this.month.set(0);
-    } else {
-      this.month.set(month);
-    }
+    this.month.set(month);
   }
 }
