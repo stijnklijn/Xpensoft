@@ -120,9 +120,6 @@
     "MONTH": "Month",
     "DIFFERENCE": "Difference",
     "TOTAL": "Total",
-    "TABLE": "Table",
-    "BAR": "Bar",
-    "DOUGHNUT": "Doughnut",
     "NO_DATA": "No data in this period",
     "SECTION_HEADERS": {
       "TOTALS": "Totals",

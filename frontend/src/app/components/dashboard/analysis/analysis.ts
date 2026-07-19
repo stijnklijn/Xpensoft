@@ -27,10 +27,11 @@ export class Analysis {
   year = signal(new Date().getFullYear());
   month = signal(new Date().getMonth());
 
-  activeSection = signal<string | null>('totals-table');
-  activeSectionGroupIndex = signal<number>(0);
+  activeSectionIndex = signal<number>(0);
+  activeDisplayOptionIndex = signal<number>(0);
 
   sections = signal<Array<any>>([]);
+  yearLabels = signal<Array<number>>([]);
   monthLabels = signal<Array<string>>([]);
 
   colorScheme = [
@@ -48,19 +49,57 @@ export class Analysis {
   expensesColor = '#f75555';
 
   constructor() {
+    this.sections.set([
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.TOTALS',
+        displayOptions: [icons.faTable, icons.faChartSimple],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY',
+        displayOptions: [icons.faTable],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH',
+        displayOptions: [icons.faTable],
+        perMonth: true,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: true,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: true,
+      },
+    ]);
+
+    let firstYear = this.year();
+    let lastYear = this.year();
+
+    if (this.transactions().length > 0) {
+      const years = this.transactions().map((t) => new Date(t.date).getFullYear());
+      firstYear = Math.min(...years, firstYear);
+      lastYear = Math.max(...years, lastYear);
+    }
+
+    this.yearLabels.set(Array.from({ length: lastYear - firstYear + 1 }, (_, i) => firstYear + i));
+
     this.translate
       .stream([
-        'ANALYSIS.TABLE',
-        'ANALYSIS.BAR',
-        'ANALYSIS.DOUGHNUT',
-        'ANALYSIS.SECTION_HEADERS.TOTALS',
-        'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY',
-        'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY',
-        'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY',
-        'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH',
-        'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
-        'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
-        'ANALYSIS.SECTION_HEADERS.TOTALS',
         'ANALYSIS.MONTHS.JANUARY',
         'ANALYSIS.MONTHS.FEBRUARY',
         'ANALYSIS.MONTHS.MARCH',
@@ -75,134 +114,8 @@ export class Analysis {
         'ANALYSIS.MONTHS.DECEMBER',
       ])
       .subscribe((t) => {
-        this.sections.set([
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.TOTALS'],
-            perMonth: false,
-            children: [
-              {
-                icon: this.icons.faTable,
-                label: t['ANALYSIS.TABLE'],
-                id: 'totals-table',
-              },
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'totals-bar',
-              },
-            ],
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY'],
-            perMonth: false,
-            children: [
-              {
-                icon: this.icons.faTable,
-                label: t['ANALYSIS.TABLE'],
-                id: 'totals-per-category-table',
-              },
-            ],
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY'],
-
-            perMonth: false,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'income-distribution-per-category-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'income-distribution-per-category-doughnut',
-              },
-            ],
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY'],
-            perMonth: false,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-
-                label: t['ANALYSIS.BAR'],
-                id: 'expenses-distribution-per-category-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'expenses-distribution-per-category-doughnut',
-              },
-            ],
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH'],
-            perMonth: true,
-            children: [
-              {
-                icon: this.icons.faTable,
-                label: t['ANALYSIS.TABLE'],
-                id: 'totals-per-category-per-month-table',
-              },
-            ],
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH'],
-
-            perMonth: true,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'income-distribution-per-category-per-month-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'income-distribution-per-category-per-month-doughnut',
-              },
-            ],
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH'],
-            perMonth: true,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'expenses-distribution-per-category-per-month-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'expenses-distribution-per-category-per-month-doughnut',
-              },
-            ],
-          },
-        ]);
-
-        this.monthLabels.set([
-          t['ANALYSIS.MONTHS.JANUARY'],
-          t['ANALYSIS.MONTHS.FEBRUARY'],
-          t['ANALYSIS.MONTHS.MARCH'],
-          t['ANALYSIS.MONTHS.APRIL'],
-          t['ANALYSIS.MONTHS.MAY'],
-          t['ANALYSIS.MONTHS.JUNE'],
-          t['ANALYSIS.MONTHS.JULY'],
-          t['ANALYSIS.MONTHS.AUGUST'],
-          t['ANALYSIS.MONTHS.SEPTEMBER'],
-          t['ANALYSIS.MONTHS.OCTOBER'],
-          t['ANALYSIS.MONTHS.NOVEMBER'],
-          t['ANALYSIS.MONTHS.DECEMBER'],
-        ]);
+        this.monthLabels.set(Object.values(t));
       });
-  }
-
-  goTo(id: string, groupIndex: number) {
-    this.activeSection.set(id);
-    this.activeSectionGroupIndex.set(groupIndex);
   }
 
   categoryMap = computed(() => {
@@ -374,19 +287,20 @@ export class Analysis {
       .map((c) => c.amount),
   );
 
+  changeSection(index: number) {
+    this.activeSectionIndex.set(index);
+    this.activeDisplayOptionIndex.set(0);
+  }
+
+  changeDisplayOption(index: number) {
+    this.activeDisplayOptionIndex.set(index);
+  }
+
   changeYear(year: number) {
     this.year.set(year);
   }
 
   changeMonth(month: number) {
-    if (month === -1) {
-      this.year.update((y) => y - 1);
-      this.month.set(11);
-    } else if (month === 12) {
-      this.year.update((y) => y + 1);
-      this.month.set(0);
-    } else {
-      this.month.set(month);
-    }
+    this.month.set(month);
   }
 }
