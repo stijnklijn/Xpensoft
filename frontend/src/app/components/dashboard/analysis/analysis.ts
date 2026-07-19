@@ -27,8 +27,8 @@ export class Analysis {
   year = signal(new Date().getFullYear());
   month = signal(new Date().getMonth());
 
-  activeSection = signal<string | null>('totals-table');
-  activeSectionGroupIndex = signal<number>(0);
+  activeSectionIndex = signal<number>(0);
+  activeDisplayOptionIndex = signal<number>(0);
 
   sections = signal<Array<any>>([]);
   yearLabels = signal<Array<number>>([]);
@@ -79,108 +79,38 @@ export class Analysis {
         this.sections.set([
           {
             title: t['ANALYSIS.SECTION_HEADERS.TOTALS'],
+            displayOptions: [icons.faTable, icons.faChartSimple],
             perMonth: false,
-            children: [
-              {
-                icon: this.icons.faTable,
-                label: t['ANALYSIS.TABLE'],
-                id: 'totals-table',
-              },
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'totals-bar',
-              },
-            ],
           },
           {
             title: t['ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY'],
+            displayOptions: [icons.faTable],
             perMonth: false,
-            children: [
-              {
-                icon: this.icons.faTable,
-                label: t['ANALYSIS.TABLE'],
-                id: 'totals-per-category-table',
-              },
-            ],
           },
           {
             title: t['ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY'],
-
+            displayOptions: [icons.faChartSimple, icons.faChartPie],
             perMonth: false,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'income-distribution-per-category-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'income-distribution-per-category-doughnut',
-              },
-            ],
           },
           {
             title: t['ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY'],
+            displayOptions: [icons.faChartSimple, icons.faChartPie],
             perMonth: false,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-
-                label: t['ANALYSIS.BAR'],
-                id: 'expenses-distribution-per-category-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'expenses-distribution-per-category-doughnut',
-              },
-            ],
           },
           {
             title: t['ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH'],
+            displayOptions: [icons.faTable],
             perMonth: true,
-            children: [
-              {
-                icon: this.icons.faTable,
-                label: t['ANALYSIS.TABLE'],
-                id: 'totals-per-category-per-month-table',
-              },
-            ],
           },
           {
             title: t['ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH'],
-
+            displayOptions: [icons.faChartSimple, icons.faChartPie],
             perMonth: true,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'income-distribution-per-category-per-month-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'income-distribution-per-category-per-month-doughnut',
-              },
-            ],
           },
           {
             title: t['ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH'],
+            displayOptions: [icons.faChartSimple, icons.faChartPie],
             perMonth: true,
-            children: [
-              {
-                icon: this.icons.faChartSimple,
-                label: t['ANALYSIS.BAR'],
-                id: 'expenses-distribution-per-category-per-month-bar',
-              },
-              {
-                icon: this.icons.faChartPie,
-                label: t['ANALYSIS.DOUGHNUT'],
-                id: 'expenses-distribution-per-category-per-month-doughnut',
-              },
-            ],
           },
         ]);
 
@@ -212,11 +142,6 @@ export class Analysis {
           t['ANALYSIS.MONTHS.DECEMBER'],
         ]);
       });
-  }
-
-  goTo(id: string, groupIndex: number) {
-    this.activeSection.set(id);
-    this.activeSectionGroupIndex.set(groupIndex);
   }
 
   categoryMap = computed(() => {
@@ -387,6 +312,15 @@ export class Analysis {
       .filter((c) => !c.isIncome)
       .map((c) => c.amount),
   );
+
+  changeSection(index: number) {
+    this.activeSectionIndex.set(index);
+    this.activeDisplayOptionIndex.set(0);
+  }
+
+  changeDisplayOption(index: number) {
+    this.activeDisplayOptionIndex.set(index);
+  }
 
   changeYear(year: number) {
     this.year.set(year);
