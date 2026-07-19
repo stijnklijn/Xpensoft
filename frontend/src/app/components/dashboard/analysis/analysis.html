@@ -22,7 +22,9 @@
       <label for="month-select">{{ 'ANALYSIS.MONTH' | translate }}:</label>
       <select #monthSelect id="month-select" (change)="changeMonth(+monthSelect.value)">
         @for (monthLabel of monthLabels(); track $index) {
-          <option [value]="$index" [selected]="month() === $index">{{ monthLabel }}</option>
+          <option [value]="$index" [selected]="month() === $index">
+            {{ monthLabel }}
+          </option>
         }
       </select>
     }
@@ -34,7 +36,7 @@
         [class.active]="activeSectionIndex() === $index"
         (click)="changeSection($index)"
       >
-        {{ section.title }}
+        {{ section.title | translate }}
       </div>
     }
   </div>

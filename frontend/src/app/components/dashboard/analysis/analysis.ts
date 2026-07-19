@@ -49,19 +49,57 @@ export class Analysis {
   expensesColor = '#f75555';
 
   constructor() {
+    this.sections.set([
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.TOTALS',
+        displayOptions: [icons.faTable, icons.faChartSimple],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY',
+        displayOptions: [icons.faTable],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: false,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH',
+        displayOptions: [icons.faTable],
+        perMonth: true,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: true,
+      },
+      {
+        title: 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
+        displayOptions: [icons.faChartSimple, icons.faChartPie],
+        perMonth: true,
+      },
+    ]);
+
+    let firstYear = this.year();
+    let lastYear = this.year();
+
+    if (this.transactions().length > 0) {
+      const years = this.transactions().map((t) => new Date(t.date).getFullYear());
+      firstYear = Math.min(...years, firstYear);
+      lastYear = Math.max(...years, lastYear);
+    }
+
+    this.yearLabels.set(Array.from({ length: lastYear - firstYear + 1 }, (_, i) => firstYear + i));
+
     this.translate
       .stream([
-        'ANALYSIS.TABLE',
-        'ANALYSIS.BAR',
-        'ANALYSIS.DOUGHNUT',
-        'ANALYSIS.SECTION_HEADERS.TOTALS',
-        'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY',
-        'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY',
-        'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY',
-        'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH',
-        'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
-        'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
-        'ANALYSIS.SECTION_HEADERS.TOTALS',
         'ANALYSIS.MONTHS.JANUARY',
         'ANALYSIS.MONTHS.FEBRUARY',
         'ANALYSIS.MONTHS.MARCH',
@@ -76,71 +114,7 @@ export class Analysis {
         'ANALYSIS.MONTHS.DECEMBER',
       ])
       .subscribe((t) => {
-        this.sections.set([
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.TOTALS'],
-            displayOptions: [icons.faTable, icons.faChartSimple],
-            perMonth: false,
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY'],
-            displayOptions: [icons.faTable],
-            perMonth: false,
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY'],
-            displayOptions: [icons.faChartSimple, icons.faChartPie],
-            perMonth: false,
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY'],
-            displayOptions: [icons.faChartSimple, icons.faChartPie],
-            perMonth: false,
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH'],
-            displayOptions: [icons.faTable],
-            perMonth: true,
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH'],
-            displayOptions: [icons.faChartSimple, icons.faChartPie],
-            perMonth: true,
-          },
-          {
-            title: t['ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH'],
-            displayOptions: [icons.faChartSimple, icons.faChartPie],
-            perMonth: true,
-          },
-        ]);
-
-        let firstYear = this.year();
-        let lastYear = this.year();
-
-        if (this.transactions().length > 0) {
-          const years = this.transactions().map((t) => new Date(t.date).getFullYear());
-          firstYear = Math.min(...years, firstYear);
-          lastYear = Math.max(...years, lastYear);
-        }
-
-        this.yearLabels.set(
-          Array.from({ length: lastYear - firstYear + 1 }, (_, i) => firstYear + i),
-        );
-
-        this.monthLabels.set([
-          t['ANALYSIS.MONTHS.JANUARY'],
-          t['ANALYSIS.MONTHS.FEBRUARY'],
-          t['ANALYSIS.MONTHS.MARCH'],
-          t['ANALYSIS.MONTHS.APRIL'],
-          t['ANALYSIS.MONTHS.MAY'],
-          t['ANALYSIS.MONTHS.JUNE'],
-          t['ANALYSIS.MONTHS.JULY'],
-          t['ANALYSIS.MONTHS.AUGUST'],
-          t['ANALYSIS.MONTHS.SEPTEMBER'],
-          t['ANALYSIS.MONTHS.OCTOBER'],
-          t['ANALYSIS.MONTHS.NOVEMBER'],
-          t['ANALYSIS.MONTHS.DECEMBER'],
-        ]);
+        this.monthLabels.set(Object.values(t));
       });
   }
 
