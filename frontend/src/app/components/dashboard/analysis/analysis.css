@@ -28,6 +28,31 @@
   padding: 0.25rem;
 }
 
+.controls ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.controls li {
+  float: left;
+}
+
+.controls li label {
+  background: white;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.controls li input[type='radio'] {
+  width: 0;
+  height: 0;
+}
+
+.controls li input[type='radio']:checked ~ label {
+  background: var(--color-primary);
+  color: white;
+}
+
 .sidenav {
   position: fixed;
   top: calc(2 * var(--navbar-height));
@@ -43,26 +68,6 @@
   top: var(--navbar-height);
   left: var(--sidenav-width);
   right: 0;
-}
-
-button {
-  width: 2rem;
-  height: 2rem;
-  font-size: 1rem;
-  background-color: var(--color-primary);
-  color: white;
-  padding: 5px;
-  border: none;
-  border-radius: 5px;
-}
-
-button:hover {
-  cursor: pointer;
-  background-color: var(--color-light);
-}
-
-button.active {
-  color: #ffff00;
 }
 
 .section-title {

@@ -2,25 +2,17 @@
   <div class="placeholder"></div>
   <div class="controls">
     @if (sections()[activeSectionIndex()]?.displayOptions.length > 1) {
-      <label for="display-select">{{ 'ANALYSIS.DISPLAY' | translate }}:</label>
-      @for (displayOption of sections()[activeSectionIndex()]?.displayOptions; track $index) {
-        <button
-          [class.active]="activeDisplayOptionIndex() === $index"
-          (click)="changeDisplayOption($index)"
-        >
-          <fa-icon [icon]="displayOption"></fa-icon>
-        </button>
-      }
+      <ul>
+        @for (displayOption of sections()[activeSectionIndex()]?.displayOptions; track $index) {
+          <li (click)="changeDisplayOption($index)">
+            <input type="radio" [id]="$index" [checked]="activeDisplayOptionIndex() === $index" />
+            <label [for]="displayOption"> <fa-icon [icon]="displayOption"></fa-icon></label>
+          </li>
+        }
+      </ul>
     }
-    <label for="year-select">{{ 'ANALYSIS.YEAR' | translate }}:</label>
-    <select #yearSelect id="year-select" (change)="changeYear(+yearSelect.value)">
-      @for (yearLabel of yearLabels(); track $index) {
-        <option [value]="yearLabel" [selected]="year() === yearLabel">{{ yearLabel }}</option>
-      }
-    </select>
     @if (sections()[activeSectionIndex()]?.perMonth) {
-      <label for="month-select">{{ 'ANALYSIS.MONTH' | translate }}:</label>
-      <select #monthSelect id="month-select" (change)="changeMonth(+monthSelect.value)">
+      <select #monthSelect (change)="changeMonth(+monthSelect.value)">
         @for (monthLabel of monthLabels(); track $index) {
           <option [value]="$index" [selected]="month() === $index">
             {{ monthLabel }}
@@ -28,6 +20,11 @@
         }
       </select>
     }
+    <select #yearSelect (change)="changeYear(+yearSelect.value)">
+      @for (yearLabel of yearLabels(); track $index) {
+        <option [value]="yearLabel" [selected]="year() === yearLabel">{{ yearLabel }}</option>
+      }
+    </select>
   </div>
   <div class="sidenav">
     @for (section of sections(); track $index) {
