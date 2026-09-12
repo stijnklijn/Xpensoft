@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 
-import { finalize, forkJoin, switchMap, tap } from 'rxjs';
+import { finalize, forkJoin, tap } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -69,7 +69,6 @@ export class DashboardStore {
 
   updateUser(dto: UserUpdateRequestDto) {
     return this.userService.putUsers(dto).pipe(
-      switchMap(() => this.userService.getUsers()),
       tap((userDto) => {
         this.user.set(toUserEntity(userDto));
       }),

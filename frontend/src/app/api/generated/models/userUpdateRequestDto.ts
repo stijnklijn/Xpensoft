@@ -18,7 +18,7 @@ export interface UserUpdateRequestDto {
   lastName: string;
   /**
      * @nullable
-     * @pattern de|en|fr|nl
+     * @pattern en|nl
      */
   language?: string | null;
   /**

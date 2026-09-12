@@ -38,7 +38,14 @@ describe('DashboardStore', () => {
           defaultResultsPerPage: 50,
         } as UserResponseDto),
       ),
-      putUsers: vi.fn().mockReturnValue(of(undefined)),
+      putUsers: vi.fn().mockReturnValue(
+        of({
+          firstName: 'Stijn',
+          lastName: 'Klijn',
+          language: 'nl',
+          defaultResultsPerPage: 10,
+        } as UserResponseDto),
+      ),
     };
 
     transactionServiceMock = {
@@ -179,7 +186,7 @@ describe('DashboardStore', () => {
   });
 
   describe('updateUser', () => {
-    it('should update the user', () => {
+    it('should update the user locally without refetching', () => {
       const dto: UserUpdateRequestDto = {
         firstName: 'Stijn',
         lastName: 'Klijn',
@@ -190,7 +197,14 @@ describe('DashboardStore', () => {
       store.updateUser(dto).subscribe();
 
       expect(userServiceMock.putUsers).toHaveBeenCalledWith(dto);
-      expect(userServiceMock.getUsers).toHaveBeenCalled();
+      expect(userServiceMock.getUsers).not.toHaveBeenCalled();
+      expect(store.user()).toEqual({
+        firstName: 'Stijn',
+        lastName: 'Klijn',
+        language: 'nl',
+        lastLoginDateTime: undefined,
+        defaultResultsPerPage: 10,
+      });
     });
   });
 

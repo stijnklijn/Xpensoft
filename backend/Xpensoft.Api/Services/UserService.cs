@@ -44,7 +44,6 @@ public class UserService(XpensoftDbContext database, IMapper mapper, IPasswordHa
     public async Task<UserResponseDto> ReadById(Guid userId)
     {
         User? entity = await _database.Users
-            .Include(u => u.AuthEvents)
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == userId);
 
@@ -53,14 +52,8 @@ public class UserService(XpensoftDbContext database, IMapper mapper, IPasswordHa
             throw new CustomResourceNotFoundException("USER__NOT_FOUND");
         }
 
-        AuthEvent? lastLogin = entity.AuthEvents
-            .Where(a => a.IsSuccessful)
-            .OrderByDescending(a => a.CreatedAt)
-            .Skip(1)
-            .FirstOrDefault();
-
         UserResponseDto dto = _mapper.Map<UserResponseDto>(entity);
-        dto.LastLoginDateTime = lastLogin?.CreatedAt;
+        dto.LastLoginDateTime = await GetLastLoginDateTime(userId);
 
         return dto;
     }
@@ -71,7 +64,22 @@ public class UserService(XpensoftDbContext database, IMapper mapper, IPasswordHa
             .FirstOrDefaultAsync(e => e.Id == userId);
         _mapper.Map(dto, entity);
         await _database.SaveChangesAsync();
-        return _mapper.Map<UserResponseDto>(entity);
+
+        UserResponseDto responseDto = _mapper.Map<UserResponseDto>(entity);
+        responseDto.LastLoginDateTime = await GetLastLoginDateTime(userId);
+
+        return responseDto;
+    }
+
+    private async Task<DateTime?> GetLastLoginDateTime(Guid userId)
+    {
+        AuthEvent? lastLogin = await _database.AuthEvents.AsNoTracking()
+            .Where(a => a.UserId == userId && a.IsSuccessful)
+            .OrderByDescending(a => a.CreatedAt)
+            .Skip(1)
+            .FirstOrDefaultAsync();
+
+        return lastLogin?.CreatedAt;
     }
 
 }
