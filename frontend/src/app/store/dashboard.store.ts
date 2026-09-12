@@ -9,8 +9,8 @@ import { CategoryService } from '../api/generated/category';
 import { TransactionService } from '../api/generated/transaction';
 import { UserService } from '../api/generated/user';
 
-import { toCategoryEntities } from '../mappers/category.mapper';
-import { toTransactionEntities } from '../mappers/transaction.mapper';
+import { toCategoryEntities, toCategoryEntity } from '../mappers/category.mapper';
+import { toTransactionEntities, toTransactionEntity } from '../mappers/transaction.mapper';
 import { toUserEntity } from '../mappers/user.mapper';
 
 @Injectable({ providedIn: 'root' })
@@ -78,54 +78,56 @@ export class DashboardStore {
 
   createTransaction(dto: TransactionDto) {
     return this.transactionService.postTransactions(dto).pipe(
-      switchMap(() => this.transactionService.getTransactions()),
-      tap((pageResultOfTransactionDto) => {
-        this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
+      tap((created) => {
+        const entity = toTransactionEntity(created);
+        this.transactions.update((transactions) => [...transactions, entity]);
       }),
     );
   }
 
   updateTransaction(id: string, dto: TransactionDto) {
     return this.transactionService.putTransactionsEntityId(id, dto).pipe(
-      switchMap(() => this.transactionService.getTransactions()),
-      tap((pageResultOfTransactionDto) => {
-        this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
+      tap((updated) => {
+        const entity = toTransactionEntity(updated);
+        this.transactions.update((transactions) =>
+          transactions.map((t) => (t.id === entity.id ? entity : t)),
+        );
       }),
     );
   }
 
   deleteTransaction(id: string) {
     return this.transactionService.deleteTransactionsEntityId(id).pipe(
-      switchMap(() => this.transactionService.getTransactions()),
-      tap((pageResultOfTransactionDto) => {
-        this.transactions.set(toTransactionEntities(pageResultOfTransactionDto.data));
+      tap(() => {
+        this.transactions.update((transactions) => transactions.filter((t) => t.id !== id));
       }),
     );
   }
 
   createCategory(dto: CategoryDto) {
     return this.categoryService.postCategories(dto).pipe(
-      switchMap(() => this.categoryService.getCategories()),
-      tap((pageResultOfCategoryDto) => {
-        this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
+      tap((created) => {
+        const entity = toCategoryEntity(created);
+        this.categories.update((categories) => [...categories, entity]);
       }),
     );
   }
 
   updateCategory(id: string, dto: CategoryDto) {
     return this.categoryService.putCategoriesEntityId(id, dto).pipe(
-      switchMap(() => this.categoryService.getCategories()),
-      tap((pageResultOfCategoryDto) => {
-        this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
+      tap((updated) => {
+        const entity = toCategoryEntity(updated);
+        this.categories.update((categories) =>
+          categories.map((c) => (c.id === entity.id ? entity : c)),
+        );
       }),
     );
   }
 
   deleteCategory(id: string) {
     return this.categoryService.deleteCategoriesEntityId(id).pipe(
-      switchMap(() => this.categoryService.getCategories()),
-      tap((pageResultOfCategoryDto) => {
-        this.categories.set(toCategoryEntities(pageResultOfCategoryDto.data));
+      tap(() => {
+        this.categories.update((categories) => categories.filter((c) => c.id !== id));
       }),
     );
   }
