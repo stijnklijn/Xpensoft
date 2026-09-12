@@ -1,4 +1,5 @@
 import { TransactionDto } from '../api/generated/models';
+import { Transaction } from '../models/transaction';
 
 export function toTransactionEntity(dto: TransactionDto): Transaction {
   return {

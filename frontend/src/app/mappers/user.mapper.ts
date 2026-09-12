@@ -1,4 +1,5 @@
 import { UserResponseDto } from '../api/generated/models';
+import { User } from '../models/user';
 
 export function toUserEntity(dto: UserResponseDto): User {
   return {

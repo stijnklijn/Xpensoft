@@ -12,6 +12,10 @@ import { UserService } from '../api/generated/user';
 import { toCategoryEntities, toCategoryEntity } from '../mappers/category.mapper';
 import { toTransactionEntities, toTransactionEntity } from '../mappers/transaction.mapper';
 import { toUserEntity } from '../mappers/user.mapper';
+import { Category } from '../models/category';
+import { SortOption } from '../models/sort-option';
+import { Transaction } from '../models/transaction';
+import { User } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardStore {

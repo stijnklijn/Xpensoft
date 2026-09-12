@@ -1,4 +1,5 @@
 import { CategoryDto } from '../api/generated/models';
+import { Category } from '../models/category';
 
 export function toCategoryEntity(dto: CategoryDto): Category {
   return {
