@@ -92,6 +92,32 @@ public class UserServiceTests
     }
 
     [Fact]
+    public async Task ReadById_ShouldReturnLastLoginDateTime()
+    {
+        //Arrange
+        (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
+
+        AuthEvent oldestLogin = new(userId, "127.0.0.1", true);
+        AuthEvent previousLogin = new(userId, "127.0.0.1", true);
+        AuthEvent failedLogin = new(userId, "127.0.0.1", false);
+        AuthEvent currentLogin = new(userId, "127.0.0.1", true);
+        _database.AddRange(oldestLogin, previousLogin, failedLogin, currentLogin);
+        _database.SaveChanges();
+
+        oldestLogin.CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        previousLogin.CreatedAt = new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc);
+        failedLogin.CreatedAt = new DateTime(2026, 1, 3, 0, 0, 0, DateTimeKind.Utc);
+        currentLogin.CreatedAt = new DateTime(2026, 1, 4, 0, 0, 0, DateTimeKind.Utc);
+        _database.SaveChanges();
+
+        //Act
+        UserResponseDto actual = await _service.ReadById(userId);
+
+        //Assert
+        Assert.Equal(previousLogin.CreatedAt, actual.LastLoginDateTime);
+    }
+
+    [Fact]
     public async Task Update_ShouldSave()
     {
         //Arrange
