@@ -18,16 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add database to the container.
 builder.Services.AddDbContext<XpensoftDbContext>(options =>
-{
-    if (builder.Environment.EnvironmentName == "IntegrationTests")
-    {
-        options.UseInMemoryDatabase("IntegrationTestsDatabase");
-    }
-    else
-    {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-    }
-});
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Add services to the container.
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
