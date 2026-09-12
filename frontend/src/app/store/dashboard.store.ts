@@ -50,8 +50,14 @@ export class DashboardStore {
           this.user.set(toUserEntity(userResponseDto));
 
           if (userResponseDto.language) {
+            const localeChanged = localStorage.getItem('language') !== userResponseDto.language;
+
             localStorage.setItem('language', userResponseDto.language);
             this.translate.use(userResponseDto.language);
+
+            if (localeChanged) {
+              window.location.reload();
+            }
           }
 
           if (userResponseDto.defaultResultsPerPage) {

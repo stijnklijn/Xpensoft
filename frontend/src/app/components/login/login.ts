@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +16,7 @@ import { versionInfo } from '../../../environments/version';
 
 @Component({
   selector: 'app-login',
-  imports: [TranslateModule, FormsModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, FormsModule, MatProgressSpinnerModule, DatePipe],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -32,7 +33,7 @@ export class Login {
   error = signal('');
 
   version = versionInfo.version;
-  buildDate = new Date(versionInfo.buildDate).toLocaleDateString();
+  buildDate = new Date(versionInfo.buildDate);
 
   login(email: string, password: string) {
     this.loading.set(true);
