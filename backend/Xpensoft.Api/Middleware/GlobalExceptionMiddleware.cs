@@ -4,18 +4,10 @@ using Xpensoft.Api.Exceptions;
 
 namespace Xpensoft.Api.Middleware;
 
-public class GlobalExceptionMiddleware
+public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<GlobalExceptionMiddleware> _logger;
-
-    public GlobalExceptionMiddleware(
-        RequestDelegate next,
-        ILogger<GlobalExceptionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    private readonly RequestDelegate _next = next;
+    private readonly ILogger<GlobalExceptionMiddleware> _logger = logger;
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -34,11 +26,6 @@ public class GlobalExceptionMiddleware
             await WriteError(context, ex.Code, StatusCodes.Status404NotFound);
         }
         catch (CustomDuplicateResourceException ex)
-        {
-            _logger.LogWarning(ex, ex.Code);
-            await WriteError(context, ex.Code, StatusCodes.Status409Conflict);
-        }
-        catch (CustomForeignKeyException ex)
         {
             _logger.LogWarning(ex, ex.Code);
             await WriteError(context, ex.Code, StatusCodes.Status409Conflict);

@@ -88,28 +88,6 @@ public class GlobalExceptionMiddlewareTests
     }
 
     [Fact]
-    public async Task InvokeAsync_WhenCustomForeignKeyException_ShouldReturnCorrectJson()
-    {
-        // Arrange
-        _context.Response.Body = new MemoryStream();
-        static Task next(HttpContext ctx) => throw new CustomForeignKeyException("INVALID_FOREIGN_KEY");
-        GlobalExceptionMiddleware middleware = new(next, _logger.Object);
-
-        // Act
-        await middleware.InvokeAsync(_context);
-
-        // Assert
-        Assert.Equal(StatusCodes.Status409Conflict, _context.Response.StatusCode);
-
-        _context.Response.Body.Seek(0, SeekOrigin.Begin);
-
-        using JsonDocument document = await JsonDocument.ParseAsync(_context.Response.Body);
-        JsonElement root = document.RootElement;
-
-        Assert.Equal("INVALID_FOREIGN_KEY", root.GetProperty("code").GetString());
-    }
-
-    [Fact]
     public async Task InvokeAsync_WhenCustomDeleteRestrictionException_ShouldReturnCorrectJson()
     {
         // Arrange
