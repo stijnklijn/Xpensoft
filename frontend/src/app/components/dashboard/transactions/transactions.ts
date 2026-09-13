@@ -11,6 +11,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AddEditTransactionDialog } from './add-edit-transaction-dialog/add-edit-transaction-dialog';
 import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
+import { SortOption } from '../../../models/sort-option';
+import { Transaction } from '../../../models/transaction';
 import { icons } from '../../../shared/icons';
 import { ToastService } from '../../../services/toast.service';
 

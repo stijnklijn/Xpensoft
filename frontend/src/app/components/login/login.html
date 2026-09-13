@@ -57,6 +57,6 @@
         <p>{{ 'LOGIN.BULLET_POINTS.THREE.TEXT' | translate }}</p>
       </div>
     </div>
-    <div class="version-info">v{{ version }} ({{ buildDate }})</div>
+    <div class="version-info">v{{ version }} ({{ buildDate | date: 'longDate' }})</div>
   </div>
 </div>

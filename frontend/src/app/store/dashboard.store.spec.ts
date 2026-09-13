@@ -38,7 +38,14 @@ describe('DashboardStore', () => {
           defaultResultsPerPage: 50,
         } as UserResponseDto),
       ),
-      putUsers: vi.fn().mockReturnValue(of(undefined)),
+      putUsers: vi.fn().mockReturnValue(
+        of({
+          firstName: 'Stijn',
+          lastName: 'Klijn',
+          language: 'nl',
+          defaultResultsPerPage: 10,
+        } as UserResponseDto),
+      ),
     };
 
     transactionServiceMock = {
@@ -55,8 +62,24 @@ describe('DashboardStore', () => {
           ],
         } as PageResultOfTransactionDto),
       ),
-      postTransactions: vi.fn().mockReturnValue(of(undefined)),
-      putTransactionsEntityId: vi.fn().mockReturnValue(of(undefined)),
+      postTransactions: vi.fn().mockReturnValue(
+        of({
+          id: '2',
+          date: '2026-01-02',
+          description: 'Bananas',
+          categoryId: '1',
+          amount: 2,
+        } as TransactionDto),
+      ),
+      putTransactionsEntityId: vi.fn().mockReturnValue(
+        of({
+          id: '1',
+          date: '2026-01-03',
+          description: 'Peaches',
+          categoryId: '1',
+          amount: 2.5,
+        } as TransactionDto),
+      ),
       deleteTransactionsEntityId: vi.fn().mockReturnValue(of(undefined)),
     };
 
@@ -72,8 +95,20 @@ describe('DashboardStore', () => {
           ],
         } as PageResultOfCategoryDto),
       ),
-      postCategories: vi.fn().mockReturnValue(of(undefined)),
-      putCategoriesEntityId: vi.fn().mockReturnValue(of(undefined)),
+      postCategories: vi.fn().mockReturnValue(
+        of({
+          id: '2',
+          name: 'Restaurants',
+          isIncome: false,
+        } as CategoryDto),
+      ),
+      putCategoriesEntityId: vi.fn().mockReturnValue(
+        of({
+          id: '1',
+          name: 'Salary',
+          isIncome: true,
+        } as CategoryDto),
+      ),
       deleteCategoriesEntityId: vi.fn().mockReturnValue(of(undefined)),
     };
 
@@ -151,7 +186,7 @@ describe('DashboardStore', () => {
   });
 
   describe('updateUser', () => {
-    it('should update the user', () => {
+    it('should update the user locally without refetching', () => {
       const dto: UserUpdateRequestDto = {
         firstName: 'Stijn',
         lastName: 'Klijn',
@@ -162,12 +197,19 @@ describe('DashboardStore', () => {
       store.updateUser(dto).subscribe();
 
       expect(userServiceMock.putUsers).toHaveBeenCalledWith(dto);
-      expect(userServiceMock.getUsers).toHaveBeenCalled();
+      expect(userServiceMock.getUsers).not.toHaveBeenCalled();
+      expect(store.user()).toEqual({
+        firstName: 'Stijn',
+        lastName: 'Klijn',
+        language: 'nl',
+        lastLoginDateTime: undefined,
+        defaultResultsPerPage: 10,
+      });
     });
   });
 
   describe('createTransaction', () => {
-    it('should create a transaction', () => {
+    it('should create a transaction and add it locally without refetching', () => {
       const dto = {
         date: '2026-01-02',
         description: 'Bananas',
@@ -178,13 +220,30 @@ describe('DashboardStore', () => {
       store.createTransaction(dto).subscribe();
 
       expect(transactionServiceMock.postTransactions).toHaveBeenCalledWith(dto);
-      expect(transactionServiceMock.getTransactions).toHaveBeenCalled();
+      expect(transactionServiceMock.getTransactions).not.toHaveBeenCalled();
       expect(store.transactions()).toHaveLength(1);
+      expect(store.transactions()[0]).toEqual({
+        id: '2',
+        date: new Date('2026-01-02'),
+        description: 'Bananas',
+        categoryId: '1',
+        amount: 2,
+      });
     });
   });
 
   describe('updateTransaction', () => {
-    it('should update a transaction', () => {
+    it('should update a transaction locally without refetching', () => {
+      store.transactions.set([
+        {
+          id: '1',
+          date: new Date('2026-01-01'),
+          description: 'Strawberries',
+          categoryId: '1',
+          amount: 3,
+        },
+      ]);
+
       const dto = {
         date: '2026-01-03',
         description: 'Peaches',
@@ -195,36 +254,63 @@ describe('DashboardStore', () => {
       store.updateTransaction('1', dto).subscribe();
 
       expect(transactionServiceMock.putTransactionsEntityId).toHaveBeenCalledWith('1', dto);
-      expect(transactionServiceMock.getTransactions).toHaveBeenCalled();
+      expect(transactionServiceMock.getTransactions).not.toHaveBeenCalled();
+      expect(store.transactions()).toEqual([
+        {
+          id: '1',
+          date: new Date('2026-01-03'),
+          description: 'Peaches',
+          categoryId: '1',
+          amount: 2.5,
+        },
+      ]);
     });
   });
 
   describe('deleteTransaction', () => {
-    it('should delete a transaction', () => {
+    it('should remove the transaction locally without refetching', () => {
+      store.transactions.set([
+        {
+          id: '1',
+          date: new Date('2026-01-01'),
+          description: 'Strawberries',
+          categoryId: '1',
+          amount: 3,
+        },
+      ]);
+
       store.deleteTransaction('1').subscribe();
 
       expect(transactionServiceMock.deleteTransactionsEntityId).toHaveBeenCalledWith('1');
-      expect(transactionServiceMock.getTransactions).toHaveBeenCalled();
+      expect(transactionServiceMock.getTransactions).not.toHaveBeenCalled();
+      expect(store.transactions()).toEqual([]);
     });
   });
 
   describe('createCategory', () => {
-    it('should create a category', () => {
+    it('should create a category and add it locally without refetching', () => {
       const dto = {
-        name: 'Groceries',
+        name: 'Restaurants',
         isIncome: false,
       } as CategoryDto;
 
       store.createCategory(dto).subscribe();
 
       expect(categoryServiceMock.postCategories).toHaveBeenCalledWith(dto);
-      expect(categoryServiceMock.getCategories).toHaveBeenCalled();
+      expect(categoryServiceMock.getCategories).not.toHaveBeenCalled();
       expect(store.categories()).toHaveLength(1);
+      expect(store.categories()[0]).toEqual({
+        id: '2',
+        name: 'Restaurants',
+        isIncome: false,
+      });
     });
   });
 
   describe('updateCategory', () => {
-    it('should update a category', () => {
+    it('should update a category locally without refetching', () => {
+      store.categories.set([{ id: '1', name: 'Groceries', isIncome: false }]);
+
       const dto = {
         name: 'Salary',
         isIncome: true,
@@ -233,16 +319,20 @@ describe('DashboardStore', () => {
       store.updateCategory('1', dto).subscribe();
 
       expect(categoryServiceMock.putCategoriesEntityId).toHaveBeenCalledWith('1', dto);
-      expect(categoryServiceMock.getCategories).toHaveBeenCalled();
+      expect(categoryServiceMock.getCategories).not.toHaveBeenCalled();
+      expect(store.categories()).toEqual([{ id: '1', name: 'Salary', isIncome: true }]);
     });
   });
 
   describe('deleteCategory', () => {
-    it('should delete a category', () => {
+    it('should remove the category locally without refetching', () => {
+      store.categories.set([{ id: '1', name: 'Groceries', isIncome: false }]);
+
       store.deleteCategory('1').subscribe();
 
       expect(categoryServiceMock.deleteCategoriesEntityId).toHaveBeenCalledWith('1');
-      expect(categoryServiceMock.getCategories).toHaveBeenCalled();
+      expect(categoryServiceMock.getCategories).not.toHaveBeenCalled();
+      expect(store.categories()).toEqual([]);
     });
   });
 

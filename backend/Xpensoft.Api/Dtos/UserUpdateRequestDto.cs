@@ -12,7 +12,7 @@ public class UserUpdateRequestDto : BaseEntityDto
     [StringLength(255, MinimumLength = 2, ErrorMessage = "LastName must be between 2 and 255 characters.")]
     public required string LastName { get; set; }
 
-    [RegularExpression("de|en|fr|nl", ErrorMessage = "Unsupported language")]
+    [RegularExpression("en|nl", ErrorMessage = "Unsupported language")]
     public string? Language { get; set; }
 
     [Range(10, 1_000, ErrorMessage = "DefaultResultsPerPage must be between 10 and 1000")]

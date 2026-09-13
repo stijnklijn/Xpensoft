@@ -9,6 +9,7 @@ import { filter } from 'rxjs';
 import { AddEditCategoryDialog } from './add-edit-category-dialog/add-edit-category-dialog';
 import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 import { DashboardStore } from '../../../store/dashboard.store';
+import { Category } from '../../../models/category';
 import { icons } from '../../../shared/icons';
 import { ToastService } from '../../../services/toast.service';
 

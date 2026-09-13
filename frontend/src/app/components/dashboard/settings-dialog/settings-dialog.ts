@@ -49,6 +49,8 @@ export class SettingsDialog implements OnInit {
   tab = signal<'personal' | 'preferences'>('personal');
   loading = signal(false);
 
+  initialLanguage = this.data.user.language ?? this.localStorageLang ?? this.browserLang ?? 'en';
+
   formBuilder = new FormBuilder();
   form = this.formBuilder.group({
     firstName: this.formBuilder.control<string | null>(null, [
@@ -69,7 +71,7 @@ export class SettingsDialog implements OnInit {
     this.form.setValue({
       firstName: this.data.user.firstName,
       lastName: this.data.user.lastName,
-      language: this.data.user.language ?? this.localStorageLang ?? this.browserLang ?? 'en',
+      language: this.initialLanguage,
       defaultResultsPerPage: this.data.user.defaultResultsPerPage ?? 100,
     });
   }
@@ -106,10 +108,16 @@ export class SettingsDialog implements OnInit {
         }),
       )
       .subscribe(() => {
+        const languageChanged = values.language !== this.initialLanguage;
+
         localStorage.setItem('language', values.language!);
         this.translate.use(values.language!);
         this.toast.success(this.translate.instant('DASHBOARD.SETTINGS_SAVED'));
         this.dialogRef.close();
+
+        if (languageChanged) {
+          window.location.reload();
+        }
       });
   }
 }

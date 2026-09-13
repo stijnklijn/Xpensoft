@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, LOCALE_ID, inject } from '@angular/core';
 
 import { ChartConfiguration, ChartDataset } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -9,6 +9,8 @@ import { BaseChartDirective } from 'ng2-charts';
   templateUrl: './doughnut-chart.html',
 })
 export class DoughnutChart {
+  private locale = inject(LOCALE_ID);
+
   @Input() labels: Array<string> = [];
   @Input() datasets: ChartDataset<'doughnut', (number | [number, number] | null)[]>[] = [];
 
@@ -19,9 +21,9 @@ export class DoughnutChart {
       legend: { position: 'right' },
       tooltip: {
         callbacks: {
-          label: function (context) {
+          label: (context) => {
             let value = context.parsed;
-            return value!.toLocaleString('nl-NL', {
+            return value!.toLocaleString(this.locale, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             });

@@ -30,7 +30,7 @@ public class TransactionServiceTests
     }
 
     [Fact]
-    public async Task Create_ShouldSave()
+    public async Task Create_WhenNoCategoryProvided_ShouldSave()
     {
         //Arrange
         (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
@@ -46,7 +46,24 @@ public class TransactionServiceTests
     }
 
     [Fact]
-    public async Task Create_WhenCategoryNotExists_ShouldThrowException()
+    public async Task Create_WhenCategoryProvidedAndExists_ShouldSave()
+    {
+        //Arrange
+        (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
+        (Guid categoryId, Category category) = TestUtils.CreateCategoryInDatabase(userId, user, _database);
+        TransactionDto dto = new() { CategoryId = categoryId, Date = new DateOnly(2026, 1, 1), Description = "Strawberries", Amount = 2.50M };
+
+        //Act
+        await _service.Create(userId, dto);
+
+        //Assert
+        Transaction? actual = _database.Transactions.FirstOrDefault(e => e.Description == "Strawberries");
+        Assert.NotNull(actual);
+        Assert.Equal(categoryId, actual.CategoryId);
+    }
+
+    [Fact]
+    public async Task Create_WhenCategoryProvidedAndNotExists_ShouldThrowException()
     {
         //Arrange
         (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
@@ -104,7 +121,7 @@ public class TransactionServiceTests
     }
 
     [Fact]
-    public async Task Update_ShouldSave()
+    public async Task Update_WhenNoCategoryProvided_ShouldSave()
     {
         //Arrange
         (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
@@ -123,18 +140,25 @@ public class TransactionServiceTests
     }
 
     [Fact]
-    public async Task Update_WhenNotExists_ShouldThrowException()
+    public async Task Update_WhenCategoryProvidedAndExists_ShouldSave()
     {
         //Arrange
         (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
-        TransactionDto dto = new() { Date = new DateOnly(2026, 1, 1), Description = "Strawberries", Amount = 2.50M };
+        (Guid entityId, Transaction entity) = TestUtils.CreateTransactionInDatabase(userId, user, _database);
+        (Guid categoryId, Category category) = TestUtils.CreateCategoryInDatabase(userId, user, _database);
+        TransactionDto dto = new() { CategoryId = categoryId, Date = new DateOnly(2026, 1, 1), Description = "Oranges", Amount = 3.50M };
+
+        //Act
+        await _service.Update(userId, entityId, dto);
 
         //Assert
-        await Assert.ThrowsAsync<CustomResourceNotFoundException>(() => _service.Update(userId, Guid.NewGuid(), dto));
+        Transaction? actual = _database.Transactions.FirstOrDefault(e => e.Id == entityId);
+        Assert.NotNull(actual);
+        Assert.Equal(categoryId, actual.CategoryId);
     }
 
     [Fact]
-    public async Task Update_WhenCategoryNotExists_ShouldThrowException()
+    public async Task Update_WhenCategoryProvidedAndNotExists_ShouldThrowException()
     {
         //Arrange
         (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
@@ -143,6 +167,17 @@ public class TransactionServiceTests
 
         //Assert
         await Assert.ThrowsAsync<CustomResourceNotFoundException>(() => _service.Update(userId, entityId, dto));
+    }
+
+    [Fact]
+    public async Task Update_WhenNotExists_ShouldThrowException()
+    {
+        //Arrange
+        (Guid userId, User user) = TestUtils.CreateUserInDatabase(_database);
+        TransactionDto dto = new() { Date = new DateOnly(2026, 1, 1), Description = "Strawberries", Amount = 2.50M };
+
+        //Assert
+        await Assert.ThrowsAsync<CustomResourceNotFoundException>(() => _service.Update(userId, Guid.NewGuid(), dto));
     }
 
     [Fact]

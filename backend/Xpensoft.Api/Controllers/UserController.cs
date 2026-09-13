@@ -41,8 +41,8 @@ public class UserController(UserService service) : ControllerBase
     [HttpPut]
     public async Task<ActionResult<UserResponseDto>> Update(UserUpdateRequestDto dto)
     {
-        await _service.Update(User.GetUserId(), dto);
-        return Ok();
+        UserResponseDto responseDto = await _service.Update(User.GetUserId(), dto);
+        return Ok(responseDto);
     }
 
 }

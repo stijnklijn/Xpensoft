@@ -12,7 +12,8 @@ import { provideRouter } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
-import { nl } from 'date-fns/locale';
+import { Locale } from 'date-fns';
+import { enGB, nl } from 'date-fns/locale';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -42,6 +43,28 @@ const DATE_FORMATS = {
   },
 };
 
+const LOCALE_IDS: Record<string, string> = {
+  en: 'en-GB',
+  nl: 'nl-NL',
+};
+
+const DATE_FNS_LOCALES: Record<string, Locale> = {
+  en: enGB,
+  nl: nl,
+};
+
+function getPreferredLanguage(): string {
+  const storedLanguage = localStorage.getItem('language');
+  if (storedLanguage && storedLanguage in LOCALE_IDS) {
+    return storedLanguage;
+  }
+
+  const browserLanguage = navigator.language?.split('-')[0];
+  return browserLanguage && browserLanguage in LOCALE_IDS ? browserLanguage : 'en';
+}
+
+const preferredLanguage = getPreferredLanguage();
+
 export const appConfig: ApplicationConfig = {
   providers: [
     importProvidersFrom(
@@ -57,8 +80,8 @@ export const appConfig: ApplicationConfig = {
     provideDateFnsAdapter(),
     provideHttpClient(withInterceptors([apiInterceptor, authInterceptor, errorInterceptor])),
     provideRouter(routes),
-    { provide: LOCALE_ID, useValue: 'nl-NL' },
+    { provide: LOCALE_ID, useValue: LOCALE_IDS[preferredLanguage] },
     { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
-    { provide: MAT_DATE_LOCALE, useValue: nl },
+    { provide: MAT_DATE_LOCALE, useValue: DATE_FNS_LOCALES[preferredLanguage] },
   ],
 };

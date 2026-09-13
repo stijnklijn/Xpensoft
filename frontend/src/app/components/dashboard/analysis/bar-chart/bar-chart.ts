@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, LOCALE_ID, OnInit, inject } from '@angular/core';
 
 import { ChartConfiguration, ChartDataset } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -9,6 +9,8 @@ import { BaseChartDirective } from 'ng2-charts';
   templateUrl: './bar-chart.html',
 })
 export class BarChart implements OnInit {
+  private locale = inject(LOCALE_ID);
+
   @Input() labels: Array<string> = [];
   @Input() datasets: ChartDataset<'bar', (number | [number, number] | null)[]>[] = [];
   @Input() displayLegend: boolean = false;
@@ -33,9 +35,9 @@ export class BarChart implements OnInit {
       },
       tooltip: {
         callbacks: {
-          label: function (context) {
+          label: (context) => {
             let value = context.parsed.y;
-            return value!.toLocaleString('nl-NL', {
+            return value!.toLocaleString(this.locale, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             });
