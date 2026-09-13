@@ -1,6 +1,7 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -8,6 +9,14 @@ import { BarChart } from './bar-chart/bar-chart';
 import { DashboardStore } from '../../../store/dashboard.store';
 import { DoughnutChart } from './doughnut-chart/doughnut-chart';
 import { icons } from '../../../shared/icons';
+import { sumIncomeExpenseDiff, toChartData, totalsByCategory, totalsByMonth } from './analysis.helpers';
+
+interface Section {
+  id: string;
+  title: string;
+  displayOptions: IconDefinition[];
+  perMonth: boolean;
+}
 
 @Component({
   selector: 'app-analysis',
@@ -30,7 +39,7 @@ export class Analysis {
   activeSectionIndex = signal<number>(0);
   activeDisplayOptionIndex = signal<number>(0);
 
-  sections = signal<Array<any>>([]);
+  sections = signal<Array<Section>>([]);
   yearLabels = signal<Array<number>>([]);
   monthLabels = signal<Array<string>>([]);
 
@@ -51,36 +60,43 @@ export class Analysis {
   constructor() {
     this.sections.set([
       {
+        id: 'totals',
         title: 'ANALYSIS.SECTION_HEADERS.TOTALS',
         displayOptions: [icons.faTable, icons.faChartSimple],
         perMonth: false,
       },
       {
+        id: 'totals-per-category',
         title: 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY',
         displayOptions: [icons.faTable],
         perMonth: false,
       },
       {
+        id: 'income-distribution-per-category',
         title: 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY',
         displayOptions: [icons.faChartSimple, icons.faChartPie],
         perMonth: false,
       },
       {
+        id: 'expenses-distribution-per-category',
         title: 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY',
         displayOptions: [icons.faChartSimple, icons.faChartPie],
         perMonth: false,
       },
       {
+        id: 'totals-per-category-per-month',
         title: 'ANALYSIS.SECTION_HEADERS.TOTALS_PER_CATEGORY_PER_MONTH',
         displayOptions: [icons.faTable],
         perMonth: true,
       },
       {
+        id: 'income-distribution-per-category-per-month',
         title: 'ANALYSIS.SECTION_HEADERS.INCOME_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
         displayOptions: [icons.faChartSimple, icons.faChartPie],
         perMonth: true,
       },
       {
+        id: 'expenses-distribution-per-category-per-month',
         title: 'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
         displayOptions: [icons.faChartSimple, icons.faChartPie],
         perMonth: true,
@@ -118,174 +134,47 @@ export class Analysis {
       });
   }
 
+  activeSection = computed<Section | undefined>(() => this.sections()[this.activeSectionIndex()]);
+
   categoryMap = computed(() => {
     const categories = this.categories();
     if (!categories) return {};
     return Object.fromEntries(categories.map((c) => [c.id, c]));
   });
 
-  totalsThisYear = computed(() => {
-    const transactions = this.transactions().filter(
-      (t) => new Date(t.date).getFullYear() === this.year(),
-    );
-    const categoryMap = this.categoryMap();
-    if (!transactions) return { income: 0, expenses: 0, diff: 0 };
+  transactionsThisYear = computed(() =>
+    this.transactions().filter((t) => new Date(t.date).getFullYear() === this.year()),
+  );
 
-    return transactions.reduce(
-      (acc, curr) => {
-        const isIncome = categoryMap[curr.categoryId]?.isIncome;
+  transactionsThisMonth = computed(() =>
+    this.transactionsThisYear().filter((t) => new Date(t.date).getMonth() === this.month()),
+  );
 
-        if (isIncome) {
-          acc.income += curr.amount;
-          acc.diff += curr.amount;
-        } else {
-          acc.expenses += curr.amount;
-          acc.diff -= curr.amount;
-        }
-        return acc;
-      },
-      { income: 0, expenses: 0, diff: 0 },
-    );
-  });
+  totalsThisYear = computed(() =>
+    sumIncomeExpenseDiff(this.transactionsThisYear(), this.categoryMap()),
+  );
 
-  totalsPerMonth = computed(() => {
-    const transactions = this.transactions().filter(
-      (t) => new Date(t.date).getFullYear() === this.year(),
-    );
-    const categoryMap = this.categoryMap();
-    if (!transactions) return [];
+  totalsPerMonth = computed(() => totalsByMonth(this.transactionsThisYear(), this.categoryMap()));
 
-    const result = new Array(12).fill(null).map(() => ({
-      income: 0,
-      expenses: 0,
-      diff: 0,
-    }));
+  totalsPerCategory = computed(() =>
+    totalsByCategory(this.transactionsThisYear(), this.categoryMap()),
+  );
 
-    transactions.forEach((t) => {
-      const month = new Date(t.date).getMonth();
-      const isIncome = categoryMap[t.categoryId]?.isIncome;
-
-      if (isIncome) {
-        result[month].income += t.amount;
-        result[month].diff += t.amount;
-      } else {
-        result[month].expenses += t.amount;
-        result[month].diff -= t.amount;
-      }
-    });
-
-    return result;
-  });
-
-  totalsPerCategory = computed(() => {
-    const transactions = this.transactions().filter(
-      (t) => new Date(t.date).getFullYear() === this.year(),
-    );
-    const categoryMap = this.categoryMap();
-    if (!transactions) return [];
-
-    const totals = new Map();
-
-    transactions.forEach((t) => {
-      const category = categoryMap[t.categoryId];
-      if (!category) return;
-
-      if (!totals.has(t.categoryId)) {
-        totals.set(t.categoryId, {
-          name: category.name,
-          isIncome: category.isIncome,
-          amount: 0,
-        });
-      }
-
-      totals.get(t.categoryId).amount += t.amount;
-    });
-
-    return Array.from(totals.values()).sort((a: any, b: any) => b.amount - a.amount);
-  });
-
-  totalsPerMonthPerCategory = computed(() => {
-    const transactions = this.transactions().filter(
-      (t) => new Date(t.date).getFullYear() === this.year(),
-    );
-    const categoryMap = this.categoryMap();
-    const month = this.month();
-
-    if (!transactions) return [];
-
-    const totals = new Map();
-
-    transactions
-      .filter((t) => new Date(t.date).getMonth() === month)
-      .forEach((t) => {
-        const category = categoryMap[t.categoryId];
-        if (!category) return;
-
-        if (!totals.has(t.categoryId)) {
-          totals.set(t.categoryId, {
-            name: category.name,
-            isIncome: category.isIncome,
-            amount: 0,
-          });
-        }
-
-        totals.get(t.categoryId).amount += t.amount;
-      });
-
-    return Array.from(totals.values()).sort((a: any, b: any) => b.amount - a.amount);
-  });
+  totalsPerMonthPerCategory = computed(() =>
+    totalsByCategory(this.transactionsThisMonth(), this.categoryMap()),
+  );
 
   incomePerMonth = computed(() => this.totalsPerMonth().map((t) => t.income));
 
   expensesPerMonth = computed(() => this.totalsPerMonth().map((t) => t.expenses));
 
-  incomeCategoryLabels = computed(() =>
-    this.totalsPerCategory()
-      .filter((c) => c.isIncome)
-      .map((c) => c.name),
-  );
+  incomeByCategory = computed(() => toChartData(this.totalsPerCategory(), true));
 
-  expensesCategoryLabels = computed(() =>
-    this.totalsPerCategory()
-      .filter((c) => !c.isIncome)
-      .map((c) => c.name),
-  );
+  expensesByCategory = computed(() => toChartData(this.totalsPerCategory(), false));
 
-  incomePerCategory = computed(() =>
-    this.totalsPerCategory()
-      .filter((c) => c.isIncome)
-      .map((c) => c.amount),
-  );
+  incomeByCategoryPerMonth = computed(() => toChartData(this.totalsPerMonthPerCategory(), true));
 
-  expensesPerCategory = computed(() =>
-    this.totalsPerCategory()
-      .filter((c) => !c.isIncome)
-      .map((c) => c.amount),
-  );
-
-  incomePerMonthCategoryLabels = computed(() =>
-    this.totalsPerMonthPerCategory()
-      .filter((c) => c.isIncome)
-      .map((c) => c.name),
-  );
-
-  expensesPerMonthCategoryLabels = computed(() =>
-    this.totalsPerMonthPerCategory()
-      .filter((c) => !c.isIncome)
-      .map((c) => c.name),
-  );
-
-  incomePerMonthPerCategory = computed(() =>
-    this.totalsPerMonthPerCategory()
-      .filter((c) => c.isIncome)
-      .map((c) => c.amount),
-  );
-
-  expensesPerMonthPerCategory = computed(() =>
-    this.totalsPerMonthPerCategory()
-      .filter((c) => !c.isIncome)
-      .map((c) => c.amount),
-  );
+  expensesByCategoryPerMonth = computed(() => toChartData(this.totalsPerMonthPerCategory(), false));
 
   changeSection(index: number) {
     this.activeSectionIndex.set(index);
