@@ -18,6 +18,14 @@ export interface ChartData {
   amounts: number[];
 }
 
+export interface ExpenseTransaction {
+  id: string;
+  date: Date;
+  description: string;
+  categoryName: string;
+  amount: number;
+}
+
 export function sumIncomeExpenseDiff(
   transactions: Transaction[],
   categoryMap: Record<string, Category>,
@@ -74,4 +82,49 @@ export function totalsByCategory(
 export function toChartData(totals: CategoryTotal[], isIncome: boolean): ChartData {
   const filtered = totals.filter((c) => c.isIncome === isIncome);
   return { labels: filtered.map((c) => c.name), amounts: filtered.map((c) => c.amount) };
+}
+
+export function transactionsInRange(
+  transactions: Transaction[],
+  start: Date,
+  end: Date,
+): Transaction[] {
+  const startDay = startOfDay(start).getTime();
+  const endDay = startOfDay(end).getTime();
+
+  return transactions.filter((t) => {
+    const day = startOfDay(new Date(t.date)).getTime();
+    return day >= startDay && day <= endDay;
+  });
+}
+
+function startOfDay(date: Date): Date {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  return result;
+}
+
+export function daysBetween(start: Date, end: Date): number {
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  return (
+    Math.round((startOfDay(end).getTime() - startOfDay(start).getTime()) / millisecondsPerDay) + 1
+  );
+}
+
+export function topExpenses(
+  transactions: Transaction[],
+  categoryMap: Record<string, Category>,
+  limit: number,
+): ExpenseTransaction[] {
+  return transactions
+    .filter((t) => !categoryMap[t.categoryId]?.isIncome)
+    .map((t) => ({
+      id: t.id,
+      date: t.date,
+      description: t.description,
+      categoryName: categoryMap[t.categoryId]?.name ?? '',
+      amount: t.amount,
+    }))
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, limit);
 }

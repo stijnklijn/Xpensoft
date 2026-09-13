@@ -125,7 +125,14 @@
     "DIFFERENCE": "Verschil",
     "TOTAL": "Totaal",
     "NO_DATA": "Geen gegevens in deze periode",
+    "SUMMARY": {
+      "LAST_X_DAYS": "Laatste {{days}} dagen",
+      "SELECTED_MONTH": "Geselecteerde maand",
+      "SELECTED_YEAR": "Geselecteerd jaar",
+      "TOP_EXPENSES": "Top 5 uitgaven"
+    },
     "SECTION_HEADERS": {
+      "SUMMARY": "Samenvatting",
       "TOTALS": "Totalen",
       "TOTALS_PER_CATEGORY": "Totalen per rubriek",
       "INCOME_DISTRIBUTION_PER_CATEGORY": "Inkomstenverdeling per rubriek",

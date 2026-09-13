@@ -1,10 +1,13 @@
 import { Category } from '../../../models/category';
 import { Transaction } from '../../../models/transaction';
 import {
+  daysBetween,
   sumIncomeExpenseDiff,
   toChartData,
+  topExpenses,
   totalsByCategory,
   totalsByMonth,
+  transactionsInRange,
 } from './analysis.helpers';
 
 const categoryMap: Record<string, Category> = {
@@ -95,6 +98,131 @@ describe('totalsByCategory', () => {
       { name: 'Rent', isIncome: false, amount: 850 },
       { name: 'Groceries', isIncome: false, amount: 200 },
     ]);
+  });
+});
+
+describe('topExpenses', () => {
+  it('returns the largest expenses sorted descending', () => {
+    const result = topExpenses(
+      [
+        transaction({ id: '1', categoryId: 'salary', amount: 2000 }),
+        transaction({ id: '2', categoryId: 'groceries', amount: 150, description: 'Groceries' }),
+        transaction({ id: '3', categoryId: 'rent', amount: 850, description: 'Rent' }),
+        transaction({ id: '4', categoryId: 'groceries', amount: 50, description: 'Snacks' }),
+      ],
+      categoryMap,
+      3,
+    );
+
+    expect(result).toEqual([
+      {
+        id: '3',
+        date: new Date('2024-01-15'),
+        description: 'Rent',
+        categoryName: 'Rent',
+        amount: 850,
+      },
+      {
+        id: '2',
+        date: new Date('2024-01-15'),
+        description: 'Groceries',
+        categoryName: 'Groceries',
+        amount: 150,
+      },
+      {
+        id: '4',
+        date: new Date('2024-01-15'),
+        description: 'Snacks',
+        categoryName: 'Groceries',
+        amount: 50,
+      },
+    ]);
+  });
+
+  it('respects the limit', () => {
+    const result = topExpenses(
+      [
+        transaction({ id: '1', categoryId: 'groceries', amount: 10 }),
+        transaction({ id: '2', categoryId: 'rent', amount: 20 }),
+      ],
+      categoryMap,
+      1,
+    );
+
+    expect(result).toEqual([
+      {
+        id: '2',
+        date: new Date('2024-01-15'),
+        description: 'test',
+        categoryName: 'Rent',
+        amount: 20,
+      },
+    ]);
+  });
+
+  it('returns an empty array when there are no expenses', () => {
+    expect(
+      topExpenses([transaction({ categoryId: 'salary', amount: 100 })], categoryMap, 3),
+    ).toEqual([]);
+  });
+});
+
+describe('daysBetween', () => {
+  it('counts a 31-day month inclusively', () => {
+    expect(daysBetween(new Date('2024-08-14'), new Date('2024-09-13'))).toBe(31);
+  });
+
+  it('counts a 28-day month inclusively', () => {
+    expect(daysBetween(new Date('2026-02-14'), new Date('2026-03-13'))).toBe(28);
+  });
+
+  it('counts a 365-day year inclusively', () => {
+    expect(daysBetween(new Date('2025-09-14'), new Date('2026-09-13'))).toBe(365);
+  });
+
+  it('counts a 366-day range spanning a leap day inclusively', () => {
+    expect(daysBetween(new Date('2023-09-14'), new Date('2024-09-13'))).toBe(366);
+  });
+
+  it('ignores the time of day', () => {
+    expect(daysBetween(new Date('2024-01-01T23:00:00'), new Date('2024-01-01T01:00:00'))).toBe(1);
+  });
+});
+
+describe('transactionsInRange', () => {
+  it('includes transactions on and between the start and end dates', () => {
+    const result = transactionsInRange(
+      [
+        transaction({ id: '1', date: new Date('2024-02-10') }),
+        transaction({ id: '2', date: new Date('2024-02-11') }),
+        transaction({ id: '3', date: new Date('2024-03-10') }),
+        transaction({ id: '4', date: new Date('2024-03-11') }),
+      ],
+      new Date('2024-02-11'),
+      new Date('2024-03-10'),
+    );
+
+    expect(result.map((t) => t.id)).toEqual(['2', '3']);
+  });
+
+  it('ignores the time of day on the range boundaries', () => {
+    const result = transactionsInRange(
+      [transaction({ id: '1', date: new Date('2024-02-11T23:59:00') })],
+      new Date('2024-02-11T08:00:00'),
+      new Date('2024-02-11T08:00:00'),
+    );
+
+    expect(result.map((t) => t.id)).toEqual(['1']);
+  });
+
+  it('returns an empty array when nothing falls in range', () => {
+    expect(
+      transactionsInRange(
+        [transaction({ date: new Date('2024-01-01') })],
+        new Date('2024-02-01'),
+        new Date('2024-02-28'),
+      ),
+    ).toEqual([]);
   });
 });
 
