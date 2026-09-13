@@ -123,6 +123,10 @@ describe('Analysis', () => {
   });
 
   describe('summary section', () => {
+    function summaryTabs(): HTMLElement[] {
+      return Array.from(fixture.nativeElement.querySelectorAll('.summary-tab'));
+    }
+
     beforeEach(() => {
       component.month.set(0); // January
       fixture.detectChanges();
@@ -133,35 +137,57 @@ describe('Analysis', () => {
       expect(sectionTitles()[0].classList).toContain('active');
     });
 
-    it('shows income, expenses and difference for the selected month and year', () => {
-      const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
-      expect(stats.length).toBe(6);
+    it('shows the month tab by default and switches to the year tab', () => {
+      const tabs = summaryTabs();
+      expect(tabs.length).toBe(2);
+      expect(tabs[0].classList).toContain('active');
+      expect(tabs[1].classList).not.toContain('active');
 
-      const [monthIncome, monthExpenses, monthDiff, yearIncome, yearExpenses, yearDiff] =
-        Array.from(stats) as HTMLElement[];
+      tabs[1].click();
+      fixture.detectChanges();
 
-      expect(monthIncome.textContent).toContain('2,000.00');
-      expect(monthExpenses.textContent).toContain('150.00');
-      expect(monthDiff.textContent).toContain('1,850.00');
-
-      expect(yearIncome.textContent).toContain('2,000.00');
-      expect(yearExpenses.textContent).toContain('1,000.00');
-      expect(yearDiff.textContent).toContain('1,000.00');
+      expect(tabs[0].classList).not.toContain('active');
+      expect(tabs[1].classList).toContain('active');
     });
 
-    it('lists the top expenses for the month and the year', () => {
-      const tables = fixture.nativeElement.querySelectorAll('.summary-section table');
-      expect(tables.length).toBe(2);
+    it('shows income, expenses and difference for the selected month on the month tab', () => {
+      const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+      expect(stats.length).toBe(3);
 
-      const monthRows = tables[0].querySelectorAll('tbody tr');
-      expect(monthRows.length).toBe(1);
-      expect(monthRows[0].textContent).toContain('Groceries Jan');
-      expect(monthRows[0].textContent).toContain('150.00');
+      const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
+      expect(income.textContent).toContain('2,000.00');
+      expect(expenses.textContent).toContain('150.00');
+      expect(diff.textContent).toContain('1,850.00');
+    });
 
-      const yearRows = tables[1].querySelectorAll('tbody tr');
-      expect(yearRows.length).toBe(2);
-      expect(yearRows[0].textContent).toContain('Rent Mar');
-      expect(yearRows[1].textContent).toContain('Groceries Jan');
+    it('shows income, expenses and difference for the selected year on the year tab', () => {
+      summaryTabs()[1].click();
+      fixture.detectChanges();
+
+      const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+      expect(stats.length).toBe(3);
+
+      const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
+      expect(income.textContent).toContain('2,000.00');
+      expect(expenses.textContent).toContain('1,000.00');
+      expect(diff.textContent).toContain('1,000.00');
+    });
+
+    it('lists the top expenses for the month on the month tab', () => {
+      const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
+      expect(rows.length).toBe(1);
+      expect(rows[0].textContent).toContain('Groceries Jan');
+      expect(rows[0].textContent).toContain('150.00');
+    });
+
+    it('lists the top expenses for the year on the year tab', () => {
+      summaryTabs()[1].click();
+      fixture.detectChanges();
+
+      const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
+      expect(rows.length).toBe(2);
+      expect(rows[0].textContent).toContain('Rent Mar');
+      expect(rows[1].textContent).toContain('Groceries Jan');
     });
   });
 

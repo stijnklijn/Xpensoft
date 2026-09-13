@@ -44,6 +44,7 @@ export class Analysis {
 
   activeSectionIndex = signal<number>(0);
   activeDisplayOptionIndex = signal<number>(0);
+  summaryTabIndex = signal<number>(0);
 
   sections = signal<Array<Section>>([]);
   yearLabels = signal<Array<number>>([]);
@@ -213,5 +214,9 @@ export class Analysis {
 
   changeMonth(month: number) {
     this.month.set(month);
+  }
+
+  changeSummaryTab(index: number) {
+    this.summaryTabIndex.set(index);
   }
 }

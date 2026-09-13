@@ -116,8 +116,28 @@ td {
   background-color: var(--color-negative);
 }
 
-.summary-sections {
+.summary-section {
   text-align: left;
+}
+
+.summary-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-tab {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  background: white;
+  border: 1px solid var(--color-disabled);
+  cursor: pointer;
+}
+
+.summary-tab.active {
+  background: var(--color-primary);
+  color: white;
 }
 
 .summary-stats {
