@@ -18,6 +18,14 @@ export interface ChartData {
   amounts: number[];
 }
 
+export interface ExpenseTransaction {
+  id: string;
+  date: Date;
+  description: string;
+  categoryName: string;
+  amount: number;
+}
+
 export function sumIncomeExpenseDiff(
   transactions: Transaction[],
   categoryMap: Record<string, Category>,
@@ -74,4 +82,22 @@ export function totalsByCategory(
 export function toChartData(totals: CategoryTotal[], isIncome: boolean): ChartData {
   const filtered = totals.filter((c) => c.isIncome === isIncome);
   return { labels: filtered.map((c) => c.name), amounts: filtered.map((c) => c.amount) };
+}
+
+export function topExpenses(
+  transactions: Transaction[],
+  categoryMap: Record<string, Category>,
+  limit: number,
+): ExpenseTransaction[] {
+  return transactions
+    .filter((t) => !categoryMap[t.categoryId]?.isIncome)
+    .map((t) => ({
+      id: t.id,
+      date: t.date,
+      description: t.description,
+      categoryName: categoryMap[t.categoryId]?.name ?? '',
+      amount: t.amount,
+    }))
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, limit);
 }

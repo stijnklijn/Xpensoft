@@ -39,6 +39,131 @@
   </div>
   <div class="main">
     @switch (activeSection()?.id) {
+      @case ('summary') {
+        <section class="summary">
+          <h1>{{ 'ANALYSIS.SECTION_HEADERS.SUMMARY' | translate }}</h1>
+          <div class="summary-sections">
+            <div class="summary-section">
+              <h2>{{ 'ANALYSIS.SUMMARY.THIS_MONTH' | translate }}</h2>
+              <div class="summary-stats">
+                <div class="summary-stat">
+                  <span class="summary-stat-label">{{ 'SHARED.INCOME' | translate }}</span>
+                  <span class="summary-stat-value">{{
+                    totalsThisMonth().income | number: '1.2-2'
+                  }}</span>
+                </div>
+                <div class="summary-stat">
+                  <span class="summary-stat-label">{{ 'SHARED.EXPENSES' | translate }}</span>
+                  <span class="summary-stat-value">{{
+                    totalsThisMonth().expenses | number: '1.2-2'
+                  }}</span>
+                </div>
+                <div
+                  [class]="
+                    'summary-stat ' +
+                    (totalsThisMonth().diff > 0
+                      ? 'amount-positive'
+                      : totalsThisMonth().diff < 0
+                        ? 'amount-negative'
+                        : '')
+                  "
+                >
+                  <span class="summary-stat-label">{{ 'ANALYSIS.DIFFERENCE' | translate }}</span>
+                  <span class="summary-stat-value">{{
+                    totalsThisMonth().diff | number: '1.2-2'
+                  }}</span>
+                </div>
+              </div>
+              <h3>{{ 'ANALYSIS.SUMMARY.TOP_EXPENSES' | translate }}</h3>
+              @if (topExpensesThisMonth().length) {
+                <table>
+                  <thead>
+                    <tr>
+                      <th>{{ 'SHARED.DATE' | translate }}</th>
+                      <th>{{ 'SHARED.DESCRIPTION' | translate }}</th>
+                      <th>{{ 'SHARED.CATEGORY' | translate }}</th>
+                      <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (expense of topExpensesThisMonth(); track expense.id) {
+                      <tr>
+                        <td>{{ expense.date | date: 'dd-MM-yyyy' }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.categoryName }}</td>
+                        <td class="amount">
+                          {{ expense.amount | number: '1.2-2' }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              } @else {
+                <p>{{ 'ANALYSIS.NO_DATA' | translate }}</p>
+              }
+            </div>
+            <div class="summary-section">
+              <h2>{{ 'ANALYSIS.SUMMARY.THIS_YEAR' | translate }}</h2>
+              <div class="summary-stats">
+                <div class="summary-stat">
+                  <span class="summary-stat-label">{{ 'SHARED.INCOME' | translate }}</span>
+                  <span class="summary-stat-value">{{
+                    totalsThisYear().income | number: '1.2-2'
+                  }}</span>
+                </div>
+                <div class="summary-stat">
+                  <span class="summary-stat-label">{{ 'SHARED.EXPENSES' | translate }}</span>
+                  <span class="summary-stat-value">{{
+                    totalsThisYear().expenses | number: '1.2-2'
+                  }}</span>
+                </div>
+                <div
+                  [class]="
+                    'summary-stat ' +
+                    (totalsThisYear().diff > 0
+                      ? 'amount-positive'
+                      : totalsThisYear().diff < 0
+                        ? 'amount-negative'
+                        : '')
+                  "
+                >
+                  <span class="summary-stat-label">{{ 'ANALYSIS.DIFFERENCE' | translate }}</span>
+                  <span class="summary-stat-value">{{
+                    totalsThisYear().diff | number: '1.2-2'
+                  }}</span>
+                </div>
+              </div>
+              <h3>{{ 'ANALYSIS.SUMMARY.TOP_EXPENSES' | translate }}</h3>
+              @if (topExpensesThisYear().length) {
+                <table>
+                  <thead>
+                    <tr>
+                      <th>{{ 'SHARED.DATE' | translate }}</th>
+                      <th>{{ 'SHARED.DESCRIPTION' | translate }}</th>
+                      <th>{{ 'SHARED.CATEGORY' | translate }}</th>
+                      <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (expense of topExpensesThisYear(); track expense.id) {
+                      <tr>
+                        <td>{{ expense.date | date: 'dd-MM-yyyy' }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.categoryName }}</td>
+                        <td class="amount">
+                          {{ expense.amount | number: '1.2-2' }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              } @else {
+                <p>{{ 'ANALYSIS.NO_DATA' | translate }}</p>
+              }
+            </div>
+          </div>
+        </section>
+      }
       @case ('totals') {
         <section>
           <h1>{{ 'ANALYSIS.SECTION_HEADERS.TOTALS' | translate }}</h1>

@@ -121,7 +121,13 @@
     "DIFFERENCE": "Difference",
     "TOTAL": "Total",
     "NO_DATA": "No data in this period",
+    "SUMMARY": {
+      "THIS_MONTH": "This month",
+      "THIS_YEAR": "This year",
+      "TOP_EXPENSES": "Top 5 expenses"
+    },
     "SECTION_HEADERS": {
+      "SUMMARY": "Summary",
       "TOTALS": "Totals",
       "TOTALS_PER_CATEGORY": "Totals per category",
       "INCOME_DISTRIBUTION_PER_CATEGORY": "Income distribution per category",

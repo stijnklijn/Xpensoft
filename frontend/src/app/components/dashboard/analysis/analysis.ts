@@ -9,7 +9,13 @@ import { BarChart } from './bar-chart/bar-chart';
 import { DashboardStore } from '../../../store/dashboard.store';
 import { DoughnutChart } from './doughnut-chart/doughnut-chart';
 import { icons } from '../../../shared/icons';
-import { sumIncomeExpenseDiff, toChartData, totalsByCategory, totalsByMonth } from './analysis.helpers';
+import {
+  sumIncomeExpenseDiff,
+  toChartData,
+  topExpenses,
+  totalsByCategory,
+  totalsByMonth,
+} from './analysis.helpers';
 
 interface Section {
   id: string;
@@ -59,6 +65,12 @@ export class Analysis {
 
   constructor() {
     this.sections.set([
+      {
+        id: 'summary',
+        title: 'ANALYSIS.SECTION_HEADERS.SUMMARY',
+        displayOptions: [],
+        perMonth: true,
+      },
       {
         id: 'totals',
         title: 'ANALYSIS.SECTION_HEADERS.TOTALS',
@@ -156,6 +168,8 @@ export class Analysis {
 
   totalsPerMonth = computed(() => totalsByMonth(this.transactionsThisYear(), this.categoryMap()));
 
+  totalsThisMonth = computed(() => this.totalsPerMonth()[this.month()]);
+
   totalsPerCategory = computed(() =>
     totalsByCategory(this.transactionsThisYear(), this.categoryMap()),
   );
@@ -175,6 +189,14 @@ export class Analysis {
   incomeByCategoryPerMonth = computed(() => toChartData(this.totalsPerMonthPerCategory(), true));
 
   expensesByCategoryPerMonth = computed(() => toChartData(this.totalsPerMonthPerCategory(), false));
+
+  topExpensesThisMonth = computed(() =>
+    topExpenses(this.transactionsThisMonth(), this.categoryMap(), 5),
+  );
+
+  topExpensesThisYear = computed(() =>
+    topExpenses(this.transactionsThisYear(), this.categoryMap(), 5),
+  );
 
   changeSection(index: number) {
     this.activeSectionIndex.set(index);

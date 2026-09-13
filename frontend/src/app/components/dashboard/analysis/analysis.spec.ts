@@ -40,8 +40,20 @@ const transactions: Transaction[] = [
     categoryId: 'groceries',
     amount: 150,
   },
-  { id: 't3', date: new Date('2024-03-05'), description: 'Rent Mar', categoryId: 'rent', amount: 850 },
-  { id: 't4', date: new Date('2023-06-01'), description: 'Bonus', categoryId: 'bonus', amount: 500 },
+  {
+    id: 't3',
+    date: new Date('2024-03-05'),
+    description: 'Rent Mar',
+    categoryId: 'rent',
+    amount: 850,
+  },
+  {
+    id: 't4',
+    date: new Date('2023-06-01'),
+    description: 'Bonus',
+    categoryId: 'bonus',
+    amount: 500,
+  },
   {
     id: 't5',
     date: new Date('2023-06-02'),
@@ -84,7 +96,9 @@ describe('Analysis', () => {
       providers: [{ provide: DashboardStore, useValue: storeMock }],
     })
       .overrideComponent(BarChart, { set: { template: '<div class="bar-chart-stub"></div>' } })
-      .overrideComponent(DoughnutChart, { set: { template: '<div class="doughnut-chart-stub"></div>' } })
+      .overrideComponent(DoughnutChart, {
+        set: { template: '<div class="doughnut-chart-stub"></div>' },
+      })
       .compileComponents();
 
     fixture = TestBed.createComponent(Analysis);
@@ -100,14 +114,59 @@ describe('Analysis', () => {
 
   it('renders all section titles in the sidenav', () => {
     const titles = sectionTitles();
-    expect(titles.length).toBe(7);
-    expect(titles[0].textContent?.trim()).toBe('ANALYSIS.SECTION_HEADERS.TOTALS');
-    expect(titles[6].textContent?.trim()).toBe(
+    expect(titles.length).toBe(8);
+    expect(titles[0].textContent?.trim()).toBe('ANALYSIS.SECTION_HEADERS.SUMMARY');
+    expect(titles[1].textContent?.trim()).toBe('ANALYSIS.SECTION_HEADERS.TOTALS');
+    expect(titles[7].textContent?.trim()).toBe(
       'ANALYSIS.SECTION_HEADERS.EXPENSES_DISTRIBUTION_PER_CATEGORY_PER_MONTH',
     );
   });
 
+  describe('summary section', () => {
+    beforeEach(() => {
+      component.month.set(0); // January
+      fixture.detectChanges();
+    });
+
+    it('is the section shown by default', () => {
+      expect(component.activeSectionIndex()).toBe(0);
+      expect(sectionTitles()[0].classList).toContain('active');
+    });
+
+    it('shows income, expenses and difference for the selected month and year', () => {
+      const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+      expect(stats.length).toBe(6);
+
+      const [monthIncome, monthExpenses, monthDiff, yearIncome, yearExpenses, yearDiff] =
+        Array.from(stats) as HTMLElement[];
+
+      expect(monthIncome.textContent).toContain('2,000.00');
+      expect(monthExpenses.textContent).toContain('150.00');
+      expect(monthDiff.textContent).toContain('1,850.00');
+
+      expect(yearIncome.textContent).toContain('2,000.00');
+      expect(yearExpenses.textContent).toContain('1,000.00');
+      expect(yearDiff.textContent).toContain('1,000.00');
+    });
+
+    it('lists the top expenses for the month and the year', () => {
+      const tables = fixture.nativeElement.querySelectorAll('.summary-section table');
+      expect(tables.length).toBe(2);
+
+      const monthRows = tables[0].querySelectorAll('tbody tr');
+      expect(monthRows.length).toBe(1);
+      expect(monthRows[0].textContent).toContain('Groceries Jan');
+      expect(monthRows[0].textContent).toContain('150.00');
+
+      const yearRows = tables[1].querySelectorAll('tbody tr');
+      expect(yearRows.length).toBe(2);
+      expect(yearRows[0].textContent).toContain('Rent Mar');
+      expect(yearRows[1].textContent).toContain('Groceries Jan');
+    });
+  });
+
   it('shows a no-data message when there is nothing for the selected year', () => {
+    sectionTitles()[1].click(); // totals
     component.year.set(1999);
     fixture.detectChanges();
 
@@ -115,7 +174,10 @@ describe('Analysis', () => {
     expect(message.textContent.trim()).toBe('ANALYSIS.NO_DATA');
   });
 
-  it('renders the monthly totals table for the totals section by default', () => {
+  it('renders the monthly totals table for the totals section', () => {
+    sectionTitles()[1].click(); // totals
+    fixture.detectChanges();
+
     const rows = fixture.nativeElement.querySelectorAll('.main tbody tr');
     expect(rows.length).toBe(13); // 12 months + total row
 
@@ -136,33 +198,40 @@ describe('Analysis', () => {
   });
 
   it('switches to the chart display option and passes monthly data to the bar chart', () => {
+    sectionTitles()[1].click(); // totals
+    fixture.detectChanges();
+
     const [, chartOption] = displayOptions();
     chartOption.click();
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.main table')).toBeNull();
 
-    const barChart = fixture.debugElement.query(By.directive(BarChart)).componentInstance as BarChart;
+    const barChart = fixture.debugElement.query(By.directive(BarChart))
+      .componentInstance as BarChart;
     expect(barChart.labels).toEqual(component.monthLabels());
     expect(barChart.datasets[0].data).toEqual(component.incomePerMonth());
     expect(barChart.datasets[1].data).toEqual(component.expensesPerMonth());
   });
 
   it('resets the display option when switching sections', () => {
+    sectionTitles()[1].click(); // totals
+    fixture.detectChanges();
+
     const [, chartOption] = displayOptions();
     chartOption.click();
     fixture.detectChanges();
     expect(component.activeDisplayOptionIndex()).toBe(1);
 
-    sectionTitles()[1].click(); // totals-per-category
+    sectionTitles()[2].click(); // totals-per-category
     fixture.detectChanges();
 
-    expect(component.activeSectionIndex()).toBe(1);
+    expect(component.activeSectionIndex()).toBe(2);
     expect(component.activeDisplayOptionIndex()).toBe(0);
   });
 
   it('renders income and expense categories sorted by amount in the totals-per-category section', () => {
-    sectionTitles()[1].click();
+    sectionTitles()[2].click(); // totals-per-category
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.controls ul')).toBeNull();
@@ -184,7 +253,7 @@ describe('Analysis', () => {
   });
 
   it('updates totals when a different year is selected', () => {
-    sectionTitles()[1].click();
+    sectionTitles()[2].click(); // totals-per-category
     fixture.detectChanges();
 
     const yearSelect = selects()[0];
@@ -201,7 +270,7 @@ describe('Analysis', () => {
   });
 
   it('shows a month selector and filters category totals by month', () => {
-    sectionTitles()[4].click(); // totals-per-category-per-month
+    sectionTitles()[5].click(); // totals-per-category-per-month
     component.month.set(0); // January
     fixture.detectChanges();
 
@@ -224,10 +293,11 @@ describe('Analysis', () => {
   });
 
   it('renders income category data in the income distribution chart and switches to a doughnut chart', () => {
-    sectionTitles()[2].click(); // income-distribution-per-category
+    sectionTitles()[3].click(); // income-distribution-per-category
     fixture.detectChanges();
 
-    const barChart = fixture.debugElement.query(By.directive(BarChart)).componentInstance as BarChart;
+    const barChart = fixture.debugElement.query(By.directive(BarChart))
+      .componentInstance as BarChart;
     expect(barChart.labels).toEqual(['Salary']);
     expect(barChart.datasets[0].data).toEqual([2000]);
 
@@ -244,10 +314,11 @@ describe('Analysis', () => {
 
   it('renders per-month category data in the income distribution per month chart', () => {
     component.month.set(0); // January
-    sectionTitles()[5].click(); // income-distribution-per-category-per-month
+    sectionTitles()[6].click(); // income-distribution-per-category-per-month
     fixture.detectChanges();
 
-    const barChart = fixture.debugElement.query(By.directive(BarChart)).componentInstance as BarChart;
+    const barChart = fixture.debugElement.query(By.directive(BarChart))
+      .componentInstance as BarChart;
     expect(barChart.labels).toEqual(['Salary']);
     expect(barChart.datasets[0].data).toEqual([2000]);
   });

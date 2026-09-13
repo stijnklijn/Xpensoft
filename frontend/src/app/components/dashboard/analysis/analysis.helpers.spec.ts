@@ -3,6 +3,7 @@ import { Transaction } from '../../../models/transaction';
 import {
   sumIncomeExpenseDiff,
   toChartData,
+  topExpenses,
   totalsByCategory,
   totalsByMonth,
 } from './analysis.helpers';
@@ -95,6 +96,72 @@ describe('totalsByCategory', () => {
       { name: 'Rent', isIncome: false, amount: 850 },
       { name: 'Groceries', isIncome: false, amount: 200 },
     ]);
+  });
+});
+
+describe('topExpenses', () => {
+  it('returns the largest expenses sorted descending', () => {
+    const result = topExpenses(
+      [
+        transaction({ id: '1', categoryId: 'salary', amount: 2000 }),
+        transaction({ id: '2', categoryId: 'groceries', amount: 150, description: 'Groceries' }),
+        transaction({ id: '3', categoryId: 'rent', amount: 850, description: 'Rent' }),
+        transaction({ id: '4', categoryId: 'groceries', amount: 50, description: 'Snacks' }),
+      ],
+      categoryMap,
+      3,
+    );
+
+    expect(result).toEqual([
+      {
+        id: '3',
+        date: new Date('2024-01-15'),
+        description: 'Rent',
+        categoryName: 'Rent',
+        amount: 850,
+      },
+      {
+        id: '2',
+        date: new Date('2024-01-15'),
+        description: 'Groceries',
+        categoryName: 'Groceries',
+        amount: 150,
+      },
+      {
+        id: '4',
+        date: new Date('2024-01-15'),
+        description: 'Snacks',
+        categoryName: 'Groceries',
+        amount: 50,
+      },
+    ]);
+  });
+
+  it('respects the limit', () => {
+    const result = topExpenses(
+      [
+        transaction({ id: '1', categoryId: 'groceries', amount: 10 }),
+        transaction({ id: '2', categoryId: 'rent', amount: 20 }),
+      ],
+      categoryMap,
+      1,
+    );
+
+    expect(result).toEqual([
+      {
+        id: '2',
+        date: new Date('2024-01-15'),
+        description: 'test',
+        categoryName: 'Rent',
+        amount: 20,
+      },
+    ]);
+  });
+
+  it('returns an empty array when there are no expenses', () => {
+    expect(
+      topExpenses([transaction({ categoryId: 'salary', amount: 100 })], categoryMap, 3),
+    ).toEqual([]);
   });
 });
 
