@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -137,57 +138,138 @@ describe('Analysis', () => {
       expect(sectionTitles()[0].classList).toContain('active');
     });
 
-    it('shows the month tab by default and switches to the year tab', () => {
+    it('shows the past month tab by default and switches between tabs', () => {
       const tabs = summaryTabs();
-      expect(tabs.length).toBe(2);
+      expect(tabs.length).toBe(4);
       expect(tabs[0].classList).toContain('active');
       expect(tabs[1].classList).not.toContain('active');
 
-      tabs[1].click();
+      tabs[2].click();
       fixture.detectChanges();
 
       expect(tabs[0].classList).not.toContain('active');
-      expect(tabs[1].classList).toContain('active');
+      expect(tabs[2].classList).toContain('active');
     });
 
-    it('shows income, expenses and difference for the selected month on the month tab', () => {
-      const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
-      expect(stats.length).toBe(3);
+    describe('selected month and year tabs', () => {
+      beforeEach(() => {
+        summaryTabs()[2].click(); // selected month
+        fixture.detectChanges();
+      });
 
-      const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
-      expect(income.textContent).toContain('2,000.00');
-      expect(expenses.textContent).toContain('150.00');
-      expect(diff.textContent).toContain('1,850.00');
+      it('shows the date range of the selected month and year in the subtitle', () => {
+        const subtitle = fixture.nativeElement.querySelector('.summary-subtitle');
+        expect(subtitle.textContent.trim()).toBe(
+          `${formatDate(new Date(2024, 0, 1), 'longDate', 'en-US')} - ${formatDate(new Date(2024, 0, 31), 'longDate', 'en-US')}`,
+        );
+
+        summaryTabs()[3].click(); // selected year
+        fixture.detectChanges();
+
+        const yearSubtitle = fixture.nativeElement.querySelector('.summary-subtitle');
+        expect(yearSubtitle.textContent.trim()).toBe(
+          `${formatDate(new Date(2024, 0, 1), 'longDate', 'en-US')} - ${formatDate(new Date(2024, 11, 31), 'longDate', 'en-US')}`,
+        );
+      });
+
+      it('shows income, expenses and difference for the selected month', () => {
+        const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+        expect(stats.length).toBe(3);
+
+        const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
+        expect(income.textContent).toContain('2,000.00');
+        expect(expenses.textContent).toContain('150.00');
+        expect(diff.textContent).toContain('1,850.00');
+      });
+
+      it('shows income, expenses and difference for the selected year', () => {
+        summaryTabs()[3].click(); // selected year
+        fixture.detectChanges();
+
+        const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+        expect(stats.length).toBe(3);
+
+        const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
+        expect(income.textContent).toContain('2,000.00');
+        expect(expenses.textContent).toContain('1,000.00');
+        expect(diff.textContent).toContain('1,000.00');
+      });
+
+      it('lists the top expenses for the selected month', () => {
+        const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
+        expect(rows.length).toBe(1);
+        expect(rows[0].textContent).toContain('Groceries Jan');
+        expect(rows[0].textContent).toContain('150.00');
+      });
+
+      it('lists the top expenses for the selected year', () => {
+        summaryTabs()[3].click(); // selected year
+        fixture.detectChanges();
+
+        const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
+        expect(rows.length).toBe(2);
+        expect(rows[0].textContent).toContain('Rent Mar');
+        expect(rows[1].textContent).toContain('Groceries Jan');
+      });
     });
 
-    it('shows income, expenses and difference for the selected year on the year tab', () => {
-      summaryTabs()[1].click();
-      fixture.detectChanges();
+    describe('past month and past year tabs', () => {
+      beforeEach(() => {
+        // "Today" is set so the past month (11-02-2024 - 10-03-2024) only covers
+        // the March rent transaction, while the past year (11-03-2023 - 10-03-2024)
+        // covers all fixture transactions.
+        component.today.set(new Date('2024-03-10'));
+        fixture.detectChanges();
+      });
 
-      const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
-      expect(stats.length).toBe(3);
+      it('computes the number of days covered by the past month and past year', () => {
+        expect(component.pastMonthDays()).toBe(29); // Feb 11 - Mar 10 2024 (leap year)
+        expect(component.pastYearDays()).toBe(366); // spans the Feb 29 2024 leap day
+      });
 
-      const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
-      expect(income.textContent).toContain('2,000.00');
-      expect(expenses.textContent).toContain('1,000.00');
-      expect(diff.textContent).toContain('1,000.00');
-    });
+      it('shows the date range of the past month and past year in the subtitle', () => {
+        const subtitle = fixture.nativeElement.querySelector('.summary-subtitle');
+        expect(subtitle.textContent.trim()).toBe(
+          `${formatDate(new Date(2024, 1, 11), 'longDate', 'en-US')} - ${formatDate(new Date(2024, 2, 10), 'longDate', 'en-US')}`,
+        );
 
-    it('lists the top expenses for the month on the month tab', () => {
-      const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
-      expect(rows.length).toBe(1);
-      expect(rows[0].textContent).toContain('Groceries Jan');
-      expect(rows[0].textContent).toContain('150.00');
-    });
+        summaryTabs()[1].click(); // past year
+        fixture.detectChanges();
 
-    it('lists the top expenses for the year on the year tab', () => {
-      summaryTabs()[1].click();
-      fixture.detectChanges();
+        const yearSubtitle = fixture.nativeElement.querySelector('.summary-subtitle');
+        expect(yearSubtitle.textContent.trim()).toBe(
+          `${formatDate(new Date(2023, 2, 11), 'longDate', 'en-US')} - ${formatDate(new Date(2024, 2, 10), 'longDate', 'en-US')}`,
+        );
+      });
 
-      const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
-      expect(rows.length).toBe(2);
-      expect(rows[0].textContent).toContain('Rent Mar');
-      expect(rows[1].textContent).toContain('Groceries Jan');
+      it('shows totals and top expenses for the past month', () => {
+        const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+        const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
+        expect(income.textContent).toContain('0.00');
+        expect(expenses.textContent).toContain('850.00');
+        expect(diff.textContent).toContain('-850.00');
+
+        const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
+        expect(rows.length).toBe(1);
+        expect(rows[0].textContent).toContain('Rent Mar');
+      });
+
+      it('shows totals and top expenses for the past year', () => {
+        summaryTabs()[1].click(); // past year
+        fixture.detectChanges();
+
+        const stats = fixture.nativeElement.querySelectorAll('.summary-stat');
+        const [income, expenses, diff] = Array.from(stats) as HTMLElement[];
+        expect(income.textContent).toContain('2,500.00');
+        expect(expenses.textContent).toContain('1,080.00');
+        expect(diff.textContent).toContain('1,420.00');
+
+        const rows = fixture.nativeElement.querySelectorAll('.summary-section table tbody tr');
+        expect(rows.length).toBe(3);
+        expect(rows[0].textContent).toContain('Rent Mar');
+        expect(rows[1].textContent).toContain('Groceries Jan');
+        expect(rows[2].textContent).toContain('80.00');
+      });
     });
   });
 

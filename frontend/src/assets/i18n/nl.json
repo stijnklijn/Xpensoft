@@ -126,8 +126,9 @@
     "TOTAL": "Totaal",
     "NO_DATA": "Geen gegevens in deze periode",
     "SUMMARY": {
-      "THIS_MONTH": "Deze maand",
-      "THIS_YEAR": "Dit jaar",
+      "LAST_X_DAYS": "Laatste {{days}} dagen",
+      "SELECTED_MONTH": "Geselecteerde maand",
+      "SELECTED_YEAR": "Geselecteerd jaar",
       "TOP_EXPENSES": "Top 5 uitgaven"
     },
     "SECTION_HEADERS": {

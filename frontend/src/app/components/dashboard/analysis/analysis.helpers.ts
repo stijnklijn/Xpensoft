@@ -84,6 +84,33 @@ export function toChartData(totals: CategoryTotal[], isIncome: boolean): ChartDa
   return { labels: filtered.map((c) => c.name), amounts: filtered.map((c) => c.amount) };
 }
 
+export function transactionsInRange(
+  transactions: Transaction[],
+  start: Date,
+  end: Date,
+): Transaction[] {
+  const startDay = startOfDay(start).getTime();
+  const endDay = startOfDay(end).getTime();
+
+  return transactions.filter((t) => {
+    const day = startOfDay(new Date(t.date)).getTime();
+    return day >= startDay && day <= endDay;
+  });
+}
+
+function startOfDay(date: Date): Date {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  return result;
+}
+
+export function daysBetween(start: Date, end: Date): number {
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  return (
+    Math.round((startOfDay(end).getTime() - startOfDay(start).getTime()) / millisecondsPerDay) + 1
+  );
+}
+
 export function topExpenses(
   transactions: Transaction[],
   categoryMap: Record<string, Category>,

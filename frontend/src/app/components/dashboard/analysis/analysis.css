@@ -120,6 +120,10 @@ td {
   text-align: left;
 }
 
+.summary-subtitle {
+  color: var(--color-disabled);
+}
+
 .summary-tabs {
   display: flex;
   gap: 0.5rem;

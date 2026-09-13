@@ -10,11 +10,13 @@ import { DashboardStore } from '../../../store/dashboard.store';
 import { DoughnutChart } from './doughnut-chart/doughnut-chart';
 import { icons } from '../../../shared/icons';
 import {
+  daysBetween,
   sumIncomeExpenseDiff,
   toChartData,
   topExpenses,
   totalsByCategory,
   totalsByMonth,
+  transactionsInRange,
 } from './analysis.helpers';
 
 interface Section {
@@ -41,6 +43,7 @@ export class Analysis {
 
   year = signal(new Date().getFullYear());
   month = signal(new Date().getMonth());
+  today = signal(new Date());
 
   activeSectionIndex = signal<number>(0);
   activeDisplayOptionIndex = signal<number>(0);
@@ -171,6 +174,52 @@ export class Analysis {
 
   totalsThisMonth = computed(() => this.totalsPerMonth()[this.month()]);
 
+  monthRangeStart = computed(() => new Date(this.year(), this.month(), 1));
+
+  monthRangeEnd = computed(() => new Date(this.year(), this.month() + 1, 0));
+
+  yearRangeStart = computed(() => new Date(this.year(), 0, 1));
+
+  yearRangeEnd = computed(() => new Date(this.year(), 11, 31));
+
+  pastMonthEnd = computed(() => this.today());
+
+  pastMonthStart = computed(() => {
+    const start = new Date(this.today());
+    start.setMonth(start.getMonth() - 1);
+    start.setDate(start.getDate() + 1);
+    return start;
+  });
+
+  pastYearEnd = computed(() => this.today());
+
+  pastYearStart = computed(() => {
+    const start = new Date(this.today());
+    start.setFullYear(start.getFullYear() - 1);
+    start.setDate(start.getDate() + 1);
+    return start;
+  });
+
+  pastMonthDays = computed(() => daysBetween(this.pastMonthStart(), this.pastMonthEnd()));
+
+  pastYearDays = computed(() => daysBetween(this.pastYearStart(), this.pastYearEnd()));
+
+  transactionsPastMonth = computed(() =>
+    transactionsInRange(this.transactions(), this.pastMonthStart(), this.pastMonthEnd()),
+  );
+
+  transactionsPastYear = computed(() =>
+    transactionsInRange(this.transactions(), this.pastYearStart(), this.pastYearEnd()),
+  );
+
+  totalsPastMonth = computed(() =>
+    sumIncomeExpenseDiff(this.transactionsPastMonth(), this.categoryMap()),
+  );
+
+  totalsPastYear = computed(() =>
+    sumIncomeExpenseDiff(this.transactionsPastYear(), this.categoryMap()),
+  );
+
   totalsPerCategory = computed(() =>
     totalsByCategory(this.transactionsThisYear(), this.categoryMap()),
   );
@@ -197,6 +246,14 @@ export class Analysis {
 
   topExpensesThisYear = computed(() =>
     topExpenses(this.transactionsThisYear(), this.categoryMap(), 5),
+  );
+
+  topExpensesPastMonth = computed(() =>
+    topExpenses(this.transactionsPastMonth(), this.categoryMap(), 5),
+  );
+
+  topExpensesPastYear = computed(() =>
+    topExpenses(this.transactionsPastYear(), this.categoryMap(), 5),
   );
 
   changeSection(index: number) {

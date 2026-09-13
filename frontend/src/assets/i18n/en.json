@@ -122,8 +122,9 @@
     "TOTAL": "Total",
     "NO_DATA": "No data in this period",
     "SUMMARY": {
-      "THIS_MONTH": "This month",
-      "THIS_YEAR": "This year",
+      "LAST_X_DAYS": "Last {{days}} days",
+      "SELECTED_MONTH": "Selected month",
+      "SELECTED_YEAR": "Selected year",
       "TOP_EXPENSES": "Top 5 expenses"
     },
     "SECTION_HEADERS": {

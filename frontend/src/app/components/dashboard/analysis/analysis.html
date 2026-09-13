@@ -49,7 +49,7 @@
               [class.active]="summaryTabIndex() === 0"
               (click)="changeSummaryTab(0)"
             >
-              {{ 'ANALYSIS.SUMMARY.THIS_MONTH' | translate }}
+              {{ 'ANALYSIS.SUMMARY.LAST_X_DAYS' | translate: { days: pastMonthDays() } }}
             </button>
             <button
               type="button"
@@ -57,129 +57,126 @@
               [class.active]="summaryTabIndex() === 1"
               (click)="changeSummaryTab(1)"
             >
-              {{ 'ANALYSIS.SUMMARY.THIS_YEAR' | translate }}
+              {{ 'ANALYSIS.SUMMARY.LAST_X_DAYS' | translate: { days: pastYearDays() } }}
+            </button>
+            <button
+              type="button"
+              class="summary-tab"
+              [class.active]="summaryTabIndex() === 2"
+              (click)="changeSummaryTab(2)"
+            >
+              {{ 'ANALYSIS.SUMMARY.SELECTED_MONTH' | translate }}
+            </button>
+            <button
+              type="button"
+              class="summary-tab"
+              [class.active]="summaryTabIndex() === 3"
+              (click)="changeSummaryTab(3)"
+            >
+              {{ 'ANALYSIS.SUMMARY.SELECTED_YEAR' | translate }}
             </button>
           </div>
+          <ng-template
+            #summaryPanel
+            let-rangeStart="rangeStart"
+            let-rangeEnd="rangeEnd"
+            let-totals="totals"
+            let-topExpenses="topExpenses"
+          >
+            <div class="summary-section">
+              <p class="summary-subtitle">
+                {{ rangeStart | date: 'longDate' }} - {{ rangeEnd | date: 'longDate' }}
+              </p>
+              <div class="summary-stats">
+                <div class="summary-stat">
+                  <span class="summary-stat-label">{{ 'SHARED.INCOME' | translate }}</span>
+                  <span class="summary-stat-value">{{ totals.income | number: '1.2-2' }}</span>
+                </div>
+                <div class="summary-stat">
+                  <span class="summary-stat-label">{{ 'SHARED.EXPENSES' | translate }}</span>
+                  <span class="summary-stat-value">{{ totals.expenses | number: '1.2-2' }}</span>
+                </div>
+                <div
+                  [class]="
+                    'summary-stat ' +
+                    (totals.diff > 0 ? 'amount-positive' : totals.diff < 0 ? 'amount-negative' : '')
+                  "
+                >
+                  <span class="summary-stat-label">{{ 'ANALYSIS.DIFFERENCE' | translate }}</span>
+                  <span class="summary-stat-value">{{ totals.diff | number: '1.2-2' }}</span>
+                </div>
+              </div>
+              <h3>{{ 'ANALYSIS.SUMMARY.TOP_EXPENSES' | translate }}</h3>
+              @if (topExpenses.length) {
+                <table>
+                  <thead>
+                    <tr>
+                      <th>{{ 'SHARED.DATE' | translate }}</th>
+                      <th>{{ 'SHARED.DESCRIPTION' | translate }}</th>
+                      <th>{{ 'SHARED.CATEGORY' | translate }}</th>
+                      <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (expense of topExpenses; track expense.id) {
+                      <tr>
+                        <td>{{ expense.date | date: 'dd-MM-yyyy' }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.categoryName }}</td>
+                        <td class="amount">{{ expense.amount | number: '1.2-2' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              } @else {
+                <p>{{ 'ANALYSIS.NO_DATA' | translate }}</p>
+              }
+            </div>
+          </ng-template>
           @switch (summaryTabIndex()) {
             @case (0) {
-              <div class="summary-section">
-                <div class="summary-stats">
-                  <div class="summary-stat">
-                    <span class="summary-stat-label">{{ 'SHARED.INCOME' | translate }}</span>
-                    <span class="summary-stat-value">{{
-                      totalsThisMonth().income | number: '1.2-2'
-                    }}</span>
-                  </div>
-                  <div class="summary-stat">
-                    <span class="summary-stat-label">{{ 'SHARED.EXPENSES' | translate }}</span>
-                    <span class="summary-stat-value">{{
-                      totalsThisMonth().expenses | number: '1.2-2'
-                    }}</span>
-                  </div>
-                  <div
-                    [class]="
-                      'summary-stat ' +
-                      (totalsThisMonth().diff > 0
-                        ? 'amount-positive'
-                        : totalsThisMonth().diff < 0
-                          ? 'amount-negative'
-                          : '')
-                    "
-                  >
-                    <span class="summary-stat-label">{{ 'ANALYSIS.DIFFERENCE' | translate }}</span>
-                    <span class="summary-stat-value">{{
-                      totalsThisMonth().diff | number: '1.2-2'
-                    }}</span>
-                  </div>
-                </div>
-                <h3>{{ 'ANALYSIS.SUMMARY.TOP_EXPENSES' | translate }}</h3>
-                @if (topExpensesThisMonth().length) {
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>{{ 'SHARED.DATE' | translate }}</th>
-                        <th>{{ 'SHARED.DESCRIPTION' | translate }}</th>
-                        <th>{{ 'SHARED.CATEGORY' | translate }}</th>
-                        <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (expense of topExpensesThisMonth(); track expense.id) {
-                        <tr>
-                          <td>{{ expense.date | date: 'dd-MM-yyyy' }}</td>
-                          <td>{{ expense.description }}</td>
-                          <td>{{ expense.categoryName }}</td>
-                          <td class="amount">
-                            {{ expense.amount | number: '1.2-2' }}
-                          </td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                } @else {
-                  <p>{{ 'ANALYSIS.NO_DATA' | translate }}</p>
-                }
-              </div>
+              <ng-container
+                [ngTemplateOutlet]="summaryPanel"
+                [ngTemplateOutletContext]="{
+                  rangeStart: pastMonthStart(),
+                  rangeEnd: pastMonthEnd(),
+                  totals: totalsPastMonth(),
+                  topExpenses: topExpensesPastMonth(),
+                }"
+              ></ng-container>
             }
             @case (1) {
-              <div class="summary-section">
-                <div class="summary-stats">
-                  <div class="summary-stat">
-                    <span class="summary-stat-label">{{ 'SHARED.INCOME' | translate }}</span>
-                    <span class="summary-stat-value">{{
-                      totalsThisYear().income | number: '1.2-2'
-                    }}</span>
-                  </div>
-                  <div class="summary-stat">
-                    <span class="summary-stat-label">{{ 'SHARED.EXPENSES' | translate }}</span>
-                    <span class="summary-stat-value">{{
-                      totalsThisYear().expenses | number: '1.2-2'
-                    }}</span>
-                  </div>
-                  <div
-                    [class]="
-                      'summary-stat ' +
-                      (totalsThisYear().diff > 0
-                        ? 'amount-positive'
-                        : totalsThisYear().diff < 0
-                          ? 'amount-negative'
-                          : '')
-                    "
-                  >
-                    <span class="summary-stat-label">{{ 'ANALYSIS.DIFFERENCE' | translate }}</span>
-                    <span class="summary-stat-value">{{
-                      totalsThisYear().diff | number: '1.2-2'
-                    }}</span>
-                  </div>
-                </div>
-                <h3>{{ 'ANALYSIS.SUMMARY.TOP_EXPENSES' | translate }}</h3>
-                @if (topExpensesThisYear().length) {
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>{{ 'SHARED.DATE' | translate }}</th>
-                        <th>{{ 'SHARED.DESCRIPTION' | translate }}</th>
-                        <th>{{ 'SHARED.CATEGORY' | translate }}</th>
-                        <th class="amount">{{ 'SHARED.AMOUNT' | translate }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (expense of topExpensesThisYear(); track expense.id) {
-                        <tr>
-                          <td>{{ expense.date | date: 'dd-MM-yyyy' }}</td>
-                          <td>{{ expense.description }}</td>
-                          <td>{{ expense.categoryName }}</td>
-                          <td class="amount">
-                            {{ expense.amount | number: '1.2-2' }}
-                          </td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                } @else {
-                  <p>{{ 'ANALYSIS.NO_DATA' | translate }}</p>
-                }
-              </div>
+              <ng-container
+                [ngTemplateOutlet]="summaryPanel"
+                [ngTemplateOutletContext]="{
+                  rangeStart: pastYearStart(),
+                  rangeEnd: pastYearEnd(),
+                  totals: totalsPastYear(),
+                  topExpenses: topExpensesPastYear(),
+                }"
+              ></ng-container>
+            }
+            @case (2) {
+              <ng-container
+                [ngTemplateOutlet]="summaryPanel"
+                [ngTemplateOutletContext]="{
+                  rangeStart: monthRangeStart(),
+                  rangeEnd: monthRangeEnd(),
+                  totals: totalsThisMonth(),
+                  topExpenses: topExpensesThisMonth(),
+                }"
+              ></ng-container>
+            }
+            @case (3) {
+              <ng-container
+                [ngTemplateOutlet]="summaryPanel"
+                [ngTemplateOutletContext]="{
+                  rangeStart: yearRangeStart(),
+                  rangeEnd: yearRangeEnd(),
+                  totals: totalsThisYear(),
+                  topExpenses: topExpensesThisYear(),
+                }"
+              ></ng-container>
             }
           }
         </section>
