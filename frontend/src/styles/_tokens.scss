@@ -1,0 +1,96 @@
+// Design tokens: the single source of truth for colours, spacing, shape, elevation, typography
+// and motion. Components use these custom properties instead of hard-coded values.
+//
+// Colours are defined with light-dark() so a dark theme only requires switching `color-scheme`
+// on <html> (see _theme.scss). Where a Material system variable already describes the role, the
+// token points to it, so Material components and our own markup stay in sync.
+
+:root {
+  // Brand & roles
+  --xp-color-primary: var(--mat-sys-primary);
+  --xp-color-on-primary: var(--mat-sys-on-primary);
+  --xp-color-primary-hover: light-dark(#2a1bc0, #d4d3ff);
+  --xp-color-primary-subtle: var(--mat-sys-primary-container);
+  --xp-color-on-primary-subtle: var(--mat-sys-on-primary-container);
+
+  // Surfaces & text
+  --xp-color-bg: light-dark(#f5f6fa, #0f1117);
+  --xp-color-surface: var(--mat-sys-surface);
+  --xp-color-surface-muted: light-dark(#f1f5f9, #22252f);
+  --xp-color-text: var(--mat-sys-on-surface);
+  --xp-color-text-muted: var(--mat-sys-on-surface-variant);
+  --xp-color-text-subtle: light-dark(#5e6a7d, #8a90a0);
+
+  // Lines: `border` for decorative separation (cards), `border-strong` for interactive controls
+  // (meets the 3:1 non-text contrast requirement), `divider` for rows within a surface.
+  --xp-color-border: light-dark(#cbd5e1, #3a3f4d);
+  --xp-color-border-strong: var(--mat-sys-outline);
+  --xp-color-divider: var(--mat-sys-outline-variant);
+
+  // Semantic
+  --xp-color-income: light-dark(#15803d, #4ade80);
+  --xp-color-success-subtle: light-dark(#dcfce7, #0f2e1a);
+  --xp-color-on-success-subtle: light-dark(#14532d, #bbf7d0);
+  --xp-color-danger: var(--mat-sys-error);
+  --xp-color-danger-subtle: light-dark(#fee2e2, #3b1414);
+  --xp-color-on-danger-subtle: light-dark(#7f1d1d, #fecaca);
+  --xp-color-focus-ring: var(--xp-color-primary);
+  --xp-color-scrim: rgb(15 23 42 / 45%);
+
+  // Spacing (4px scale)
+  --xp-space-1: 4px;
+  --xp-space-2: 8px;
+  --xp-space-3: 12px;
+  --xp-space-4: 16px;
+  --xp-space-5: 20px;
+  --xp-space-6: 24px;
+  --xp-space-8: 32px;
+  --xp-space-10: 40px;
+  --xp-space-12: 48px;
+
+  // Shape
+  --xp-radius-sm: 8px;
+  --xp-radius-md: 10px;
+  --xp-radius-lg: 12px;
+  --xp-radius-xl: 16px;
+  --xp-radius-2xl: 24px;
+  --xp-radius-full: 999px;
+
+  // Elevation
+  --xp-shadow-sm: 0 1px 3px rgb(15 23 42 / 6%);
+  --xp-shadow-md: 0 1px 3px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 4%);
+  --xp-shadow-overlay: 0 12px 32px rgb(15 23 42 / 18%), 0 0 0 1px rgb(15 23 42 / 6%);
+  --xp-shadow-dialog: 0 24px 48px rgb(15 23 42 / 25%);
+
+  // Typography
+  --xp-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --xp-text-xs: 12px;
+  --xp-text-sm: 13px;
+  --xp-text-base: 15px;
+  --xp-text-md: 16px;
+  --xp-text-lg: 18px;
+  --xp-text-xl: 24px;
+  --xp-text-2xl: 28px;
+  --xp-weight-regular: 400;
+  --xp-weight-medium: 500;
+  --xp-weight-semibold: 600;
+  --xp-weight-bold: 700;
+
+  // Motion
+  --xp-duration-fast: 150ms;
+  --xp-duration-base: 200ms;
+  --xp-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  // Sizing & layout
+  --xp-touch-target: 44px;
+  --xp-control-height: 44px;
+  --xp-navbar-height: 64px;
+  --xp-bottom-nav-height: 76px;
+  --xp-content-max-width: 1200px;
+
+  // Device safe areas (notch, home indicator); requires viewport-fit=cover in index.html
+  --xp-safe-top: env(safe-area-inset-top, 0px);
+  --xp-safe-right: env(safe-area-inset-right, 0px);
+  --xp-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --xp-safe-left: env(safe-area-inset-left, 0px);
+}

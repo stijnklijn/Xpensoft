@@ -1,0 +1,45 @@
+@use '@angular/material' as mat;
+@use 'theme-colors';
+
+html {
+  height: 100%;
+
+  // Only light is enabled for now. The theme is generated with `theme-type: color-scheme`, so
+  // switching this to `dark` (or `light dark` to follow the OS) enables the dark theme.
+  color-scheme: light;
+
+  @include mat.theme(
+    (
+      color: (
+        primary: theme-colors.$primary-palette,
+        tertiary: theme-colors.$tertiary-palette,
+        theme-type: color-scheme,
+      ),
+      typography: (
+        plain-family: 'Inter',
+        brand-family: 'Inter',
+        bold-weight: 700,
+        medium-weight: 600,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
+
+  // The generated palette puts the primary role on tone 40 (#4d4bd1); pin it to the exact brand
+  // colour and align the neutral roles with the design tokens.
+  @include mat.theme-overrides(
+    (
+      primary: light-dark(#1907a5, #c1c1ff),
+      on-primary: light-dark(#ffffff, #1805a4),
+      primary-container: light-dark(#e9e7fb, #332fb9),
+      on-primary-container: light-dark(#1907a5, #e2dfff),
+      surface: light-dark(#ffffff, #181a22),
+      on-surface: light-dark(#0f172a, #e6e8ef),
+      on-surface-variant: light-dark(#475569, #a3a9b8),
+      outline: light-dark(#8b95a7, #6b7280),
+      outline-variant: light-dark(#eef0f5, #2a2e39),
+      error: light-dark(#b91c1c, #f87171),
+    )
+  );
+}

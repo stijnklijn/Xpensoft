@@ -16,7 +16,14 @@
       <div>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'SHARED.FIRST_NAME' | translate }}</mat-label>
-          <input matInput type="text" formControlName="firstName" maxlength="255" />
+          <input
+            matInput
+            cdkFocusInitial
+            type="text"
+            formControlName="firstName"
+            maxlength="255"
+            autocomplete="given-name"
+          />
         </mat-form-field>
         @if (form.controls.firstName.touched) {
           @if (form.controls.firstName.hasError('lengthInvalid')) {
@@ -27,7 +34,13 @@
         }
         <mat-form-field appearance="outline">
           <mat-label>{{ 'SHARED.LAST_NAME' | translate }}</mat-label>
-          <input matInput type="text" formControlName="lastName" maxlength="255" />
+          <input
+            matInput
+            type="text"
+            formControlName="lastName"
+            maxlength="255"
+            autocomplete="family-name"
+          />
         </mat-form-field>
         @if (form.controls.lastName.touched) {
           @if (form.controls.lastName.hasError('lengthInvalid')) {

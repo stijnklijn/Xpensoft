@@ -8,6 +8,7 @@
       <mat-label>{{ 'SHARED.DATE' | translate }}</mat-label>
       <input
         matInput
+        cdkFocusInitial
         formControlName="date"
         [matDatepicker]="picker"
         (dateInput)="onDateInput($event)"
@@ -51,7 +52,7 @@
     }
     <mat-form-field appearance="outline">
       <mat-label>{{ 'SHARED.AMOUNT' | translate }}</mat-label>
-      <input matInput type="number" formControlName="amount" />
+      <input matInput type="number" inputmode="decimal" formControlName="amount" />
     </mat-form-field>
     @if (form.controls.amount.touched) {
       @if (form.controls.amount.hasError('required')) {

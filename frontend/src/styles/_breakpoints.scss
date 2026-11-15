@@ -1,0 +1,19 @@
+// Mobile-first breakpoints, following the Material 3 window size classes.
+// Base styles target compact (phone) widths; wrap larger-screen styles in `up(...)`.
+// CSS custom properties cannot be used in media queries, so these live in Sass.
+
+$medium: 600px; // tablets, large phones in landscape
+$expanded: 840px; // desktop layout: top navbar instead of bottom navigation
+$large: 1200px;
+
+@mixin up($min-width) {
+  @media (min-width: $min-width) {
+    @content;
+  }
+}
+
+@mixin down($min-width) {
+  @media (max-width: ($min-width - 0.02px)) {
+    @content;
+  }
+}

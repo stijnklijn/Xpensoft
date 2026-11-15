@@ -9,15 +9,16 @@ import { dashboardGuard, loginGuard } from './guards/guards';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'login', component: Login, canActivate: [loginGuard] },
+  // Route titles are translation keys, resolved by TranslatedTitleStrategy.
+  { path: 'login', component: Login, canActivate: [loginGuard], title: 'LOGIN.LOGIN' },
   {
     path: 'dashboard',
     component: Dashboard,
     canActivate: [dashboardGuard],
     children: [
-      { path: 'transactions', component: Transactions },
-      { path: 'categories', component: Categories },
-      { path: 'analysis', component: Analysis },
+      { path: 'transactions', component: Transactions, title: 'DASHBOARD.TRANSACTIONS' },
+      { path: 'categories', component: Categories, title: 'DASHBOARD.CATEGORIES' },
+      { path: 'analysis', component: Analysis, title: 'DASHBOARD.ANALYSIS' },
       { path: '', redirectTo: 'transactions', pathMatch: 'full' },
     ],
   },

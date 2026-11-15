@@ -1,0 +1,7 @@
+// Global styles. Order matters: the Material theme defines the --mat-sys-* variables that the
+// design tokens refer to.
+@use 'styles/theme';
+@use 'styles/tokens';
+@use 'styles/base';
+@use 'styles/material-overrides';
+@use 'styles/legacy';

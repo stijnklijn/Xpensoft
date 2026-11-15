@@ -16,6 +16,7 @@
         <mat-label>{{ 'SHARED.FIRST_NAME' | translate }}</mat-label>
         <input
           matInput
+          cdkFocusInitial
           type="text"
           formControlName="firstName"
           maxlength="255"
@@ -44,7 +45,7 @@
       }
       <mat-form-field appearance="outline">
         <mat-label>{{ 'SHARED.EMAIL' | translate }}</mat-label>
-        <input matInput type="text" formControlName="email" maxlength="255" autocomplete="email" />
+        <input matInput type="email" formControlName="email" maxlength="255" autocomplete="email" />
       </mat-form-field>
       @if (form.controls.email.touched) {
         @if (form.controls.email.hasError('required')) {

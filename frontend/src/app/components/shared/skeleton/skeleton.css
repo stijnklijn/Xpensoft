@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--xp-color-surface) 60%, transparent) 50%,
+      transparent 100%
+    )
+    var(--xp-color-surface-muted);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+:host(.skeleton--text) {
+  border-radius: var(--xp-radius-sm);
+}
+
+:host(.skeleton--rect) {
+  border-radius: var(--xp-radius-lg);
+}
+
+:host(.skeleton--circle) {
+  border-radius: var(--xp-radius-full);
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}

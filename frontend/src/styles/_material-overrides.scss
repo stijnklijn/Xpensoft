@@ -1,0 +1,143 @@
+// App-wide adjustments to Angular Material components, expressed through Material's token
+// override mixins so components keep their own state handling (hover, focus, disabled).
+@use '@angular/material' as mat;
+@use 'breakpoints';
+
+html {
+  @include mat.button-overrides(
+    (
+      filled-container-shape: var(--xp-radius-md),
+      filled-container-height: var(--xp-control-height),
+      tonal-container-shape: var(--xp-radius-md),
+      tonal-container-height: var(--xp-control-height),
+      outlined-container-shape: var(--xp-radius-md),
+      outlined-container-height: var(--xp-control-height),
+      outlined-outline-color: var(--xp-color-border-strong),
+      protected-container-shape: var(--xp-radius-md),
+      protected-container-height: var(--xp-control-height),
+      text-container-shape: var(--xp-radius-md),
+      text-container-height: var(--xp-control-height),
+    )
+  );
+
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: var(--xp-radius-md),
+      outlined-outline-color: var(--xp-color-border-strong),
+      outlined-hover-outline-color: var(--xp-color-text-muted),
+      outlined-focus-outline-color: var(--xp-color-primary),
+    )
+  );
+
+  @include mat.dialog-overrides(
+    (
+      container-shape: var(--xp-radius-xl),
+      container-color: var(--xp-color-surface),
+      container-elevation-shadow: var(--xp-shadow-dialog),
+    )
+  );
+
+  @include mat.menu-overrides(
+    (
+      container-shape: var(--xp-radius-lg),
+      container-color: var(--xp-color-surface),
+      container-elevation-shadow: var(--xp-shadow-overlay),
+    )
+  );
+
+  @include mat.select-overrides(
+    (
+      panel-background-color: var(--xp-color-surface),
+      container-elevation-shadow: var(--xp-shadow-overlay),
+    )
+  );
+
+  @include mat.bottom-sheet-overrides(
+    (
+      container-shape: var(--xp-radius-2xl),
+    )
+  );
+
+  @include mat.chips-overrides(
+    (
+      container-shape-radius: var(--xp-radius-full),
+    )
+  );
+
+  @include mat.snack-bar-overrides(
+    (
+      container-shape: var(--xp-radius-lg),
+    )
+  );
+}
+
+// Destructive actions: add `.xp-button-danger` to a matButton.
+.mat-mdc-button-base.xp-button-danger {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--xp-color-danger),
+      filled-label-text-color: #ffffff,
+      outlined-label-text-color: var(--xp-color-danger),
+      outlined-outline-color: var(--xp-color-danger),
+      outlined-state-layer-color: var(--xp-color-danger),
+      outlined-ripple-color: color-mix(in srgb, var(--xp-color-danger) 12%, transparent),
+      text-label-text-color: var(--xp-color-danger),
+      text-state-layer-color: var(--xp-color-danger),
+      text-ripple-color: color-mix(in srgb, var(--xp-color-danger) 12%, transparent),
+    )
+  );
+}
+
+// Loading state: a <mat-spinner diameter="20"> inside a (disabled) button takes the label colour.
+.mat-mdc-button-base .mat-mdc-progress-spinner {
+  @include mat.progress-spinner-overrides(
+    (
+      active-indicator-color: currentColor,
+    )
+  );
+}
+
+// Dialogs (panelClass set globally via MAT_DIALOG_DEFAULT_OPTIONS): full screen on phones.
+@include breakpoints.down(breakpoints.$medium) {
+  .cdk-overlay-pane.xp-dialog {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh;
+
+    .mat-mdc-dialog-surface {
+      border-radius: 0;
+      padding-bottom: var(--xp-safe-bottom);
+    }
+  }
+}
+
+// Toasts (see ToastService)
+.toast-success {
+  @include mat.snack-bar-overrides(
+    (
+      container-color: var(--xp-color-success-subtle),
+      supporting-text-color: var(--xp-color-on-success-subtle),
+      button-color: var(--xp-color-on-success-subtle),
+    )
+  );
+}
+
+.toast-error {
+  @include mat.snack-bar-overrides(
+    (
+      container-color: var(--xp-color-danger-subtle),
+      supporting-text-color: var(--xp-color-on-danger-subtle),
+      button-color: var(--xp-color-on-danger-subtle),
+    )
+  );
+}
+
+.toast-info {
+  @include mat.snack-bar-overrides(
+    (
+      container-color: var(--xp-color-primary-subtle),
+      supporting-text-color: var(--xp-color-on-primary-subtle),
+      button-color: var(--xp-color-on-primary-subtle),
+    )
+  );
+}

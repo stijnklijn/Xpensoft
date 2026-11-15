@@ -7,8 +7,9 @@ import {
   inject,
 } from '@angular/core';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
-import { provideRouter } from '@angular/router';
+import { provideRouter, TitleStrategy } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
@@ -22,6 +23,7 @@ import { apiInterceptor } from './interceptors/api.interceptor';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { routes } from './app.routes';
+import { TranslatedTitleStrategy } from './services/translated-title-strategy';
 
 export class CustomTranslateLoader implements TranslateLoader {
   private http = inject(HttpClient);
@@ -80,8 +82,18 @@ export const appConfig: ApplicationConfig = {
     provideDateFnsAdapter(),
     provideHttpClient(withInterceptors([apiInterceptor, authInterceptor, errorInterceptor])),
     provideRouter(routes),
+    { provide: TitleStrategy, useClass: TranslatedTitleStrategy },
     { provide: LOCALE_ID, useValue: LOCALE_IDS[preferredLanguage] },
     { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
     { provide: MAT_DATE_LOCALE, useValue: DATE_FNS_LOCALES[preferredLanguage] },
+    // Full screen on phones (see .xp-dialog in _material-overrides.scss), capped width otherwise.
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        ...new MatDialogConfig(),
+        panelClass: 'xp-dialog',
+        maxWidth: 'min(560px, calc(100vw - 48px))',
+      },
+    },
   ],
 };

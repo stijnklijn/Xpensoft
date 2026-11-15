@@ -1,0 +1,10 @@
+<span class="icon-wrapper">
+  <mat-icon aria-hidden="true">{{ icon() }}</mat-icon>
+</span>
+<h2 data-testid="empty-state-heading">{{ heading() }}</h2>
+@if (description()) {
+  <p data-testid="empty-state-description">{{ description() }}</p>
+}
+<div class="actions">
+  <ng-content />
+</div>
